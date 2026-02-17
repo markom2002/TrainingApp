@@ -1,0 +1,61 @@
+<div class="progress-container">
+
+  <h2 class="title">Monthly Progress</h2>
+
+  <div class="filters-card">
+
+    <div class="filter-group">
+      <label>Year</label>
+      <input type="number" [(ngModel)]="year">
+    </div>
+
+    <div class="filter-group">
+      <label>Month</label>
+      <input type="number" [(ngModel)]="month" min="1" max="12">
+    </div>
+
+    <button class="load-btn" (click)="loadStats()">
+      Load Stats
+    </button>
+
+  </div>
+
+  <div class="table-wrapper" *ngIf="stats.length > 0">
+    <table>
+      <thead>
+        <tr>
+          <th>Week</th>
+          <th>Total Duration</th>
+          <th>Trainings</th>
+          <th>Avg Intensity</th>
+          <th>Avg Fatigue</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let s of stats">
+          <td class="week">Week {{ s.week }}</td>
+          <td>{{ s.totalDuration }} min</td>
+          <td>{{ s.count }}</td>
+
+          <td>
+            <span class="badge intensity">
+              {{ s.avgIntensity }}
+            </span>
+          </td>
+
+          <td>
+            <span class="badge fatigue">
+              {{ s.avgFatigue }}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="empty-state" *ngIf="stats.length === 0">
+    📊 No data for selected month.
+  </div>
+
+</div>

@@ -1,0 +1,60 @@
+<div class="training-list-container">
+
+  <h2 class="title">My Trainings</h2>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Type</th>
+          <th>Duration</th>
+          <th>Calories</th>
+          <th>Intensity</th>
+          <th>Fatigue</th>
+          <th>Notes</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let t of trainings">
+          <td>{{ t.trainingDate | date:'short' }}</td>
+          <td>{{ t.exerciseType }}</td>
+          <td>{{ t.durationMinutes }} min</td>
+          <td>{{ t.calories }}</td>
+
+          <td>
+            <span class="badge intensity">
+              {{ t.intensity }}/10
+            </span>
+          </td>
+
+          <td>
+            <span class="badge fatigue">
+              {{ t.fatigue }}/10
+            </span>
+          </td>
+
+          <td class="notes">{{ t.notes || '-' }}</td>
+
+          <td class="actions">
+            <button class="edit-btn" (click)="editTraining(t.id!)">
+              Edit
+            </button>
+            <button class="delete-btn" (click)="deleteTraining(t.id!)">
+              Delete
+            </button>
+          </td>
+        </tr>
+
+        <tr *ngIf="trainings.length === 0">
+          <td colspan="8" class="empty">
+            No trainings yet.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
