@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Training } from '../models/training.model';
-import { AuthService } from '../auth.service';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -42,7 +42,11 @@ export class TrainingService {
   }
 
   getById(id: number) {
-  return this.http.get<Training>(`${this.apiUrl}/${id}`);
+  return this.http.get<Training>(
+    `${this.apiUrl}/${id}`,
+    { headers: this.getAuthHeaders() }
+  );
 }
+
 
 }

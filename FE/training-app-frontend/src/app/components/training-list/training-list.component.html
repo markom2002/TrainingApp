@@ -1,6 +1,9 @@
 <div class="training-list-container">
 
-  <h2 class="title">My Trainings</h2>
+  <div class="list-header">
+    <h2>Workout History</h2>
+    <div class="line"></div>
+  </div>
 
   <div class="table-wrapper">
     <table>
@@ -19,10 +22,16 @@
 
       <tbody>
         <tr *ngFor="let t of trainings">
-          <td>{{ t.trainingDate | date:'short' }}</td>
-          <td>{{ t.exerciseType }}</td>
+          <td class="date">{{ t.trainingDate | date:'short' }}</td>
+
+          <td>
+            <span class="type-badge">
+              {{ t.exerciseType }}
+            </span>
+          </td>
+
           <td>{{ t.durationMinutes }} min</td>
-          <td>{{ t.calories }}</td>
+          <td class="calories">🔥 {{ t.calories }}</td>
 
           <td>
             <span class="badge intensity">
@@ -40,17 +49,17 @@
 
           <td class="actions">
             <button class="edit-btn" (click)="editTraining(t.id!)">
-              Edit
+              ✏ Edit
             </button>
             <button class="delete-btn" (click)="deleteTraining(t.id!)">
-              Delete
+              🗑 Delete
             </button>
           </td>
         </tr>
 
         <tr *ngIf="trainings.length === 0">
           <td colspan="8" class="empty">
-            No trainings yet.
+            🏋️ No workouts logged yet. Start training!
           </td>
         </tr>
       </tbody>

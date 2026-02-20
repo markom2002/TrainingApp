@@ -1,27 +1,30 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using BE.Data;
 using BE.DTOs;
-using BE.Models;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
-
-
+using BE.Services.Interfaces;
 
 namespace BE.Controllers
 {
-    
     [ApiController]
     [Route("api/trainings")]
-
     [Authorize]
     public class TrainingsController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly ITrainingService _trainingService;
 
-        public TrainingsController(AppDbContext context)
+        public TrainingsController(ITrainingService trainingService)
         {
-            _context = context;
+            _trainingService = trainingService;
+        }
+
+        private int GetUserId()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userIdClaim == null)
+                throw new UnauthorizedAccessException();
+
+            return int.Parse(userIdClaim);
         }
 
         [HttpPost]
@@ -30,88 +33,34 @@ namespace BE.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            var userId = GetUserId();
 
-            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var result = _trainingService.Add(userId, dto);
 
-            var training = new Training
-            {
-                UserId = userId,
-                ExerciseType = dto.ExerciseType,
-                DurationMinutes = dto.DurationMinutes,
-                Calories = dto.Calories,
-                Intensity = dto.Intensity,
-                Fatigue = dto.Fatigue,
-                Notes = dto.Notes,
-                TrainingDate = dto.TrainingDate
-            };
-
-            _context.Trainings.Add(training);
-            _context.SaveChanges();
-
-            return Ok(training);
+            return Ok(result);
         }
 
-        [HttpGet("month")]
-        public IActionResult GetMonthlyStats(int year, int month)
+        [HttpGet]
+        public IActionResult GetAll()
         {
-            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var userId = GetUserId();
 
-            var trainings = _context.Trainings
-                .Where(t => t.UserId == userId
-                            && t.TrainingDate.Year == year
-                            && t.TrainingDate.Month == month)
-                .ToList();
+            var trainings = _trainingService.GetAll(userId);
 
-            var weeklyStats = trainings
-                .GroupBy(t => (t.TrainingDate.Day - 1) / 7 + 1)
-                .Select(g => new
-                {
-                    Week = g.Key,
-                    TotalDuration = g.Sum(x => x.DurationMinutes),
-                    Count = g.Count(),
-                    AvgIntensity = Math.Round(g.Average(x => x.Intensity), 2),
-                    AvgFatigue = Math.Round(g.Average(x => x.Fatigue), 2)
-                })
-                .OrderBy(x => x.Week)
-                .ToList();
-
-            return Ok(weeklyStats);
+            return Ok(trainings);
         }
-
 
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var userId = GetUserId();
 
-            var training = _context.Trainings
-                .FirstOrDefault(t => t.Id == id && t.UserId == userId);
-
-            if (training == null)
-                return NotFound();
-
-            return Ok(training);
-        }
-
-
-
-
-
-        [HttpDelete("{id}")]
-        public IActionResult DeleteTraining(int id)
-        {
-            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-
-            var training = _context.Trainings
-                .FirstOrDefault(t => t.Id == id && t.UserId == userId);
+            var training = _trainingService.GetById(id, userId);
 
             if (training == null)
                 return NotFound("Training not found");
 
-            _context.Trainings.Remove(training);
-            _context.SaveChanges();
-
-            return NoContent();
+            return Ok(training);
         }
 
         [HttpPut("{id}")]
@@ -120,50 +69,37 @@ namespace BE.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userId = GetUserId();
 
-            if (userIdClaim == null)
-                return Unauthorized();
+            var updated = _trainingService.Update(id, userId, dto);
 
-            var userId = int.Parse(userIdClaim);
-
-            var training = _context.Trainings
-                .FirstOrDefault(t => t.Id == id && t.UserId == userId);
-
-            if (training == null)
+            if (updated == null)
                 return NotFound("Training not found");
 
-            training.ExerciseType = dto.ExerciseType;
-            training.DurationMinutes = dto.DurationMinutes;
-            training.Calories = dto.Calories;
-            training.Intensity = dto.Intensity;
-            training.Fatigue = dto.Fatigue;
-            training.Notes = dto.Notes ?? "";
-            training.TrainingDate = dto.TrainingDate;
-
-            _context.SaveChanges();
-
-            return Ok(training);
+            return Ok(updated);
         }
 
-
-
-        [HttpGet]
-        public IActionResult GetAll()
+        [HttpDelete("{id}")]
+        public IActionResult DeleteTraining(int id)
         {
-            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var userId = GetUserId();
 
-            var trainings = _context.Trainings
-                .Where(t => t.UserId == userId)
-                .OrderByDescending(t => t.TrainingDate)
-                .ToList();
+            var deleted = _trainingService.Delete(id, userId);
 
-            return Ok(trainings);
+            if (!deleted)
+                return NotFound("Training not found");
+
+            return NoContent();
         }
 
+        [HttpGet("month")]
+        public IActionResult GetMonthlyStats(int year, int month)
+        {
+            var userId = GetUserId();
 
-        
+            var stats = _trainingService.GetMonthlyStats(userId, year, month);
 
+            return Ok(stats);
+        }
     }
-
 }

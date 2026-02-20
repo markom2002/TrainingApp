@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
-import { AuthService } from '../auth.service';
+import { AuthService } from '../../services/auth.service';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
@@ -40,7 +40,6 @@ export class RegisterComponent {
       .subscribe({
         next: () => {
           alert("Registration successful!");
-          // automatski login
           this.authService.login(this.email, this.password);
         },
         error: err => alert("Registration failed: " + (err.error?.message || err.message))

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { TrainingService } from '../services/training.service';
-import { Training, ExerciseType } from '../models/training.model';
+import { TrainingService } from '../../services/training.service';
+import { Training, ExerciseType } from '../../models/training.model';
 
 @Component({
   selector: 'app-training-list',

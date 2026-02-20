@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
-import { AuthService } from '../auth.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -24,6 +24,7 @@ export class LoginComponent {
     this.authService.login(this.username, this.password).subscribe({
       next: res => {
         this.authService.saveToken(res.token);
+        localStorage.setItem('userEmail', this.username); 
         this.router.navigate(['/dashboard']);
       },
       error: err => {

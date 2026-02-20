@@ -2,15 +2,16 @@ import { ApplicationConfig, provideZoneChangeDetection, importProvidersFrom } fr
 import { FormsModule } from '@angular/forms';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
-
-import { LoginComponent } from './login/login.component';
-import { RegisterComponent } from './register/register.component';
-import { AddTrainingComponent } from './components/add-training.component';
-import { AuthService } from './auth.service';
+import { LoginComponent } from './components/login/login.component';
+import { RegisterComponent } from './components/register/register.component';
+import { AddTrainingComponent } from './components/add-training/add-training.component';
+import { EditTrainingComponent } from './components/edit-training/edit-training.component';
+import { AuthService } from './services/auth.service';
 import { AuthGuard } from './auth.guard';
-import { TrainingListComponent } from './components/training-list.component';
+import { TrainingListComponent } from './components/training-list/training-list.component';
 import { ProgressComponent } from './components/progress/progress.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+
 
 
 export const appConfig: ApplicationConfig = {
@@ -28,7 +29,7 @@ export const appConfig: ApplicationConfig = {
       { path: 'trainings', component: TrainingListComponent, canActivate: [AuthGuard] },
       { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
       { path: 'progress', component: ProgressComponent, canActivate: [AuthGuard] },
-      { path: 'edit-training/:id', component: AddTrainingComponent, canActivate: [AuthGuard] }
+      { path: 'edit-training/:id', component: EditTrainingComponent, canActivate: [AuthGuard] }
     ])
   ]
 };

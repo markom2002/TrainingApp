@@ -1,21 +1,40 @@
 <div class="dashboard-container">
 
   <div class="top-bar">
-    <h2>Dashboard</h2>
-    <div>
-      <button (click)="goToAddTraining()">+ Add Training</button>
+
+    <div class="greeting">
+      <h1 class="welcome-title">
+        Welcome back, {{username}}
+      </h1>
+    </div>
+
+    <div class="actions">
+      <button class="add-btn" (click)="goToAddTraining()">+ Add Training</button>
       <button class="logout" (click)="logout()">Logout</button>
+    </div>
+
+  </div>
+
+  <div class="stats-banner">
+    <div class="stat-box">
+      💪 Stay Strong
+    </div>
+    <div class="stat-box">
+      🔥 Burn Calories
+    </div>
+    <div class="stat-box">
+      📈 Track Progress
     </div>
   </div>
 
-  <hr>
+  <div class="card">
+    <h3>My Trainings</h3>
+    <app-training-list></app-training-list>
+  </div>
 
-  <h3>My Trainings</h3>
-  <app-training-list></app-training-list>
-
-  <hr>
-
-  <h3>Monthly Progress</h3>
-  <app-progress></app-progress>
+  <div class="card">
+    <h3>Monthly Progress</h3>
+    <app-progress></app-progress>
+  </div>
 
 </div>

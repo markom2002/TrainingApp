@@ -1,6 +1,9 @@
-<div class="progress-container">
+<div class="progress-wrapper">
 
-  <h2 class="title">Monthly Progress</h2>
+  <div class="progress-header">
+    <h2>Monthly Progress</h2>
+    <div class="header-line"></div>
+  </div>
 
   <div class="filters-card">
 
@@ -15,12 +18,12 @@
     </div>
 
     <button class="load-btn" (click)="loadStats()">
-      Load Stats
+      Load Statistics 📊
     </button>
 
   </div>
 
-  <div class="table-wrapper" *ngIf="stats.length > 0">
+  <div class="table-card" *ngIf="stats.length > 0">
     <table>
       <thead>
         <tr>
@@ -54,8 +57,9 @@
     </table>
   </div>
 
-  <div class="empty-state" *ngIf="stats.length === 0">
-    📊 No data for selected month.
+  <div class="empty-card" *ngIf="stats.length === 0">
+    <div class="empty-icon">📈</div>
+    <p>No data available for selected month.</p>
   </div>
 
 </div>
