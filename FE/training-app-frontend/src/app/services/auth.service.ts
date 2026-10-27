@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '../api.config';
 import { jwtDecode } from 'jwt-decode';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
@@ -8,7 +9,7 @@ interface TokenResponse { token: string; expiresAtUtc: string; }
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private apiUrl = 'https://localhost:7089/api/auth';
+  private apiUrl = `${API_BASE_URL}/auth`;
   private token: string | null = null;
   private refreshRequest?: Observable<TokenResponse>;
 

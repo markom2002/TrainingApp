@@ -12,6 +12,12 @@ using BE.Services.Implementations;
 
 
 var builder = WebApplication.CreateBuilder(args);
+var jwtKey = builder.Configuration["Jwt:Key"];
+if (string.IsNullOrWhiteSpace(jwtKey) || Encoding.UTF8.GetByteCount(jwtKey) < 32)
+    throw new InvalidOperationException("Configure Jwt__Key with a private signing key of at least 32 UTF-8 bytes.");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("Configure ConnectionStrings__DefaultConnection.");
+
 
 
 builder.Services.AddProblemDetails();
@@ -22,7 +28,7 @@ builder.Services.AddControllers()
     });
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection")
+        connectionString
     ));
 builder.Services.AddScoped<ITrainingService, TrainingService>();
 
@@ -33,7 +39,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAngular",
         policy =>
         {
-            policy.WithOrigins("http://localhost:4200", "https://localhost:4200")
+            policy.WithOrigins(builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>())
                   .AllowAnyHeader()
                   .AllowAnyMethod()
                   .AllowCredentials();
@@ -50,7 +56,7 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
-    var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]);
+    var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!);
 
     options.TokenValidationParameters = new TokenValidationParameters
     {
@@ -116,6 +122,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapGet("/health/live", () => Results.Ok(new { status = "Healthy" }));
 
 
 app.Run();

@@ -1,0 +1,62 @@
+name: Build and test
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend tests and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - run: dotnet restore BE/BE.sln
+      - name: Run xUnit integration tests (isolated SQLite)
+        run: dotnet test BE.Tests/BE.Tests.csproj --configuration Release --no-restore --logger trx --results-directory TestResults
+      - name: Verify API release build
+        run: dotnet build BE/BE.csproj --configuration Release --no-restore
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-test-results
+          path: TestResults/*.trx
+          if-no-files-found: ignore
+
+  frontend:
+    name: Angular tests and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: FE/training-app-frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: FE/training-app-frontend/package-lock.json
+      - run: npm ci
+      - name: Run Angular tests in Chrome Headless
+        run: |
+          export CHROME_BIN="$(command -v google-chrome)"
+          npm run test:ci
+      - name: Verify production build
+        run: npm run build
+      - name: Verify local development build
+        run: npm run build -- --configuration development

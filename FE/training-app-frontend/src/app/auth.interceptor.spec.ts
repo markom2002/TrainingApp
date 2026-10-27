@@ -1,3 +1,4 @@
+import { API_BASE_URL } from './api.config';
 import { TestBed } from '@angular/core/testing';
 import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
@@ -5,7 +6,7 @@ import { Router } from '@angular/router';
 import { authInterceptor } from './auth.interceptor';
 import { AuthService } from './services/auth.service';
 
-const api = 'https://localhost:7089/api';
+const api = API_BASE_URL;
 
 describe('Authentication HTTP flow', () => {
   let http: HttpClient;

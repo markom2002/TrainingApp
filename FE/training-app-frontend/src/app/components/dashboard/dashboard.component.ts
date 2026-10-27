@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '../../api.config';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 import { Component, OnInit } from '@angular/core';
@@ -25,7 +26,7 @@ export class DashboardComponent implements OnInit {
 
   loadAdminSummary() {
     this.adminError = '';
-    this.http.get<{ userCount: number; trainingCount: number }>('https://localhost:7089/api/admin/summary').subscribe({
+    this.http.get<{ userCount: number; trainingCount: number }>(`${API_BASE_URL}/admin/summary`).subscribe({
       next: result => this.adminSummary = result,
       error: () => this.adminError = 'Unable to load administrator statistics.'
     });

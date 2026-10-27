@@ -6,7 +6,7 @@ Angular 19 frontend and ASP.NET Core 8 / EF Core / SQL Server API.
 
 1. Install .NET 8 SDK, Node.js and SQL Server.
 2. Set `ConnectionStrings__DefaultConnection` to your SQL Server connection string.
-3. Set `Jwt__Key` to a private, randomly generated signing key (at least 32 bytes). The checked-in key is a development placeholder; do not use it in deployment.
+3. Local HTTPS launch uses `appsettings.Development.json` for the SQL connection, JWT development key and CORS origins. Environment variables such as `Jwt__Key` and `ConnectionStrings__DefaultConnection` override these values.
 4. Apply the schema: `dotnet ef database update --project BE`.
 5. Trust the development API certificate: `dotnet dev-certs https --trust`.
 6. Start the API: `dotnet run --project BE --launch-profile https`.
@@ -38,7 +38,7 @@ Angular 19 frontend and ASP.NET Core 8 / EF Core / SQL Server API.
 4. Pagination, filtering and sorting.
 5. Broader xUnit and frontend coverage.
 6. API documentation and examples.
-7. GitHub Actions and a deployed demo.
+7. GitHub Actions for automated builds and tests (local-only application).
 8. Dashboard and progress visualizations.
 
 ## Authorization (upgrade 2)
@@ -120,7 +120,7 @@ npm run build
 
 The frontend test command requires Chrome/Chromium installed (`CHROME_BIN` can point to a custom installation). It runs once in Chrome Headless. `npm test` runs in watch mode.
 
-The suite contains 44 backend tests and 8 Angular tests. Backend tests use isolated SQLite databases and the real ASP.NET authentication/authorization middleware through WebApplicationFactory; they never modify the development SQL Server database. The suite covers JWT rejection, refresh cookies and rotation, logout, role updates, ownership, validation, pagination, monthly totals, deletion and the generated OpenAPI contract. SQLite is not a substitute for SQL Server deployment/migration checks. Angular HTTP tests verify token scoping, shared refresh, bounded retries, 403 handling and logout. They are not a complete end-to-end browser test of the application.
+The suite contains 45 backend tests and 8 Angular tests. Backend tests use isolated SQLite databases and the real ASP.NET authentication/authorization middleware through WebApplicationFactory; they never modify the development SQL Server database. The suite covers JWT rejection, refresh cookies and rotation, logout, role updates, ownership, validation, pagination, monthly totals, deletion and the generated OpenAPI contract. SQLite is not a substitute for SQL Server deployment/migration checks. Angular HTTP tests verify token scoping, shared refresh, bounded retries, 403 handling and logout. They are not a complete end-to-end browser test of the application.
 
 Swagger is at `https://localhost:7089/swagger` in Development. The raw OpenAPI document is `/swagger/v1/swagger.json`. It includes endpoint summaries, request examples, response schemas, validation errors and role requirements. Public authentication endpoints have no JWT security requirement; refresh/logout use the login cookie. Secured workout/Admin endpoints show the Bearer security requirement.
 
@@ -134,3 +134,23 @@ To try the API:
 6. Logout revokes the refresh cookie; access JWTs already issued remain valid until expiry.
 
 `BE/BE.http` contains matching request examples and an access-token placeholder for HTTP clients.
+
+## GitHub Actions and local configuration (upgrade 6)
+
+This project is kept local for personal use and CV demonstrations. There is no deployment workflow, hosting service or public application.
+
+[Build and test workflow](.github/workflows/ci.yml) runs on pushes and pull requests to `master` and can be started manually from GitHub Actions:
+
+- The backend job installs .NET 8, restores the solution, executes the Release xUnit suite against SQLite and verifies the API build. TRX test reports are uploaded as workflow artifacts.
+- The frontend job installs Node.js 22, restores exact dependencies with `npm ci`, runs Chrome Headless tests, and builds both production and development configurations.
+- Jobs have read-only repository permissions, timeouts and cancellation of superseded runs. No database, hosting credentials or repository secrets are required.
+
+The Angular API base URL is centralized in `src/app/api.config.ts`. `npm start` uses `environment.development.ts` and calls `https://localhost:7089/api`. The production build uses a relative `/api` base; it is only a build check here, not a deployed application. Running the built files requires an API at that origin or a configured proxy.
+
+Machine-specific SQL settings, the example JWT development key and localhost CORS origins are in `BE/appsettings.Development.json`. The common settings file holds issuer/audience and logging settings. Startup validates that a signing key and database connection are configured. Never put real account passwords or private signing keys in committed files; use local environment variables or .NET user secrets for those.
+
+`GET https://localhost:7089/health/live` returns a small public liveness response. It verifies that the API process responds, not that SQL Server is reachable.
+
+CV example after a successful GitHub workflow run:
+
+> Configured GitHub Actions CI to run xUnit integration tests, Angular HTTP tests and release builds on pushes and pull requests.

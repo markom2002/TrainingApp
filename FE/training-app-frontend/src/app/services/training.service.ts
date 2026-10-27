@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '../api.config';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -9,7 +10,7 @@ import { AuthService } from './auth.service';
 })
 export class TrainingService {
 
-  private apiUrl = 'https://localhost:7089/api/trainings';
+  private apiUrl = `${API_BASE_URL}/trainings`;
 
   constructor(private http: HttpClient, private authService: AuthService) { }
 
