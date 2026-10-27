@@ -15,6 +15,7 @@ namespace BE.Data
         public DbSet<Training> Trainings { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<User>().Property(u => u.Role).HasMaxLength(20).HasDefaultValue(Roles.User);
             modelBuilder.Entity<RefreshToken>().HasIndex(t => t.TokenHash).IsUnique();
         }
     }

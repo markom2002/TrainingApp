@@ -6,3 +6,6 @@ obj/
 # Angular
 node_modules/
 dist/
+
+# Local development process logs
+.local-logs/

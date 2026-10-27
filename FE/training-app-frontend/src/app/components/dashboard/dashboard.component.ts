@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -19,8 +20,18 @@ import { ProgressComponent } from '../../components/progress/progress.component'
 export class DashboardComponent implements OnInit {
 
   username: string = '';
+  adminSummary?: { userCount: number; trainingCount: number };
+  adminError = '';
 
-  constructor(private router: Router, private authService: AuthService) {}
+  loadAdminSummary() {
+    this.adminError = '';
+    this.http.get<{ userCount: number; trainingCount: number }>('https://localhost:7089/api/admin/summary').subscribe({
+      next: result => this.adminSummary = result,
+      error: () => this.adminError = 'Unable to load administrator statistics.'
+    });
+  }
+
+  constructor(private router: Router, public authService: AuthService, private http: HttpClient) {}
 
   ngOnInit() {
     const email = localStorage.getItem('userEmail');

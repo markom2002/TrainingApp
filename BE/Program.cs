@@ -65,6 +65,7 @@ builder.Services.AddAuthentication(options =>
 });
 
 
+builder.Services.AddAuthorization();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -114,3 +115,4 @@ app.MapControllers();
 
 
 app.Run();
+public partial class Program { }

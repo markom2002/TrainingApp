@@ -40,3 +40,16 @@ Angular 19 frontend and ASP.NET Core 8 / EF Core / SQL Server API.
 6. API documentation and examples.
 7. GitHub Actions and a deployed demo.
 8. Dashboard and progress visualizations.
+
+## Authorization (upgrade 2)
+
+Every existing account and new registration receives the `User` role. Registration ignores any client-supplied role. JWTs carry the server-side role, and refresh reads the current role from the database.
+
+- Anonymous requests to protected endpoints return **401** (authentication required).
+- A signed-in User requesting `GET /api/admin/summary` receives **403** (insufficient permissions).
+- An Admin receives aggregate user/training counts. The dashboard exposes the statistics button only for Admin accounts; the API enforces the permission independently.
+- Both Users and Admins may read, update and delete only their own training records. Foreign record IDs return **404** to avoid exposing their existence.
+
+Admin provisioning is an operator action, not a registration field. To promote a specific development account, execute a parameterized update to `Users.Role = 'Admin'` for that account in your SQL administration tool, then log in again. No account is promoted automatically. Existing access tokens keep their claims until expiry (up to 15 minutes); refreshing or signing in reads the latest database role.
+
+The HTTP integration tests cover anonymous/User/Admin access, ownership enforcement for User and Admin, and attempted role escalation through registration.

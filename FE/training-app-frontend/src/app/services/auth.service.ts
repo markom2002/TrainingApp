@@ -1,3 +1,4 @@
+import { jwtDecode } from 'jwt-decode';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -49,6 +50,14 @@ export class AuthService {
       next: () => this.clearSession(),
       error: () => alert('Logout failed. Please try again.')
     });
+  }
+
+  get role(): string {
+    if (!this.token) return '';
+    try {
+      const claims = jwtDecode<Record<string, unknown>>(this.token);
+      return String(claims['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] ?? 'User');
+    } catch { return ''; }
   }
 
   get isLoggedIn(): boolean { return !!this.token; }

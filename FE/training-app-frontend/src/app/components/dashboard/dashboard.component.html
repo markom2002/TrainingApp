@@ -15,15 +15,22 @@
 
   </div>
 
+  <p>Account role: {{ authService.role }}</p>
+  <div class="card" *ngIf="authService.role === 'Admin'">
+    <h3>Administration</h3>
+    <button class="add-btn" (click)="loadAdminSummary()">Load application statistics</button>
+    <p *ngIf="adminSummary">Users: {{ adminSummary.userCount }} · Trainings: {{ adminSummary.trainingCount }}</p>
+    <p role="alert" *ngIf="adminError">{{ adminError }}</p>
+  </div>
   <div class="stats-banner">
     <div class="stat-box">
-      💪 Stay Strong
+      ðŸ’ª Stay Strong
     </div>
     <div class="stat-box">
-      🔥 Burn Calories
+      ðŸ”¥ Burn Calories
     </div>
     <div class="stat-box">
-      📈 Track Progress
+      ðŸ“ˆ Track Progress
     </div>
   </div>
 
