@@ -1,3 +1,4 @@
+using BE.Documentation;
 using Microsoft.EntityFrameworkCore;
 using BE.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -73,26 +74,26 @@ builder.Services.AddSwaggerGen(options =>
     options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
     {
         In = Microsoft.OpenApi.Models.ParameterLocation.Header,
-        Description = "Unesi JWT sa Bearer prefiksom",
+        Description = "Paste the access token only. Swagger adds the Bearer prefix automatically.",
         Name = "Authorization",
         Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
         Scheme = "bearer"
     });
 
-    options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+    options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
     {
-        {
-            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
-            {
-                Reference = new Microsoft.OpenApi.Models.OpenApiReference
-                {
-                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            new string[] {}
-        }
+        Title = "Gym Training Tracker API",
+        Version = "v1",
+        Description = "Register, then log in and paste only the returned token into Authorize (no Bearer prefix). " +
+            "Example credentials are sample inputs, not a pre-created account. " +
+            "Authentication identifies the caller; authorization restricts roles and workout ownership. " +
+            "Access JWTs expire after 15 minutes. Refresh uses an HttpOnly cookie and rotates it; " +
+            "logout revokes the refresh session. Browser cookies are sent automatically to the same HTTPS host. " +
+            "User accounts cannot access Admin statistics; both roles may change only their own workouts."
     });
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "BE.xml"));
+    options.OperationFilter<AuthorizationOperationFilter>();
+    options.SchemaFilter<RequestExamplesFilter>();
 });
 
 

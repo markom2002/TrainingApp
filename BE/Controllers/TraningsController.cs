@@ -27,6 +27,9 @@ namespace BE.Controllers
             return int.Parse(userIdClaim);
         }
 
+        /// <summary>Add a workout owned by the signed-in user.</summary>
+        [ProducesResponseType(typeof(BE.Models.Training), 200)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
         [HttpPost]
         public IActionResult AddTraining(TrainingDto dto)
         {
@@ -40,6 +43,10 @@ namespace BE.Controllers
             return Ok(result);
         }
 
+        /// <summary>List your workouts with pagination, filters and sorting.</summary>
+        /// <remarks>Defaults: page=1, pageSize=10, sortBy=trainingDate, sortDirection=desc. Date filters include both endpoints. Maximum pageSize is 100.</remarks>
+        [ProducesResponseType(typeof(PagedResult<BE.Models.Training>), 200)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] TrainingQuery query, CancellationToken cancellationToken)
         {
@@ -50,6 +57,11 @@ namespace BE.Controllers
             return Ok(trainings);
         }
 
+        /// <summary>Get your workout by ID.</summary>
+        /// <remarks>Unknown IDs and workouts belonging to another user return 404.</remarks>
+        [ProducesResponseType(typeof(BE.Models.Training), 200)]
+        [ProducesResponseType(typeof(ProblemDetails), 404)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
@@ -63,6 +75,11 @@ namespace BE.Controllers
             return Ok(training);
         }
 
+        /// <summary>Update your workout.</summary>
+        /// <remarks>Unknown IDs and workouts belonging to another user return 404.</remarks>
+        [ProducesResponseType(typeof(BE.Models.Training), 200)]
+        [ProducesResponseType(typeof(ProblemDetails), 404)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
         [HttpPut("{id}")]
         public IActionResult UpdateTraining(int id, TrainingDto dto)
         {
@@ -79,6 +96,10 @@ namespace BE.Controllers
             return Ok(updated);
         }
 
+        /// <summary>Delete your workout.</summary>
+        /// <remarks>Unknown IDs and workouts belonging to another user return 404.</remarks>
+        [ProducesResponseType(204)]
+        [ProducesResponseType(typeof(ProblemDetails), 404)]
         [HttpDelete("{id}")]
         public IActionResult DeleteTraining(int id)
         {
@@ -92,6 +113,10 @@ namespace BE.Controllers
             return NoContent();
         }
 
+        /// <summary>Get weekly totals and average intensity/fatigue for a calendar month.</summary>
+        /// <remarks>Week 1 contains days 1-7, week 2 days 8-14, and so on. Returns only the caller's data.</remarks>
+        [ProducesResponseType(typeof(IEnumerable<MonthlyTrainingStats>), 200)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
         [HttpGet("month")]
         public IActionResult GetMonthlyStats([System.ComponentModel.DataAnnotations.Range(1, 9999)] int year, [System.ComponentModel.DataAnnotations.Range(1, 12)] int month)
         {

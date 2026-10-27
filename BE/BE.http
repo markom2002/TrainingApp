@@ -1,6 +1,55 @@
-@BE_HostAddress = http://localhost:5206
+@BE_HostAddress = https://localhost:7089
+@accessToken = PASTE_LOGIN_TOKEN_HERE
 
-GET {{BE_HostAddress}}/weatherforecast/
-Accept: application/json
+### Create an account first. Example values do not identify a pre-created account.
+POST {{BE_HostAddress}}/api/auth/register
+Content-Type: application/json
 
-###
+{
+  "email": "marko@example.com",
+  "password": "MarkoTest2026!",
+  "gender": "Male"
+}
+
+### Sign in, then copy token from the JSON response into accessToken above.
+POST {{BE_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "marko@example.com",
+  "password": "MarkoTest2026!"
+}
+
+### List your workouts. Authorization header requires Bearer; Swagger's dialog adds it itself.
+GET {{BE_HostAddress}}/api/trainings?page=1&pageSize=10&sortBy=trainingDate&sortDirection=desc
+Authorization: Bearer {{accessToken}}
+
+### Create a workout.
+POST {{BE_HostAddress}}/api/trainings
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "exerciseType": "Strength",
+  "durationMinutes": 45,
+  "calories": 250,
+  "intensity": 7,
+  "fatigue": 5,
+  "trainingDate": "2026-10-27T18:00:00",
+  "notes": "Upper body workout"
+}
+
+### Monthly statistics.
+GET {{BE_HostAddress}}/api/trainings/month?year=2026&month=10
+Authorization: Bearer {{accessToken}}
+
+### Requires the Admin role. User accounts receive 403.
+GET {{BE_HostAddress}}/api/admin/summary
+Authorization: Bearer {{accessToken}}
+
+### Refresh requires a client that stores and sends the cookie from login.
+# In Swagger on the same HTTPS host, the browser handles the HttpOnly cookie automatically.
+POST {{BE_HostAddress}}/api/auth/refresh
+
+### Revoke the refresh cookie session. Existing JWTs last until expiry.
+POST {{BE_HostAddress}}/api/auth/logout

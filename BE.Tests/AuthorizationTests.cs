@@ -26,6 +26,7 @@ public partial class ApiIntegrationTests : IDisposable
         connection.Open();
         factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
         {
+            builder.UseEnvironment("Development");
             builder.ConfigureAppConfiguration((_, config) => config.AddInMemoryCollection(new Dictionary<string, string?>
             {
                 ["Jwt:Key"] = "integration-test-key-at-least-32-bytes-long",

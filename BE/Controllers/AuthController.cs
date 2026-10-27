@@ -27,6 +27,11 @@ namespace BE.Controllers
             _configuration = configuration;
         }
 
+        /// <summary>Create a User account.</summary>
+        /// <remarks>Public endpoint. Role is assigned by the server; sample credentials do not exist until registered.</remarks>
+        [ProducesResponseType(typeof(MessageResponse), 200)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
+        [ProducesResponseType(typeof(ProblemDetails), 409)]
         [HttpPost("register")]
         public IActionResult Register(RegisterDto dto)
         {
@@ -44,10 +49,15 @@ namespace BE.Controllers
             _context.Users.Add(user);
             _context.SaveChanges();
 
-            return Ok(new { message = "User registered successfully" });
+            return Ok(new MessageResponse("User registered successfully"));
         }
 
 
+        /// <summary>Sign in and start a seven-day refresh session.</summary>
+        /// <remarks>Returns a 15-minute JWT and a Secure, HttpOnly refresh cookie. Paste only token into Authorize.</remarks>
+        [ProducesResponseType(typeof(TokenResponse), 200)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
+        [ProducesResponseType(typeof(ProblemDetails), 401)]
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto dto)
         {
@@ -74,6 +84,10 @@ namespace BE.Controllers
             Expires = new DateTimeOffset(expires)
         };
 
+        /// <summary>Rotate the refresh cookie and issue a fresh access JWT.</summary>
+        /// <remarks>Uses the training_refresh cookie set by login. Does not require an access JWT. Reused or expired cookies return 401.</remarks>
+        [ProducesResponseType(typeof(TokenResponse), 200)]
+        [ProducesResponseType(typeof(ProblemDetails), 401)]
         [HttpPost("refresh")]
         public async Task<IActionResult> Refresh()
         {
@@ -97,6 +111,9 @@ namespace BE.Controllers
             }
         }
 
+        /// <summary>Revoke the current refresh session and remove its cookie.</summary>
+        /// <remarks>Idempotent. Does not require an access JWT; previously issued JWTs remain valid until expiry.</remarks>
+        [ProducesResponseType(204)]
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
@@ -136,7 +153,7 @@ namespace BE.Controllers
             });
             await _context.SaveChangesAsync();
             Response.Cookies.Append(CookieName, rawToken, RefreshCookie(refreshExpiry));
-            return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(jwt), expiresAtUtc = expires });
+            return Ok(new TokenResponse(new JwtSecurityTokenHandler().WriteToken(jwt), expires));
         }
     }
 }

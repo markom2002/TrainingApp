@@ -21,7 +21,7 @@ Angular 19 frontend and ASP.NET Core 8 / EF Core / SQL Server API.
 - `POST /api/auth/refresh` consumes the current token and issues its replacement. Expired or consumed tokens return 401. Optimistic concurrency prevents consuming the same token twice.
 - Angular retries an API request once after a 401 and shares one refresh request among concurrent requests. The route guard restores the session after a page reload.
 - `POST /api/auth/logout` revokes the current refresh token and deletes the cookie. Previously issued access JWTs can remain valid for their remaining 15-minute lifetime.
-- Authentication establishes identity. Authorization controls permitted actions; role-based authorization is planned for upgrade 2.
+- Authentication establishes identity. Authorization controls roles and workout ownership (implemented in upgrade 2).
 - Cross-origin deployment requires explicitly revisiting cookie, CORS and CSRF settings; the local setup assumes the same host and HTTPS for both applications.
 
 ## Verification
@@ -101,4 +101,36 @@ Example: `/api/trainings?page=1&pageSize=10&exerciseType=Strength&from=2026-01-0
 
 The API scopes the query to the signed-in user, filters and counts matching records, then sorts and applies SQL pagination. A unique ID secondary sort makes equal sort values deterministic. Pages beyond the last page return empty `items` with the actual count; no matches give `totalPages: 0`. Invalid query parameters return 400 ProblemDetails. Angular provides Apply/Reset filters, page-size selection, Previous/Next controls, loading/error states and recovery after deleting the last record on a page. Date filters compare stored training calendar dates without timezone conversion.
 
-The list-response change is intentional; the Angular client and integration tests were updated together. No database migration is required. The test suite now contains 34 tests.
+The list-response change is intentional; the Angular client and integration tests were updated together. No database migration is required. Pagination is covered by the backend integration suite.
+
+## Automated tests and Swagger (upgrade 5)
+
+Run backend tests from the repository root:
+
+```powershell
+dotnet test BE.Tests/BE.Tests.csproj
+```
+
+Run frontend tests and build from `FE/training-app-frontend`:
+
+```powershell
+npm run test:ci
+npm run build
+```
+
+The frontend test command requires Chrome/Chromium installed (`CHROME_BIN` can point to a custom installation). It runs once in Chrome Headless. `npm test` runs in watch mode.
+
+The suite contains 44 backend tests and 8 Angular tests. Backend tests use isolated SQLite databases and the real ASP.NET authentication/authorization middleware through WebApplicationFactory; they never modify the development SQL Server database. The suite covers JWT rejection, refresh cookies and rotation, logout, role updates, ownership, validation, pagination, monthly totals, deletion and the generated OpenAPI contract. SQLite is not a substitute for SQL Server deployment/migration checks. Angular HTTP tests verify token scoping, shared refresh, bounded retries, 403 handling and logout. They are not a complete end-to-end browser test of the application.
+
+Swagger is at `https://localhost:7089/swagger` in Development. The raw OpenAPI document is `/swagger/v1/swagger.json`. It includes endpoint summaries, request examples, response schemas, validation errors and role requirements. Public authentication endpoints have no JWT security requirement; refresh/logout use the login cookie. Secured workout/Admin endpoints show the Bearer security requirement.
+
+To try the API:
+
+1. Register your own account using `POST /api/auth/register`. The example credentials are sample inputs, not a seeded account.
+2. Execute `POST /api/auth/login` with those credentials.
+3. Copy `token` and paste it into Swagger **Authorize**, without adding `Bearer`.
+4. Try `GET /api/trainings` and create a workout. User accounts receive 403 on Admin statistics.
+5. Execute refresh to rotate the browser cookie and get a new JWT. Swagger does not automatically replace the token in Authorize; paste the new token there when needed.
+6. Logout revokes the refresh cookie; access JWTs already issued remain valid until expiry.
+
+`BE/BE.http` contains matching request examples and an access-token placeholder for HTTP clients.
