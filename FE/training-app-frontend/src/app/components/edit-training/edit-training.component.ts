@@ -1,7 +1,9 @@
+import { apiErrorMessage } from '../../services/api-error';
+import { finalize } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { TrainingService } from '../../services/training.service';
 import { ExerciseType, Training } from '../../models/training.model';
 
@@ -16,6 +18,8 @@ export class EditTrainingComponent implements OnInit {
 
   exerciseTypes = ExerciseType;
   trainingId!: number;
+  errorMessage = '';
+  submitting = false;
 
   formModel: any = null;
 
@@ -28,7 +32,7 @@ export class EditTrainingComponent implements OnInit {
   ngOnInit() {
     this.trainingId = Number(this.route.snapshot.paramMap.get('id'));
 
-    this.trainingService.getById(this.trainingId).subscribe(data => {
+    this.trainingService.getById(this.trainingId).subscribe({ next: data => {
       const convertedExerciseType =
         typeof data.exerciseType === 'string'
           ? ExerciseType[data.exerciseType as keyof typeof ExerciseType]
@@ -39,17 +43,24 @@ export class EditTrainingComponent implements OnInit {
         exerciseType: convertedExerciseType,
         trainingDate: this.formatDate(data.trainingDate)
       };
-    });
+    }, error: error => this.errorMessage = apiErrorMessage(error) });
   }
 
-  submit() {
+  submit(form: NgForm) {
+    if (form.invalid || this.submitting) { form.control.markAllAsTouched(); return; }
+    this.errorMessage = '';
+    this.submitting = true;
     const trainingToSend: Training = {
       ...this.formModel,
       trainingDate: new Date(this.formModel.trainingDate)
     };
 
     this.trainingService.update(this.trainingId, trainingToSend)
-      .subscribe(() => this.router.navigate(['/dashboard']));
+      .pipe(finalize(() => this.submitting = false))
+      .subscribe({
+        next: () => this.router.navigate(['/dashboard']),
+        error: error => this.errorMessage = apiErrorMessage(error)
+      });
   }
 
   cancel() {

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using BE.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
@@ -58,7 +58,7 @@ namespace BE.Controllers
             var training = _trainingService.GetById(id, userId);
 
             if (training == null)
-                return NotFound("Training not found");
+                return Problem(statusCode: 404, title: "Training not found");
 
             return Ok(training);
         }
@@ -74,7 +74,7 @@ namespace BE.Controllers
             var updated = _trainingService.Update(id, userId, dto);
 
             if (updated == null)
-                return NotFound("Training not found");
+                return Problem(statusCode: 404, title: "Training not found");
 
             return Ok(updated);
         }
@@ -87,13 +87,13 @@ namespace BE.Controllers
             var deleted = _trainingService.Delete(id, userId);
 
             if (!deleted)
-                return NotFound("Training not found");
+                return Problem(statusCode: 404, title: "Training not found");
 
             return NoContent();
         }
 
         [HttpGet("month")]
-        public IActionResult GetMonthlyStats(int year, int month)
+        public IActionResult GetMonthlyStats([System.ComponentModel.DataAnnotations.Range(1, 9999)] int year, [System.ComponentModel.DataAnnotations.Range(1, 12)] int month)
         {
             var userId = GetUserId();
 

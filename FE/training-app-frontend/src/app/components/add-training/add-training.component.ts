@@ -1,7 +1,9 @@
+import { apiErrorMessage } from '../../services/api-error';
+import { finalize } from 'rxjs';
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { TrainingService } from '../../services/training.service';
 import { ExerciseType, Training } from '../../models/training.model';
 
@@ -15,7 +17,8 @@ import { ExerciseType, Training } from '../../models/training.model';
 export class AddTrainingComponent {
 
   exerciseTypes = ExerciseType;
-  serverErrors: any = {};
+  errorMessage = '';
+  submitting = false;
 
   formModel = {
     exerciseType: ExerciseType.Cardio,
@@ -32,23 +35,19 @@ export class AddTrainingComponent {
     private router: Router
   ) {}
 
-  submit() {
-    this.serverErrors = {};
+  submit(form: NgForm) {
+    if (form.invalid || this.submitting) { form.control.markAllAsTouched(); return; }
+    this.errorMessage = '';
+    this.submitting = true;
 
     const trainingToSend: Training = {
       ...this.formModel,
       trainingDate: new Date(this.formModel.trainingDate)
     };
 
-    this.trainingService.add(trainingToSend).subscribe({
+    this.trainingService.add(trainingToSend).pipe(finalize(() => this.submitting = false)).subscribe({
       next: () => this.router.navigate(['/dashboard']),
-      error: err => {
-        if (err.status === 400 && err.error?.errors) {
-          this.serverErrors = err.error.errors;
-        } else {
-          alert('Something went wrong.');
-        }
-      }
+      error: error => this.errorMessage = apiErrorMessage(error)
     });
   }
 

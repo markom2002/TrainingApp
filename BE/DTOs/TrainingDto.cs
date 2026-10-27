@@ -1,10 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using BE.Models;
 
 public class TrainingDto
 {
-    [Required]
-    public ExerciseType ExerciseType { get; set; }
+    [Required, EnumDataType(typeof(ExerciseType))]
+    public ExerciseType? ExerciseType { get; set; }
 
     [Range(1, 1440)]
     public int DurationMinutes { get; set; }
@@ -18,9 +18,9 @@ public class TrainingDto
     [Range(1, 10)]
     public int Fatigue { get; set; }
 
+    [StringLength(2000)]
     public string? Notes { get; set; }
 
     [Required]
-    public DateTime TrainingDate { get; set; }
+    public DateTime? TrainingDate { get; set; }
 }
-

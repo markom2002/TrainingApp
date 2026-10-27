@@ -6,7 +6,7 @@
       <div class="header-line"></div>
     </div>
 
-    <form (ngSubmit)="submit()" #trainingForm="ngForm">
+    <form (ngSubmit)="submit(trainingForm)" #trainingForm="ngForm">
 
       <div class="form-group">
         <label>Exercise Type</label>
@@ -19,22 +19,22 @@
 
       <div class="form-group">
         <label>Duration (minutes)</label>
-        <input type="number" [(ngModel)]="formModel.durationMinutes" name="durationMinutes" required>
+        <input type="number" [(ngModel)]="formModel.durationMinutes" name="durationMinutes" min="1" max="1440" required>
       </div>
 
       <div class="form-group">
         <label>Calories Burned 🔥</label>
-        <input type="number" [(ngModel)]="formModel.calories" name="calories" required>
+        <input type="number" [(ngModel)]="formModel.calories" name="calories" min="0" max="10000" required>
       </div>
 
       <div class="form-group">
         <label>Intensity (1-10)</label>
-        <input type="number" [(ngModel)]="formModel.intensity" name="intensity" required>
+        <input type="number" [(ngModel)]="formModel.intensity" name="intensity" min="1" max="10" required>
       </div>
 
       <div class="form-group">
         <label>Fatigue Level (1-10)</label>
-        <input type="number" [(ngModel)]="formModel.fatigue" name="fatigue" required>
+        <input type="number" [(ngModel)]="formModel.fatigue" name="fatigue" min="1" max="10" required>
       </div>
 
       <div class="form-group">
@@ -44,11 +44,15 @@
 
       <div class="form-group">
         <label>Notes</label>
-        <textarea [(ngModel)]="formModel.notes" name="notes" rows="3"></textarea>
+        <textarea [(ngModel)]="formModel.notes" name="notes" maxlength="2000" rows="3"></textarea>
       </div>
 
+      @if (trainingForm.invalid && trainingForm.touched) {
+        <p role="alert">Check the fields: duration 1–1440 minutes, calories 0–10000, intensity and fatigue 1–10. Exercise and date are required.</p>
+      }
+      @if (errorMessage) { <p role="alert">{{ errorMessage }}</p> }
       <div class="button-group">
-        <button type="submit" class="submit-btn" [disabled]="trainingForm.invalid">
+        <button type="submit" class="submit-btn" [disabled]="trainingForm.invalid || submitting">
           Add Workout
         </button>
         <button type="button" class="cancel-btn" (click)="cancel()">

@@ -7,13 +7,14 @@
       <p class="subtitle">Track. Improve. Dominate.</p>
     </div>
 
-    <form (ngSubmit)="onLogin()">
+    @if (registered) { <p role="status">Account created. Sign in to continue.</p> }
+    <form (ngSubmit)="onLogin(loginForm)" #loginForm="ngForm">
       <div class="input-group">
         <input 
           type="text" 
           [(ngModel)]="username" 
           name="username" 
-          placeholder="Email" 
+          maxlength="254" placeholder="Email" 
           required />
       </div>
 
@@ -26,7 +27,8 @@
           required />
       </div>
 
-      <button type="submit" class="login-btn">
+      @if (errorMessage) { <p role="alert">{{ errorMessage }}</p> }
+      <button type="submit" class="login-btn" [disabled]="loginForm.invalid || submitting">
         Login
       </button>
     </form>

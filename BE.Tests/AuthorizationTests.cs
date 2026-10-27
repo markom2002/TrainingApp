@@ -14,21 +14,22 @@ using Xunit;
 
 namespace BE.Tests;
 
-public class AuthorizationTests : IDisposable
+public partial class ApiIntegrationTests : IDisposable
 {
     private readonly SqliteConnection connection = new("Data Source=:memory:");
     private readonly WebApplicationFactory<Program> factory;
     private readonly HttpClient client;
     private int trainingId;
 
-    public AuthorizationTests()
+    public ApiIntegrationTests()
     {
         connection.Open();
         factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
         {
             builder.ConfigureAppConfiguration((_, config) => config.AddInMemoryCollection(new Dictionary<string, string?>
             {
-                ["Jwt:Key"] = "integration-test-key-at-least-32-bytes-long"
+                ["Jwt:Key"] = "integration-test-key-at-least-32-bytes-long",
+                ["Logging:LogLevel:Default"] = "Warning"
             }));
             builder.ConfigureServices(services =>
             {

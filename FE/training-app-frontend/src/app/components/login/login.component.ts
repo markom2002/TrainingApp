@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { RouterModule, Router } from '@angular/router';
+import { FormsModule, NgForm } from '@angular/forms';
+import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { apiErrorMessage } from '../../services/api-error';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -11,25 +13,26 @@ import { AuthService } from '../../services/auth.service';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-
   username = '';
   password = '';
+  errorMessage = '';
+  submitting = false;
+  registered: boolean;
 
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) {}
+  constructor(private authService: AuthService, private router: Router, route: ActivatedRoute) {
+    this.registered = route.snapshot.queryParamMap.get('registered') === 'true';
+  }
 
-  onLogin() {
-    this.authService.login(this.username, this.password).subscribe({
-      next: res => {
-        this.authService.saveToken(res.token);
-        localStorage.setItem('userEmail', this.username); 
+  onLogin(form: NgForm) {
+    this.errorMessage = '';
+    if (form.invalid || this.submitting) { form.control.markAllAsTouched(); return; }
+    this.submitting = true;
+    this.authService.login(this.username.trim(), this.password).pipe(finalize(() => this.submitting = false)).subscribe({
+      next: () => {
+        localStorage.setItem('userEmail', this.username.trim());
         this.router.navigate(['/dashboard']);
       },
-      error: err => {
-        alert('Login failed: ' + (err.error?.message || err.message));
-      }
+      error: error => this.errorMessage = apiErrorMessage(error)
     });
   }
 }

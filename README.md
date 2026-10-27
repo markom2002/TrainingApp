@@ -53,3 +53,21 @@ Every existing account and new registration receives the `User` role. Registrati
 Admin provisioning is an operator action, not a registration field. To promote a specific development account, execute a parameterized update to `Users.Role = 'Admin'` for that account in your SQL administration tool, then log in again. No account is promoted automatically. Existing access tokens keep their claims until expiry (up to 15 minutes); refreshing or signing in reads the latest database role.
 
 The HTTP integration tests cover anonymous/User/Admin access, ownership enforcement for User and Admin, and attempted role escalation through registration.
+
+## Validation and error responses (upgrade 3)
+
+- New registrations require a valid email (up to 254 characters), a password of at least eight characters and at most 72 UTF-8 bytes, and gender `Male`, `Female` or `Other`. BCrypt's byte limit is validated before hashing. Login retains compatibility with existing shorter passwords and legacy account names.
+- Workouts require a supported exercise and date; duration is 1�1440 minutes, calories 0�10000, intensity/fatigue 1�10 and notes at most 2000 characters. Missing dates and exercise values are rejected rather than silently defaulted.
+- API validation returns `400 application/problem+json` with an `errors` dictionary keyed by field. Duplicate registrations return 409; invalid credentials return 401; inaccessible training IDs return 404. Unhandled errors use the global exception handler without exposing exception details.
+- Angular registration, login, add and edit forms show API error messages and prevent repeated submission while a request is pending. Registration redirects to login with a success notice.
+- No database migration is needed for this phase.
+
+Example validation response (additional fields may be present):
+
+```json
+{
+  "title": "One or more validation errors occurred.",
+  "status": 400,
+  "errors": { "DurationMinutes": ["The field DurationMinutes must be between 1 and 1440."] }
+}
+```

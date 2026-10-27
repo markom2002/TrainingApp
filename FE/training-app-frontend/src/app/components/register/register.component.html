@@ -8,7 +8,7 @@
       <p class="subtitle">Start your fitness journey today</p>
     </div>
 
-    <form (ngSubmit)="onRegister()" #registerForm="ngForm">
+    <form (ngSubmit)="onRegister(registerForm)" #registerForm="ngForm">
 
       <div class="input-group">
         <input 
@@ -17,7 +17,7 @@
           [(ngModel)]="email"
           required
           email
-          placeholder="Enter your email"
+          maxlength="254" placeholder="Enter your email"
         />
       </div>
 
@@ -27,7 +27,7 @@
           name="password"
           [(ngModel)]="password"
           required
-          minlength="6"
+          minlength="8" maxlength="72"
           placeholder="Enter password"
         />
       </div>
@@ -46,14 +46,19 @@
         <select name="gender" [(ngModel)]="gender" required>
           <option value="">Select gender</option>
           <option value="Male">Male 💪</option>
-          <option value="Female">Female 🏃‍♀️</option>
+          <option value="Other">Other</option><option value="Female">Female 🏃‍♀️</option>
         </select>
       </div>
 
+      <p>Password: at least 8 characters, at most 72 UTF-8 bytes.</p>
+      @if (registerForm.invalid && (registerForm.touched || registerForm.submitted)) {
+        <p role="alert">Enter a valid email, a password of at least 8 characters and select a gender.</p>
+      }
+      @if (errorMessage) { <p role="alert">{{ errorMessage }}</p> }
       <button 
         type="submit" 
         class="register-btn"
-        [disabled]="!registerForm.valid">
+        [disabled]="!registerForm.valid || submitting">
         Create Account
       </button>
 

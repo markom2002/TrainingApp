@@ -30,8 +30,9 @@ namespace BE.Controllers
         [HttpPost("register")]
         public IActionResult Register(RegisterDto dto)
         {
+            dto.Email = dto.Email.Trim();
             if (_context.Users.Any(u => u.Email == dto.Email))
-                return BadRequest(new { message = "User already exists" });
+                return Problem(statusCode: 409, title: "Account already exists", detail: "An account with this email already exists.");
 
             var user = new User
             {
@@ -50,13 +51,14 @@ namespace BE.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto dto)
         {
+            dto.Email = dto.Email.Trim();
             var user = _context.Users.FirstOrDefault(u => u.Email == dto.Email);
 
             if (user == null)
-                return Unauthorized("Invalid credentials");
+                return Unauthorized(new ProblemDetails { Status = 401, Title = "Invalid credentials", Detail = "Email or password is incorrect." });
 
             if (!BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
-                return Unauthorized("Invalid credentials");
+                return Unauthorized(new ProblemDetails { Status = 401, Title = "Invalid credentials", Detail = "Email or password is incorrect." });
 
             return await IssueTokens(user);
         }
@@ -76,13 +78,13 @@ namespace BE.Controllers
         public async Task<IActionResult> Refresh()
         {
             if (!Request.Cookies.TryGetValue(CookieName, out var rawToken))
-                return Unauthorized(new { message = "Session expired. Please log in again." });
+                return Unauthorized(new ProblemDetails { Status = 401, Title = "Session expired", Detail = "Please log in again." });
 
             var hash = RefreshTokenSecurity.Hash(rawToken);
             var stored = await _context.RefreshTokens.Include(t => t.User)
                 .SingleOrDefaultAsync(t => t.TokenHash == hash);
             if (stored == null || stored.RevokedAtUtc != null || stored.ExpiresAtUtc <= DateTime.UtcNow)
-                return Unauthorized(new { message = "Session expired. Please log in again." });
+                return Unauthorized(new ProblemDetails { Status = 401, Title = "Session expired", Detail = "Please log in again." });
 
             stored.RevokedAtUtc = DateTime.UtcNow;
             try
@@ -91,7 +93,7 @@ namespace BE.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                return Unauthorized(new { message = "Session has already been refreshed." });
+                return Unauthorized(new ProblemDetails { Status = 401, Title = "Session already refreshed", Detail = "Please log in again." });
             }
         }
 

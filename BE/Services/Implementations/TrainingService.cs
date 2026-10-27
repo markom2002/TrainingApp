@@ -1,4 +1,4 @@
-﻿using BE.Data;
+using BE.Data;
 using BE.DTOs;
 using BE.Models;
 using BE.Services.Interfaces;
@@ -34,13 +34,13 @@ namespace BE.Services.Implementations
             var training = new Training
             {
                 UserId = userId,
-                ExerciseType = dto.ExerciseType,
+                ExerciseType = dto.ExerciseType!.Value,
                 DurationMinutes = dto.DurationMinutes,
                 Calories = dto.Calories,
                 Intensity = dto.Intensity,
                 Fatigue = dto.Fatigue,
                 Notes = dto.Notes ?? "",
-                TrainingDate = dto.TrainingDate
+                TrainingDate = dto.TrainingDate!.Value
             };
 
             _context.Trainings.Add(training);
@@ -54,13 +54,13 @@ namespace BE.Services.Implementations
             var training = GetById(id, userId);
             if (training == null) return null;
 
-            training.ExerciseType = dto.ExerciseType;
+            training.ExerciseType = dto.ExerciseType!.Value;
             training.DurationMinutes = dto.DurationMinutes;
             training.Calories = dto.Calories;
             training.Intensity = dto.Intensity;
             training.Fatigue = dto.Fatigue;
             training.Notes = dto.Notes ?? "";
-            training.TrainingDate = dto.TrainingDate;
+            training.TrainingDate = dto.TrainingDate!.Value;
 
             _context.SaveChanges();
 
