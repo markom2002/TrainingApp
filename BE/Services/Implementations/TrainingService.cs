@@ -45,6 +45,32 @@ namespace BE.Services.Implementations
                 .Skip((query.Page - 1) * query.PageSize).Take(query.PageSize).ToListAsync(cancellationToken);
             return new PagedResult<Training>(items, query.Page, query.PageSize, total);
         }
+        public async Task<DashboardOverview> GetOverview(int userId, int year, int month, CancellationToken cancellationToken = default)
+        {
+            var start = new DateTime(year, month, 1);
+            var end = start.AddMonths(1);
+            var previous = start.AddMonths(-1);
+            var own = _context.Trainings.AsNoTracking().Where(t => t.UserId == userId);
+            var current = own.Where(t => t.TrainingDate >= start && t.TrainingDate < end);
+            var totals = await current.GroupBy(t => 1).Select(g => new
+            {
+                Workouts = g.Count(), Minutes = g.Sum(t => t.DurationMinutes), Calories = g.Sum(t => t.Calories),
+                Intensity = g.Average(t => t.Intensity), Fatigue = g.Average(t => t.Fatigue)
+            }).SingleOrDefaultAsync(cancellationToken);
+            var previousCount = await own.CountAsync(t => t.TrainingDate >= previous && t.TrainingDate < start, cancellationToken);
+            var weekly = await current.GroupBy(t => (t.TrainingDate.Day - 1) / 7 + 1)
+                .Select(g => new WeeklyActivity(g.Key, g.Count(), g.Sum(t => t.DurationMinutes)))
+                .ToListAsync(cancellationToken);
+            var breakdown = await current.GroupBy(t => t.ExerciseType)
+                .Select(g => new ExerciseBreakdown(g.Key, g.Count(), g.Sum(t => t.DurationMinutes)))
+                .ToListAsync(cancellationToken);
+            var count = totals?.Workouts ?? 0;
+            return new DashboardOverview(year, month, count, totals?.Minutes ?? 0, totals?.Calories ?? 0,
+                Math.Round(totals?.Intensity ?? 0, 1), Math.Round(totals?.Fatigue ?? 0, 1), previousCount,
+                previousCount == 0 ? null : Math.Round((count - previousCount) * 100.0 / previousCount, 1),
+                weekly.OrderBy(w => w.Week).ToList(), breakdown.OrderBy(e => e.ExerciseType).ToList());
+        }
+
         public Training? GetById(int id, int userId)
         {
             return _context.Trainings

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -15,6 +15,7 @@ import { apiErrorMessage } from '../../services/api-error';
   styleUrls: ['./training-list.component.css']
 })
 export class TrainingListComponent implements OnInit, OnDestroy {
+  @Output() trainingDeleted = new EventEmitter<void>();
   trainings: Training[] = [];
   page = 1;
   totalPages = 0;
@@ -76,7 +77,7 @@ export class TrainingListComponent implements OnInit, OnDestroy {
     if (this.deleting || !confirm('Are you sure you want to delete this training?')) return;
     this.deleting = true;
     this.deletion = this.trainingService.delete(id).pipe(finalize(() => this.deleting = false)).subscribe({
-      next: () => this.loadTrainings(),
+      next: () => { this.loadTrainings(); this.trainingDeleted.emit(); },
       error: error => this.errorMessage = apiErrorMessage(error)
     });
   }

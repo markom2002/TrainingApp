@@ -33,3 +33,25 @@ export interface TrainingQuery {
   sortBy: string;
   sortDirection: string;
 }
+
+export interface DashboardOverview {
+  year: number;
+  month: number;
+  workouts: number;
+  minutes: number;
+  calories: number;
+  averageIntensity: number;
+  averageFatigue: number;
+  previousWorkouts: number;
+  workoutChangePercent: number | null;
+  weeklyActivity: { week: number; workouts: number; minutes: number }[];
+  exerciseBreakdown: { exerciseType: string; workouts: number; minutes: number }[];
+}
+
+export interface MonthlyTrainingStats {
+  week: number;
+  totalDuration: number;
+  count: number;
+  avgIntensity: number;
+  avgFatigue: number;
+}

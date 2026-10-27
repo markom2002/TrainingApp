@@ -1,47 +1,47 @@
-<div class="dashboard-container">
+<div class="app-shell">
+  <aside class="sidebar" aria-label="Main navigation">
+    <a class="brand" href="/dashboard" aria-label="Form training dashboard"><span class="brand-icon">f<span>.</span></span><span>FORM<span class="brand-caption">TRAINING JOURNAL</span></span></a>
+    <span class="nav-caption">YOUR SPACE</span>
+    <nav>
+      <button class="nav-item active" (click)="scrollTo('overview')" aria-current="page"><span aria-hidden="true">&#9638;</span> Overview</button>
+      <button class="nav-item" (click)="scrollTo('history')"><span aria-hidden="true">&#9776;</span> Workout history</button>
+      <button class="nav-item" (click)="goToProgress()"><span aria-hidden="true">&#8599;</span> Monthly progress</button>
+    </nav>
+    <div class="sidebar-note"><span class="note-dot"></span><p>Small steps.<br><strong>Stronger every day.</strong></p><span>Your next session starts with showing up.</span></div>
+    <button class="nav-item sign-out" (click)="logout()"><span aria-hidden="true">&#8618;</span> Sign out</button>
+  </aside>
 
-  <div class="top-bar">
-
-    <div class="greeting">
-      <h1 class="welcome-title">
-        Welcome back, {{username}}
-      </h1>
-    </div>
-
-    <div class="actions">
-      <button class="add-btn" (click)="goToAddTraining()">+ Add Training</button>
-      <button class="logout" (click)="logout()">Logout</button>
-    </div>
-
-  </div>
-
-  <p>Account role: {{ authService.role }}</p>
-  <div class="card" *ngIf="authService.role === 'Admin'">
-    <h3>Administration</h3>
-    <button class="add-btn" (click)="loadAdminSummary()">Load application statistics</button>
-    <p *ngIf="adminSummary">Users: {{ adminSummary.userCount }} · Trainings: {{ adminSummary.trainingCount }}</p>
-    <p role="alert" *ngIf="adminError">{{ adminError }}</p>
-  </div>
-  <div class="stats-banner">
-    <div class="stat-box">
-      ðŸ’ª Stay Strong
-    </div>
-    <div class="stat-box">
-      ðŸ”¥ Burn Calories
-    </div>
-    <div class="stat-box">
-      ðŸ“ˆ Track Progress
-    </div>
-  </div>
-
-  <div class="card">
-    <h3>My Trainings</h3>
-    <app-training-list></app-training-list>
-  </div>
-
-  <div class="card">
-    <h3>Monthly Progress</h3>
-    <app-progress></app-progress>
-  </div>
-
+  <main id="overview">
+    <header class="topline"><span>Workspace <span class="slash">/</span> <strong>Overview</strong></span><div class="account"><span class="role">{{ authService.role || 'User' }}</span><span class="avatar" aria-hidden="true">{{ username.charAt(0) }}</span></div></header>
+    <section class="welcome">
+      <div><p class="eyebrow">MAKE EVERY SESSION COUNT</p><h1>Welcome back, {{ username }}<span class="lime-dot">.</span></h1><p class="muted">A little consistency. A stronger you. Here is your training at a glance.</p></div>
+      <button class="primary" (click)="goToAddTraining()"><span aria-hidden="true">+</span> Log a workout</button>
+    </section>
+    <section class="section-heading"><div><h2>Your monthly overview</h2><span class="muted">The work you put in, in numbers.</span></div><label class="month-picker"><span>Month</span><input type="month" min="0002-01" max="9998-12" [(ngModel)]="period" (change)="loadOverview()" aria-label="Overview month"></label></section>
+    @if (loading) { <p class="state" role="status">Loading your training insights...</p> }
+    @if (errorMessage) { <div class="state error" role="alert">{{ errorMessage }} <button class="secondary" (click)="loadOverview()">Try again</button></div> }
+    @if (overview; as data) {
+      <section class="metrics" aria-label="Monthly training totals">
+        <article class="metric featured"><span class="metric-top">Workouts <span aria-hidden="true">&#8599;</span></span><strong>{{ data.workouts | number }}</strong><span class="metric-bottom">@if (data.workoutChangePercent !== null) { <b>{{ data.workoutChangePercent > 0 ? '+' : '' }}{{ data.workoutChangePercent }}%</b> vs previous month } @else { No workouts in the previous month }</span></article>
+        <article class="metric"><span class="metric-top">Time in motion <span aria-hidden="true">&#9719;</span></span><strong>{{ data.minutes | number }}<small>min</small></strong><span class="metric-bottom">Every minute adds up</span></article>
+        <article class="metric"><span class="metric-top">Calories logged <span aria-hidden="true">&#9832;</span></span><strong>{{ data.calories | number }}<small>kcal</small></strong><span class="metric-bottom">From your workout entries</span></article>
+        <article class="metric"><span class="metric-top">Average intensity <span aria-hidden="true">&#9889;</span></span><strong>{{ data.workouts ? data.averageIntensity : '-' }}<small>/10</small></strong><span class="metric-bottom">@if (data.workouts) { Average fatigue {{ data.averageFatigue }}/10 } @else { Log a session to see your averages }</span></article>
+      </section>
+      <section class="insights">
+        <article class="panel activity"><div class="panel-heading"><div><p class="eyebrow">BUILD YOUR MOMENTUM</p><h2>Training activity</h2></div><span class="legend"><i></i> Minutes per week</span></div>
+          <div class="bar-chart" role="group" [attr.aria-label]="'Weekly training minutes. ' + data.minutes + ' total minutes this month.'">
+            @for (week of weeks; track week.week) { <div class="chart-column"><span class="bar-value">{{ week.minutes }}</span><div class="bar-track"><div class="bar" [style.height.%]="week.height"></div></div><span class="bar-label">Week {{ week.week }}</span><span class="bar-count">{{ week.workouts }} sessions</span></div> }
+          </div><p class="chart-footnote">Weeks group days 1-7, 8-14 and so on.</p>
+        </article>
+        <article class="panel mix"><div class="panel-heading"><div><p class="eyebrow">FIND YOUR BALANCE</p><h2>Your workout mix</h2></div><span class="mini-tag">{{ data.workouts }} total</span></div>
+          @if (data.workouts === 0) { <div class="empty-mix"><span aria-hidden="true">&#9678;</span><h3>A fresh start.</h3><p>No workouts this month yet. Log your first session to start building your picture.</p><button class="secondary" (click)="goToAddTraining()">Add your first workout</button></div> }
+          @for (type of data.exerciseBreakdown; track type.exerciseType; let index = $index) { <div class="mix-row"><div class="mix-title"><span><i [class.dark]="index === 1" [class.gray]="index === 2"></i>{{ type.exerciseType }}</span><strong>{{ type.workouts }} <small>sessions</small></strong></div><div class="mix-track"><span [class.dark]="index === 1" [class.gray]="index === 2" [style.width.%]="type.workouts * 100 / data.workouts"></span></div><p>{{ type.minutes }} minutes <span>{{ type.workouts * 100 / data.workouts | number:'1.0-0' }}%</span></p></div> }
+        </article>
+      </section>
+      @if (data.workouts > 0) { <div class="encouragement"><span class="spark" aria-hidden="true">&#10035;</span><p><strong>You showed up {{ data.workouts }} {{ data.workouts === 1 ? 'time' : 'times' }} this month.</strong> Keep making time for yourself.</p><button (click)="goToAddTraining()">Make the next one count <span aria-hidden="true">&#8594;</span></button></div> }
+    }
+    @if (authService.role === 'Admin') { <section class="panel admin-panel"><div><p class="eyebrow">ADMINISTRATION</p><h2>Application statistics</h2></div><button class="secondary" (click)="loadAdminSummary()">Load statistics</button>@if (adminSummary) { <p>{{ adminSummary.userCount }} users &middot; {{ adminSummary.trainingCount }} workouts</p> }@if (adminError) { <p role="alert">{{ adminError }}</p> }</section> }
+    <section class="panel history" id="history"><app-training-list (trainingDeleted)="loadOverview()"></app-training-list></section>
+    <footer><strong>FORM<span class="lime-dot">.</span></strong><span>Built around your progress. One workout at a time.</span></footer>
+  </main>
 </div>

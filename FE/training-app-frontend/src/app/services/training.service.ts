@@ -2,7 +2,7 @@ import { API_BASE_URL } from '../api.config';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Training, PagedResult, TrainingQuery } from '../models/training.model';
+import { Training, PagedResult, TrainingQuery, DashboardOverview, MonthlyTrainingStats } from '../models/training.model';
 import { AuthService } from './auth.service';
 
 @Injectable({
@@ -42,8 +42,12 @@ export class TrainingService {
     return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers: this.getAuthHeaders() });
   }
 
-  getMonthlyStats(year: number, month: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/month?year=${year}&month=${month}`, { headers: this.getAuthHeaders() });
+  getMonthlyStats(year: number, month: number): Observable<MonthlyTrainingStats[]> {
+    return this.http.get<MonthlyTrainingStats[]>(`${this.apiUrl}/month?year=${year}&month=${month}`, { headers: this.getAuthHeaders() });
+  }
+
+  getOverview(year: number, month: number): Observable<DashboardOverview> {
+    return this.http.get<DashboardOverview>(`${this.apiUrl}/overview`, { params: { year, month } });
   }
 
   getById(id: number) {

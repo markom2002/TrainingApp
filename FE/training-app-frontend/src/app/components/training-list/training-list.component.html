@@ -66,7 +66,7 @@
           </td>
 
           <td>{{ t.durationMinutes }} min</td>
-          <td class="calories">🔥 {{ t.calories }}</td>
+          <td class="calories">{{ t.calories }}</td>
 
           <td>
             <span class="badge intensity">
@@ -83,12 +83,8 @@
           <td class="notes">{{ t.notes || '-' }}</td>
 
           <td class="actions">
-            <button class="edit-btn" (click)="editTraining(t.id!)" [disabled]="loading || deleting">
-              ✏ Edit
-            </button>
-            <button class="delete-btn" (click)="deleteTraining(t.id!)" [disabled]="loading || deleting">
-              🗑 Delete
-            </button>
+            <button class="edit-btn" (click)="editTraining(t.id!)" [disabled]="loading || deleting">Edit</button>
+            <button class="delete-btn" (click)="deleteTraining(t.id!)" [disabled]="loading || deleting">Delete</button>
           </td>
         </tr>
 

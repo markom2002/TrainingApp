@@ -126,5 +126,14 @@ namespace BE.Controllers
 
             return Ok(stats);
         }
+        /// <summary>Get your monthly dashboard totals, weekly activity and exercise mix.</summary>
+        /// <remarks>Compares workout count with the previous calendar month. Change is null when the previous month has no workouts.</remarks>
+        [HttpGet("overview")]
+        [ProducesResponseType(typeof(DashboardOverview), 200)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
+        public async Task<IActionResult> GetOverview(
+            [System.ComponentModel.DataAnnotations.Range(2, 9998)] int year,
+            [System.ComponentModel.DataAnnotations.Range(1, 12)] int month, CancellationToken cancellationToken)
+            => Ok(await _trainingService.GetOverview(GetUserId(), year, month, cancellationToken));
     }
 }

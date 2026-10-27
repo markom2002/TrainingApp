@@ -120,7 +120,7 @@ npm run build
 
 The frontend test command requires Chrome/Chromium installed (`CHROME_BIN` can point to a custom installation). It runs once in Chrome Headless. `npm test` runs in watch mode.
 
-The suite contains 45 backend tests and 8 Angular tests. Backend tests use isolated SQLite databases and the real ASP.NET authentication/authorization middleware through WebApplicationFactory; they never modify the development SQL Server database. The suite covers JWT rejection, refresh cookies and rotation, logout, role updates, ownership, validation, pagination, monthly totals, deletion and the generated OpenAPI contract. SQLite is not a substitute for SQL Server deployment/migration checks. Angular HTTP tests verify token scoping, shared refresh, bounded retries, 403 handling and logout. They are not a complete end-to-end browser test of the application.
+The suite contains 51 backend tests and 13 Angular tests. Backend tests use isolated SQLite databases and the real ASP.NET authentication/authorization middleware through WebApplicationFactory; they never modify the development SQL Server database. The suite covers JWT rejection, refresh cookies and rotation, logout, role updates, ownership, validation, pagination, monthly totals, deletion and the generated OpenAPI contract. SQLite is not a substitute for SQL Server deployment/migration checks. Angular HTTP tests verify token scoping, shared refresh, bounded retries, 403 handling and logout. They are not a complete end-to-end browser test of the application.
 
 Swagger is at `https://localhost:7089/swagger` in Development. The raw OpenAPI document is `/swagger/v1/swagger.json`. It includes endpoint summaries, request examples, response schemas, validation errors and role requirements. Public authentication endpoints have no JWT security requirement; refresh/logout use the login cookie. Secured workout/Admin endpoints show the Bearer security requirement.
 
@@ -154,3 +154,23 @@ Machine-specific SQL settings, the example JWT development key and localhost COR
 CV example after a successful GitHub workflow run:
 
 > Configured GitHub Actions CI to run xUnit integration tests, Angular HTTP tests and release builds on pushes and pull requests.
+
+## Dashboard and progress (upgrade 7)
+
+The responsive FORM dashboard uses the signed-in user's real workout entries. Select a month to see:
+
+- workout count, total minutes and logged calories;
+- average intensity and fatigue (a dash instead of an average when there are no workouts);
+- workout count change against the previous calendar month, with no invented percentage when the previous count is zero;
+- weekly training minutes (days 1�7, 8�14, etc.), including empty weeks;
+- exercise mix by session count and training time.
+
+`GET /api/trainings/overview?year=2026&month=10` provides these aggregates. It requires a valid JWT and is always scoped to its owner, including Admin callers. Year is 2�9998 and month is 1�12. Monthly boundaries use the calendar dates recorded in workout entries. No database migration is required.
+
+The dashboard includes filterable/paginated history, Add/Edit/Delete controls, Admin-only application counts and sign-out. Deleting a workout updates the overview. Desktop has sidebar navigation; narrow screens stack the cards and let the history table scroll within its panel. Monthly progress also loads automatically and shows loading, empty and error states separately.
+
+New tests cover monthly aggregates, exercise mix, a year-boundary comparison, empty months and invalid dates, plus Angular rendering of populated/empty/error dashboards and monthly statistics. Visual checks used mock API responses in a separate browser context at desktop and mobile sizes without modifying development SQL data. No sleep, heart-rate or other unsupported metrics are fabricated.
+
+CV example:
+
+> Built a responsive Angular dashboard with EF Core monthly aggregates, workout trends, exercise distribution, and user-scoped REST endpoints backed by automated tests.
