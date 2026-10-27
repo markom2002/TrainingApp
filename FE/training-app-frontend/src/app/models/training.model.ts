@@ -15,3 +15,21 @@ export interface Training {
   notes?: string;
   trainingDate: Date;
 }
+
+export interface PagedResult<T> {
+  items: T[];
+  page: number;
+  pageSize: number;
+  totalCount: number;
+  totalPages: number;
+}
+
+export interface TrainingQuery {
+  page: number;
+  pageSize: number;
+  exerciseType?: string;
+  from?: string;
+  to?: string;
+  sortBy: string;
+  sortDirection: string;
+}

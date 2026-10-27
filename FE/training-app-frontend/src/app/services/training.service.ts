@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Training } from '../models/training.model';
+import { Training, PagedResult, TrainingQuery } from '../models/training.model';
 import { AuthService } from './auth.service';
 
 @Injectable({
@@ -25,8 +25,12 @@ export class TrainingService {
     return this.http.post<Training>(this.apiUrl, training, { headers: this.getAuthHeaders() });
   }
 
-  getAll(): Observable<Training[]> {
-    return this.http.get<Training[]>(this.apiUrl, { headers: this.getAuthHeaders() });
+  getAll(query: TrainingQuery): Observable<PagedResult<Training>> {
+    let params = new HttpParams();
+    for (const [key, value] of Object.entries(query)) {
+      if (value !== undefined && value !== '') params = params.set(key, String(value));
+    }
+    return this.http.get<PagedResult<Training>>(this.apiUrl, { params, headers: this.getAuthHeaders() });
   }
 
   update(id: number, training: Training): Observable<Training> {

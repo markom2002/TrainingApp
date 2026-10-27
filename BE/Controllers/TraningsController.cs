@@ -41,11 +41,11 @@ namespace BE.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] TrainingQuery query, CancellationToken cancellationToken)
         {
             var userId = GetUserId();
 
-            var trainings = _trainingService.GetAll(userId);
+            var trainings = await _trainingService.GetAll(userId, query, cancellationToken);
 
             return Ok(trainings);
         }

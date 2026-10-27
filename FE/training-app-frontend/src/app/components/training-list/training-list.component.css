@@ -144,3 +144,11 @@ button {
 .delete-btn:hover {
   background-color: #d9363e;
 }
+
+.history-filters { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; margin-bottom: 18px; }
+.history-filters label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
+.history-filters input, .history-filters select { padding: 9px; border: 1px solid #ccc; border-radius: 6px; background: white; color: #222; }
+.history-filters button, .history-pagination button { padding: 10px 14px; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; background: #fff; color: #222; }
+.history-filters button[type=submit] { background: #ff7a00; color: #fff; border-color: #ff7a00; }
+.history-pagination { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+button:disabled { opacity: .5; cursor: default; }

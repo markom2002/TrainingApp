@@ -88,7 +88,7 @@ public partial class ApiIntegrationTests : IDisposable
         Assert.Equal(HttpStatusCode.NotFound, (await client.PutAsJsonAsync($"/api/trainings/{trainingId}", payload)).StatusCode);
         Assert.Equal(HttpStatusCode.NotFound, (await client.DeleteAsync($"/api/trainings/{trainingId}")).StatusCode);
         var list = await client.GetFromJsonAsync<System.Text.Json.JsonElement>("/api/trainings");
-        Assert.Equal(0, list.GetArrayLength());
+        Assert.Equal(0, list.GetProperty("items").GetArrayLength());
         await Login("owner@test.com");
         Assert.Equal(HttpStatusCode.OK, (await client.GetAsync($"/api/trainings/{trainingId}")).StatusCode);
     }

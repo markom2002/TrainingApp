@@ -5,7 +5,42 @@
     <div class="line"></div>
   </div>
 
-  <div class="table-wrapper">
+  <form class="history-filters" (ngSubmit)="applyFilters(filterForm)" #filterForm="ngForm">
+    <label>Exercise
+      <select name="exerciseType" [(ngModel)]="filters.exerciseType">
+        <option value="">All types</option>
+        <option value="Cardio">Cardio</option>
+        <option value="Strength">Strength</option>
+        <option value="Flexibility">Flexibility</option>
+      </select>
+    </label>
+    <label>From <input type="date" name="from" [(ngModel)]="filters.from"></label>
+    <label>To <input type="date" name="to" [(ngModel)]="filters.to"></label>
+    <label>Sort by
+      <select name="sortBy" [(ngModel)]="filters.sortBy">
+        <option value="trainingDate">Date</option>
+        <option value="durationMinutes">Duration</option>
+        <option value="calories">Calories</option>
+        <option value="intensity">Intensity</option>
+      </select>
+    </label>
+    <label>Order
+      <select name="sortDirection" [(ngModel)]="filters.sortDirection">
+        <option value="desc">Descending</option><option value="asc">Ascending</option>
+      </select>
+    </label>
+    <label>Per page
+      <select name="pageSize" [(ngModel)]="filters.pageSize">
+        <option [ngValue]="10">10</option><option [ngValue]="25">25</option><option [ngValue]="50">50</option>
+      </select>
+    </label>
+    <button type="submit" [disabled]="loading || deleting || filterForm.invalid || invalidDates">Apply</button>
+    <button type="button" (click)="resetFilters()" [disabled]="loading || deleting">Reset</button>
+  </form>
+  @if (invalidDates) { <p role="alert">From date must be on or before To date.</p> }
+  @if (errorMessage) { <p role="alert">{{ errorMessage }}</p><button type="button" (click)="loadTrainings()" [disabled]="loading">Retry</button> }
+  @if (loading) { <p role="status">Loading workouts…</p> }
+  <div class="table-wrapper" [attr.aria-busy]="loading">
     <table>
       <thead>
         <tr>
@@ -48,22 +83,27 @@
           <td class="notes">{{ t.notes || '-' }}</td>
 
           <td class="actions">
-            <button class="edit-btn" (click)="editTraining(t.id!)">
+            <button class="edit-btn" (click)="editTraining(t.id!)" [disabled]="loading || deleting">
               ✏ Edit
             </button>
-            <button class="delete-btn" (click)="deleteTraining(t.id!)">
+            <button class="delete-btn" (click)="deleteTraining(t.id!)" [disabled]="loading || deleting">
               🗑 Delete
             </button>
           </td>
         </tr>
 
-        <tr *ngIf="trainings.length === 0">
+        <tr *ngIf="trainings.length === 0 && !loading && !errorMessage">
           <td colspan="8" class="empty">
-            🏋️ No workouts logged yet. Start training!
+            No workouts match your filters. Try resetting filters or add a workout.
           </td>
         </tr>
       </tbody>
     </table>
   </div>
 
+  <nav class="history-pagination" aria-label="Workout history pages">
+    <button type="button" (click)="loadTrainings(page - 1)" [disabled]="page <= 1 || loading || deleting || !!errorMessage">Previous</button>
+    <span aria-live="polite">Page {{ page }} of {{ totalPages || 1 }} · {{ totalCount }} workouts</span>
+    <button type="button" (click)="loadTrainings(page + 1)" [disabled]="page >= totalPages || loading || deleting || !!errorMessage">Next</button>
+  </nav>
 </div>

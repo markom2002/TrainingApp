@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using BE.Data;
 using BE.DTOs;
 using BE.Models;
@@ -15,14 +16,35 @@ namespace BE.Services.Implementations
             _context = context;
         }
 
-        public IEnumerable<Training> GetAll(int userId)
+        public async Task<PagedResult<Training>> GetAll(int userId, TrainingQuery query, CancellationToken cancellationToken = default)
         {
-            return _context.Trainings
-                .Where(t => t.UserId == userId)
-                .OrderByDescending(t => t.TrainingDate)
-                .ToList();
+            var trainings = _context.Trainings.AsNoTracking().Where(t => t.UserId == userId);
+            if (query.ExerciseType.HasValue)
+                trainings = trainings.Where(t => t.ExerciseType == query.ExerciseType.Value);
+            if (query.From.HasValue)
+            {
+                var from = query.From.Value.ToDateTime(TimeOnly.MinValue);
+                trainings = trainings.Where(t => t.TrainingDate >= from);
+            }
+            if (query.To.HasValue)
+            {
+                var to = query.To.Value.ToDateTime(TimeOnly.MinValue);
+                trainings = trainings.Where(t => t.TrainingDate.Date <= to);
+            }
+            var total = await trainings.CountAsync(cancellationToken);
+            var ascending = query.SortDirection == "asc";
+            var ordered = query.SortBy switch
+            {
+                "durationMinutes" => ascending ? trainings.OrderBy(t => t.DurationMinutes) : trainings.OrderByDescending(t => t.DurationMinutes),
+                "calories" => ascending ? trainings.OrderBy(t => t.Calories) : trainings.OrderByDescending(t => t.Calories),
+                "intensity" => ascending ? trainings.OrderBy(t => t.Intensity) : trainings.OrderByDescending(t => t.Intensity),
+                _ => ascending ? trainings.OrderBy(t => t.TrainingDate) : trainings.OrderByDescending(t => t.TrainingDate)
+            };
+            // The unique secondary key keeps records with equal sort values in a stable order.
+            var items = await ordered.ThenBy(t => t.Id)
+                .Skip((query.Page - 1) * query.PageSize).Take(query.PageSize).ToListAsync(cancellationToken);
+            return new PagedResult<Training>(items, query.Page, query.PageSize, total);
         }
-
         public Training? GetById(int id, int userId)
         {
             return _context.Trainings

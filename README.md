@@ -71,3 +71,34 @@ Example validation response (additional fields may be present):
   "errors": { "DurationMinutes": ["The field DurationMinutes must be between 1 and 1440."] }
 }
 ```
+
+## Pagination, filtering and sorting (upgrade 4)
+
+`GET /api/trainings` now returns an object instead of an array:
+
+```json
+{
+  "items": [],
+  "page": 1,
+  "pageSize": 10,
+  "totalCount": 0,
+  "totalPages": 0
+}
+```
+
+Query parameters:
+
+| Parameter | Default | Values |
+| --- | --- | --- |
+| `page` | 1 | 1�1000000 |
+| `pageSize` | 10 | 1�100 |
+| `exerciseType` | all | Cardio, Strength, Flexibility |
+| `from`, `to` | no limit | YYYY-MM-DD; both dates are inclusive |
+| `sortBy` | trainingDate | trainingDate, durationMinutes, calories, intensity |
+| `sortDirection` | desc | asc, desc |
+
+Example: `/api/trainings?page=1&pageSize=10&exerciseType=Strength&from=2026-01-01&to=2026-01-31&sortBy=durationMinutes&sortDirection=desc`.
+
+The API scopes the query to the signed-in user, filters and counts matching records, then sorts and applies SQL pagination. A unique ID secondary sort makes equal sort values deterministic. Pages beyond the last page return empty `items` with the actual count; no matches give `totalPages: 0`. Invalid query parameters return 400 ProblemDetails. Angular provides Apply/Reset filters, page-size selection, Previous/Next controls, loading/error states and recovery after deleting the last record on a page. Date filters compare stored training calendar dates without timezone conversion.
+
+The list-response change is intentional; the Angular client and integration tests were updated together. No database migration is required. The test suite now contains 34 tests.

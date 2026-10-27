@@ -1,4 +1,4 @@
-﻿using BE.DTOs;
+using BE.DTOs;
 using BE.Models;
 
 
@@ -6,7 +6,7 @@ namespace BE.Services.Interfaces
 {
     public interface ITrainingService
     {
-        IEnumerable<Training> GetAll(int userId);
+        Task<PagedResult<Training>> GetAll(int userId, TrainingQuery query, CancellationToken cancellationToken = default);
         Training? GetById(int id, int userId);
         Training Add(int userId, TrainingDto dto);
         Training? Update(int id, int userId, TrainingDto dto);
