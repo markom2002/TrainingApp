@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using BE.Models;
 using System.Collections.Generic;
 
@@ -10,7 +10,12 @@ namespace BE.Data
             : base(options)
         {
         }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Training> Trainings { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<RefreshToken>().HasIndex(t => t.TokenHash).IsUnique();
+        }
     }
 }

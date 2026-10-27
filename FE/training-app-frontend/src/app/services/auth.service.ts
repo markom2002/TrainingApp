@@ -1,41 +1,55 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { Observable, finalize, shareReplay, tap } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root'
-})
+interface TokenResponse { token: string; expiresAtUtc: string; }
+
+@Injectable({ providedIn: 'root' })
 export class AuthService {
-
   private apiUrl = 'https://localhost:7089/api/auth';
+  private token: string | null = null;
+  private refreshRequest?: Observable<TokenResponse>;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router) {
+    localStorage.removeItem('token');
+  }
 
- 
   register(email: string, password: string, gender: string) {
     return this.http.post(`${this.apiUrl}/register`, { email, password, gender });
   }
 
- 
   login(email: string, password: string) {
-    return this.http.post<any>(`${this.apiUrl}/login`, { email, password });
+    return this.http.post<TokenResponse>(`${this.apiUrl}/login`, { email, password }, { withCredentials: true })
+      .pipe(tap(result => this.saveToken(result.token)));
   }
 
-  
-  saveToken(token: string) {
-    localStorage.setItem('token', token);
+  refresh(): Observable<TokenResponse> {
+    if (!this.refreshRequest) {
+      this.refreshRequest = this.http.post<TokenResponse>(`${this.apiUrl}/refresh`, {}, { withCredentials: true }).pipe(
+        tap(result => this.saveToken(result.token)),
+        finalize(() => this.refreshRequest = undefined),
+        shareReplay({ bufferSize: 1, refCount: false })
+      );
+    }
+    return this.refreshRequest;
   }
 
-  getToken(): string | null {
-    return localStorage.getItem('token');
-  }
+  saveToken(token: string) { this.token = token; }
+  getToken(): string | null { return this.token; }
 
-  logout() {
-    localStorage.removeItem('token');
+  clearSession() {
+    this.token = null;
+    localStorage.removeItem('userEmail');
     this.router.navigate(['/login']);
   }
 
-  get isLoggedIn(): boolean {
-    return !!this.getToken();
+  logout() {
+    this.http.post(`${this.apiUrl}/logout`, {}, { withCredentials: true }).subscribe({
+      next: () => this.clearSession(),
+      error: () => alert('Logout failed. Please try again.')
+    });
   }
+
+  get isLoggedIn(): boolean { return !!this.token; }
 }

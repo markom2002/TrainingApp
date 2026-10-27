@@ -1,7 +1,8 @@
+import { authInterceptor } from './auth.interceptor';
 import { ApplicationConfig, provideZoneChangeDetection, importProvidersFrom } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { AddTrainingComponent } from './components/add-training/add-training.component';
@@ -17,7 +18,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideHttpClient(),
+    provideHttpClient(withInterceptors([authInterceptor])),
     importProvidersFrom(FormsModule), 
     AuthService,
     AuthGuard,
