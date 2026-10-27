@@ -1,0 +1,125 @@
+@media (max-width: 1100px) {
+  .welcome h1 {
+    font-size: 36px;
+  }
+  .metrics {
+    gap: 16px;
+  }
+  .metric > strong {
+    font-size: 38px;
+  }
+  .daily-row {
+    grid-template-columns: 1fr;
+  }
+  .legend {
+    white-space: normal;
+    text-align: right;
+    max-width: 140px;
+  }
+}
+@media (max-width: 650px) {
+  .welcome {
+    margin: 18px 0 27px;
+    padding: 27px;
+    min-height: 330px;
+    background-position: 62% center;
+    background-image:
+      linear-gradient(90deg, #101e15e8, #1628159c), url("/images/gym.webp");
+  }
+  .welcome h1 {
+    font-size: 33px;
+  }
+  .welcome .muted {
+    font-size: 15px;
+  }
+  .welcome .eyebrow {
+    font-size: 10px;
+    letter-spacing: 1.3px;
+  }
+  .welcome .primary {
+    font-size: 15px;
+  }
+  .section-heading h2 {
+    font-size: 25px;
+  }
+  .section-heading .muted {
+    font-size: 15px;
+  }
+  .metric {
+    padding: 19px;
+    gap: 18px;
+  }
+  .metric-top {
+    font-size: 14px;
+  }
+  .metric > strong {
+    font-size: 34px;
+  }
+  .metric small {
+    font-size: 13px;
+  }
+  .metric-bottom {
+    font-size: 12px;
+    min-height: 48px;
+  }
+  .panel {
+    padding: 22px;
+  }
+  .panel h2 {
+    font-size: 22px;
+  }
+  .panel .eyebrow {
+    font-size: 10px;
+    letter-spacing: 1px;
+  }
+  .legend {
+    font-size: 12px;
+    max-width: 100px;
+  }
+  .bar-chart {
+    gap: 10px;
+  }
+  .bar-count {
+    font-size: 10px;
+  }
+  .bar-label {
+    font-size: 12px;
+  }
+  .bar-value {
+    font-size: 12px;
+  }
+  .bar-track {
+    height: 150px;
+  }
+  .daily-row h3 {
+    font-size: 20px;
+  }
+  .weekly-plan p {
+    font-size: 14px;
+  }
+  .workspace-tabs button {
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+  .topline {
+    height: 73px;
+  }
+  .encouragement {
+    padding: 20px;
+  }
+  .encouragement p {
+    font-size: 14px;
+  }
+  .encouragement button {
+    font-size: 13px;
+    margin-left: 0;
+  }
+  footer {
+    flex-wrap: wrap;
+  }
+  footer span {
+    font-size: 11px;
+    max-width: none;
+    text-align: left;
+  }
+}

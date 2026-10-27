@@ -8,9 +8,11 @@ import { MonthlyTrainingStats } from '../../models/training.model';
 import { apiErrorMessage } from '../../services/api-error';
 
 @Component({
-  selector: 'app-progress', standalone: true,
+  selector: 'app-progress',
+  standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
-  templateUrl: './progress.component.html', styleUrls: ['./progress.component.css']
+  templateUrl: './progress.component.html',
+  styleUrls: ['./progress.component.css', './progress-impact.css'],
 })
 export class ProgressComponent implements OnInit, OnDestroy {
   year = new Date().getFullYear();
@@ -22,18 +24,30 @@ export class ProgressComponent implements OnInit, OnDestroy {
   errorMessage = '';
   private request?: Subscription;
   constructor(private trainingService: TrainingService) {}
-  ngOnInit() { this.loadStats(); }
-  ngOnDestroy() { this.request?.unsubscribe(); }
+  ngOnInit() {
+    this.loadStats();
+  }
+  ngOnDestroy() {
+    this.request?.unsubscribe();
+  }
   loadStats(form?: NgForm) {
     if (form?.invalid) return;
     this.request?.unsubscribe();
     this.loading = true;
     this.errorMessage = '';
     this.stats = [];
-    const year = this.year, month = this.month;
-    this.request = this.trainingService.getMonthlyStats(year, month).pipe(finalize(() => this.loading = false)).subscribe({
-      next: result => { this.stats = result; this.loadedYear = year; this.loadedMonth = month; },
-      error: error => this.errorMessage = apiErrorMessage(error)
-    });
+    const year = this.year,
+      month = this.month;
+    this.request = this.trainingService
+      .getMonthlyStats(year, month)
+      .pipe(finalize(() => (this.loading = false)))
+      .subscribe({
+        next: (result) => {
+          this.stats = result;
+          this.loadedYear = year;
+          this.loadedMonth = month;
+        },
+        error: (error) => (this.errorMessage = apiErrorMessage(error)),
+      });
   }
 }

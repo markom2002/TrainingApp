@@ -41,7 +41,7 @@ namespace BE.Services.Implementations
                 _ => ascending ? trainings.OrderBy(t => t.TrainingDate) : trainings.OrderByDescending(t => t.TrainingDate)
             };
             // The unique secondary key keeps records with equal sort values in a stable order.
-            var items = await ordered.ThenBy(t => t.Id)
+            var items = await ordered.ThenBy(t => t.Id).Include(t => t.Exercises.OrderBy(e => e.Position))
                 .Skip((query.Page - 1) * query.PageSize).Take(query.PageSize).ToListAsync(cancellationToken);
             return new PagedResult<Training>(items, query.Page, query.PageSize, total);
         }
@@ -73,7 +73,7 @@ namespace BE.Services.Implementations
 
         public Training? GetById(int id, int userId)
         {
-            return _context.Trainings
+            return _context.Trainings.Include(t => t.Exercises.OrderBy(e => e.Position))
                 .FirstOrDefault(t => t.Id == id && t.UserId == userId);
         }
 
@@ -88,7 +88,9 @@ namespace BE.Services.Implementations
                 Intensity = dto.Intensity,
                 Fatigue = dto.Fatigue,
                 Notes = dto.Notes ?? "",
-                TrainingDate = dto.TrainingDate!.Value
+                TrainingDate = dto.TrainingDate!.Value,
+                TrainingVariant = dto.TrainingVariant,
+                Exercises = MapExercises(dto.Exercises)
             };
 
             _context.Trainings.Add(training);
@@ -102,6 +104,9 @@ namespace BE.Services.Implementations
             var training = GetById(id, userId);
             if (training == null) return null;
 
+            _context.RemoveRange(training.Exercises);
+            training.Exercises = MapExercises(dto.Exercises);
+            training.TrainingVariant = dto.TrainingVariant;
             training.ExerciseType = dto.ExerciseType!.Value;
             training.DurationMinutes = dto.DurationMinutes;
             training.Calories = dto.Calories;
@@ -114,6 +119,12 @@ namespace BE.Services.Implementations
 
             return training;
         }
+
+        private static List<TrainingExercise> MapExercises(List<TrainingExerciseDto> exercises) => exercises.Select((e, index) => new TrainingExercise
+        {
+            ExerciseId = e.ExerciseId, Position = index, Sets = e.Sets, Reps = e.Reps,
+            DurationSeconds = e.DurationSeconds, WeightKg = e.WeightKg
+        }).ToList();
 
         public bool Delete(int id, int userId)
         {
@@ -128,23 +139,12 @@ namespace BE.Services.Implementations
 
         public object GetMonthlyStats(int userId, int year, int month)
         {
-            var trainings = _context.Trainings
-                .Where(t => t.UserId == userId &&
-                            t.TrainingDate.Year == year &&
-                            t.TrainingDate.Month == month)
-                .ToList();
-
-            return trainings
+            return _context.Trainings.AsNoTracking()
+                .Where(t => t.UserId == userId && t.TrainingDate.Year == year && t.TrainingDate.Month == month)
                 .GroupBy(t => (t.TrainingDate.Day - 1) / 7 + 1)
-                .Select(g => new
-                {
-                    Week = g.Key,
-                    TotalDuration = g.Sum(x => x.DurationMinutes),
-                    Count = g.Count(),
-                    AvgIntensity = Math.Round(g.Average(x => x.Intensity), 2),
-                    AvgFatigue = Math.Round(g.Average(x => x.Fatigue), 2)
-                })
-                .OrderBy(x => x.Week)
+                .OrderBy(g => g.Key)
+                .Select(g => new MonthlyTrainingStats(g.Key, g.Sum(t => t.DurationMinutes), g.Count(),
+                    Math.Round(g.Average(t => t.Intensity), 2), Math.Round(g.Average(t => t.Fatigue), 2)))
                 .ToList();
         }
     }

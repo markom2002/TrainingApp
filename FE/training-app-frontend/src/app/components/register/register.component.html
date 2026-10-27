@@ -1,74 +1,117 @@
-<div class="register-wrapper">
-
-  <div class="register-card">
-
-    <div class="brand">
-      <div class="logo">🔥</div>
-      <h2>Create Account</h2>
-      <p class="subtitle">Start your fitness journey today</p>
+<main class="auth-shell">
+  <section class="auth-story" aria-label="FORM training journal">
+    <a class="auth-brand" routerLink="/login"
+      ><span class="brand-mark">f.</span> FORM<span class="brand-sub"
+        >TRAINING JOURNAL</span
+      ></a
+    >
+    <div class="story-body">
+      <p class="eyebrow">A NEW CHAPTER STARTS HERE</p>
+      <h1>
+        Start small.<br />Build <em>something<br />strong.</em>
+      </h1>
+      <p class="story-copy">
+        Make room for your goals.<br />We will help you see how far you go.
+      </p>
+      <div class="orbit-art" aria-hidden="true">
+        <div class="orbit outer"></div>
+        <div class="orbit inner"></div>
+        <span class="orbit-dot"></span
+        ><span class="orbit-word">YOUR<br /><strong>PACE.</strong></span
+        ><span class="floating-tag"
+          >CONSISTENCY OVER PERFECTION <span>&#8599;</span></span
+        >
+      </div>
     </div>
-
-    <form (ngSubmit)="onRegister(registerForm)" #registerForm="ngForm">
-
-      <div class="input-group">
-        <input 
+    <div class="story-footer">
+      <span>TRACK</span><i></i><span>REFLECT</span><i></i><span>GROW</span>
+    </div>
+  </section>
+  <section class="auth-form-side">
+    <span class="top-note">YOUR FIRST REP STARTS HERE</span>
+    <div class="auth-form-content register-content">
+      <span class="form-kicker">LET'S MAKE IT HAPPEN</span>
+      <h2>Find your form<span>.</span></h2>
+      <p class="form-intro">Create your personal training space.</p>
+      <form (ngSubmit)="onRegister(registerForm)" #registerForm="ngForm">
+        <label for="register-email">Email address</label
+        ><input
+          id="register-email"
           type="email"
           name="email"
           [(ngModel)]="email"
           required
           email
-          maxlength="254" placeholder="Enter your email"
+          maxlength="254"
+          placeholder="you@example.com"
+          autocomplete="email"
         />
-      </div>
-
-      <div class="input-group">
-        <input 
-          type="password"
-          name="password"
-          [(ngModel)]="password"
-          required
-          minlength="8" maxlength="72"
-          placeholder="Enter password"
-        />
-      </div>
-
-      <div class="input-group">
-        <input 
+        <label for="register-password">Password</label>
+        <div class="password-field">
+          <input
+            id="register-password"
+            [type]="showPassword ? 'text' : 'password'"
+            name="password"
+            [(ngModel)]="password"
+            required
+            minlength="8"
+            maxlength="72"
+            placeholder="Create a strong password"
+            autocomplete="new-password"
+          /><button
+            type="button"
+            class="show-password"
+            (click)="showPassword = !showPassword"
+            [attr.aria-pressed]="showPassword"
+          >
+            {{ showPassword ? "Hide" : "Show" }}
+          </button>
+        </div>
+        <span class="field-hint"
+          >At least 8 characters. Maximum 72 UTF-8 bytes.</span
+        >
+        <label for="confirm-password">Confirm password</label
+        ><input
+          id="confirm-password"
           type="password"
           name="confirmPassword"
           [(ngModel)]="confirmPassword"
           required
-          placeholder="Confirm password"
+          placeholder="One more time"
+          autocomplete="new-password"
         />
-      </div>
-
-      <div class="input-group">
-        <select name="gender" [(ngModel)]="gender" required>
-          <option value="">Select gender</option>
-          <option value="Male">Male 💪</option>
-          <option value="Other">Other</option><option value="Female">Female 🏃‍♀️</option>
+        <label for="gender">Gender</label
+        ><select id="gender" name="gender" [(ngModel)]="gender" required>
+          <option value="" disabled>Select an option</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
         </select>
-      </div>
-
-      <p>Password: at least 8 characters, at most 72 UTF-8 bytes.</p>
-      @if (registerForm.invalid && (registerForm.touched || registerForm.submitted)) {
-        <p role="alert">Enter a valid email, a password of at least 8 characters and select a gender.</p>
-      }
-      @if (errorMessage) { <p role="alert">{{ errorMessage }}</p> }
-      <button 
-        type="submit" 
-        class="register-btn"
-        [disabled]="!registerForm.valid || submitting">
-        Create Account
-      </button>
-
-    </form>
-
-    <p class="login-link">
-      Already have an account?
-      <a routerLink="/login">Login</a>
-    </p>
-
-  </div>
-
-</div>
+        @if (
+          registerForm.invalid &&
+          (registerForm.touched || registerForm.submitted)
+        ) {
+          <p class="error-message" role="alert">
+            Enter a valid email, a password of at least 8 characters and choose
+            a gender.
+          </p>
+        }
+        @if (errorMessage) {
+          <p class="error-message" role="alert">{{ errorMessage }}</p>
+        }
+        <button
+          class="auth-submit"
+          type="submit"
+          [disabled]="registerForm.invalid || submitting"
+        >
+          {{ submitting ? "Creating your account..." : "Create my account" }}
+          <span aria-hidden="true">&#8594;</span>
+        </button>
+      </form>
+      <p class="switch-auth">
+        Already part of FORM? <a routerLink="/login">Sign in &#8599;</a>
+      </p>
+    </div>
+    <footer>EVERY EXPERT WAS ONCE A BEGINNER.</footer>
+  </section>
+</main>

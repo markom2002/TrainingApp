@@ -1,0 +1,206 @@
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+label {
+  display: block;
+  margin: 16px 0 9px;
+}
+input,
+textarea,
+select {
+  width: 100%;
+  border: 1px solid #dfe7d3;
+  border-radius: 7px;
+  background: #fff;
+  font: inherit;
+  outline: none;
+}
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: #9db765;
+  box-shadow: 0 0 0 3px #a9cf631c;
+}
+input:read-only {
+  background: #f7f9f2;
+}
+.hint {
+  display: block;
+  color: #97a588;
+  font-size: 13px;
+  margin-top: 8px;
+}
+.optional {
+  float: right;
+}
+.char-count {
+  display: block;
+  text-align: right;
+  color: #99a88a;
+  font-size: 13px;
+  margin-top: 7px;
+}
+.goal-input {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+.goal-input span {
+  line-height: 1.7;
+}
+.save-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  border-top: 1px solid #e8edde;
+  padding-top: 24px;
+  margin-top: 30px;
+}
+.primary {
+  border: 0;
+  border-radius: 7px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.primary:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.goal-panel {
+  text-align: center;
+}
+.goal-ring {
+  border-radius: 50%;
+  margin: 30px auto 22px;
+}
+.goal-ring > div {
+  height: 100%;
+  border-radius: 50%;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.goal-ring strong {
+  font-weight: 600;
+  letter-spacing: -1px;
+}
+.goal-ring strong span {
+  font-size: 24px;
+  color: #a3b28f;
+}
+.goal-caption {
+  line-height: 1.8;
+}
+.goal-cta {
+  display: block;
+  margin-top: 22px;
+  text-decoration: none;
+  border-radius: 7px;
+}
+.week-note {
+  margin: 18px 0 0;
+}
+.focus-card {
+  margin-top: 20px;
+  border-radius: 13px;
+  padding: 24px;
+}
+.focus-symbol {
+  font-size: 30px;
+}
+.focus-card p {
+  letter-spacing: 1.4px;
+}
+.focus-card h3 {
+  letter-spacing: -0.5px;
+  font-weight: 550;
+  margin: 10px 0 14px;
+}
+.focus-card > span:last-child {
+  line-height: 1.8;
+}
+.state,
+.error {
+  padding: 18px;
+  background: #fff;
+  border-radius: 8px;
+  font-size: 16px;
+}
+.error {
+  color: #a56249;
+  background: #f9efea;
+}
+@media (max-width: 800px) {
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
+  .profile-aside {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+  .focus-card {
+    margin: 0;
+  }
+  .edit-link {
+    display: none;
+  }
+}
+@media (max-width: 550px) {
+  :host {
+    padding: 0 16px 30px;
+  }
+  .page-title {
+    padding: 28px 0;
+  }
+  h1 {
+    font-size: 27px;
+  }
+  .private-label {
+    display: none;
+  }
+  .identity {
+    align-items: start;
+  }
+  .profile-avatar {
+    border-radius: 18px;
+  }
+  .lifetime {
+    gap: 8px;
+  }
+  .lifetime article {
+    gap: 12px;
+  }
+  .lifetime article > span {
+    letter-spacing: 0;
+  }
+  .lifetime small {
+    line-height: 1.6;
+  }
+  .lifetime em {
+    display: block;
+    margin: 3px 0 0;
+  }
+  .form-grid,
+  .profile-aside {
+    grid-template-columns: 1fr;
+  }
+  .save-row {
+    align-items: start;
+    flex-direction: column;
+  }
+  .primary {
+    width: 100%;
+  }
+  .page-nav {
+    height: 65px;
+  }
+  .goal-panel {
+    padding: 25px;
+  }
+}

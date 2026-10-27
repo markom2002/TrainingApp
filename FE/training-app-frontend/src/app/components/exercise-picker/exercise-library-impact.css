@@ -1,0 +1,285 @@
+/* Stronger visual hierarchy for the exercise library. */
+.builder-heading {
+  margin: 38px 0 25px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #d9e2cb;
+}
+.builder-heading h2 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #243c22;
+}
+.builder-heading p:last-child {
+  color: #526b43;
+  font-size: 16px;
+}
+.selection-count {
+  color: #405d2b;
+  background: #e5f2c4;
+  border: 0;
+  font-weight: 650;
+  padding: 12px 16px;
+}
+.builder-grid {
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: 26px;
+}
+.library-intro {
+  min-height: 375px;
+  padding: 22px 28px 22px 8px;
+  gap: 12px;
+  background: radial-gradient(
+    ellipse at 25% 55%,
+    #26351b 0,
+    #101a10 50%,
+    #0b130d 100%
+  );
+  border: 1px solid #384c29;
+  box-shadow: 0 12px 32px #14230d15;
+}
+.anatomy {
+  width: 230px;
+  max-width: 46%;
+}
+.sculpture-view {
+  width: 100%;
+  height: 315px;
+  background-image: url("/images/male.webp");
+  background-size: 200% 100%;
+  background-position: left center;
+  background-repeat: no-repeat;
+  mix-blend-mode: lighten;
+  filter: brightness(1.18);
+}
+.sculpture-view.female-sculpture {
+  background-image: url("/images/female.webp");
+}
+.sculpture-view.back-view {
+  background-position: right center;
+}
+.body-view {
+  gap: 8px;
+  margin-top: 8px;
+}
+.body-view button {
+  min-height: 38px;
+  padding: 8px 13px;
+  font-size: 13px;
+  color: #c6d9b2;
+  border-color: #50643c;
+}
+.body-view .chosen {
+  background: #d6ee7d;
+  color: #23351b;
+  border-color: #d6ee7d;
+  font-weight: 650;
+}
+.library-copy {
+  flex: 1;
+  min-width: 0;
+}
+.library-copy h3 {
+  font-size: 28px;
+  line-height: 1.15;
+  font-weight: 650;
+  margin: 22px 0 16px;
+  color: #f2f5e9;
+}
+.library-copy p {
+  color: #c1cdb3;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.tiny-tag {
+  font-size: 11px;
+  background: #324523;
+  color: #d7eeac;
+  padding: 7px 10px;
+  border: 0;
+}
+.focus-muscle {
+  display: block;
+  color: #cce772;
+  letter-spacing: 1px;
+  font-size: 11px;
+  margin: 16px 0;
+}
+.library-number {
+  font-size: 38px;
+  font-weight: 650;
+  color: #dcf38e;
+}
+.library-number small {
+  font-size: 12px;
+  color: #b4c39d;
+  font-weight: 400;
+}
+.search-box {
+  margin: 24px 0 18px;
+  padding: 0 18px;
+  border: 1px solid #cbd9ba;
+  box-shadow: 0 3px 7px #253b1610;
+}
+.search-box input {
+  padding: 17px 0;
+  font-size: 16px;
+  color: #314c24;
+}
+.search-box input::placeholder {
+  color: #6e825d;
+}
+.muscle-filters {
+  gap: 8px;
+  margin-bottom: 24px;
+}
+.muscle-filters button {
+  padding: 10px 14px;
+  font-size: 14px;
+  color: #4b633b;
+  font-weight: 550;
+  border-color: #cfdcc0;
+}
+.muscle-filters .selected {
+  background: #203421;
+  color: #e3f5a8;
+  border-color: #203421;
+}
+.exercise-cards {
+  gap: 12px;
+  max-height: 650px;
+  padding-right: 8px;
+  scrollbar-color: #9bb475 #e6ecdd;
+  scrollbar-width: thin;
+}
+.exercise-option {
+  padding: 18px 15px;
+  min-height: 92px;
+  border: 1px solid #cad8ba;
+  box-shadow: 0 3px 7px #19331205;
+  border-radius: 11px;
+}
+.exercise-option:hover {
+  border-color: #8caf4c;
+  background: #f2f8e7;
+}
+.exercise-option strong {
+  font-size: 16px;
+  line-height: 1.4;
+  color: #273f21;
+  font-weight: 650;
+}
+.exercise-option small {
+  font-size: 13px;
+  color: #61784c;
+  line-height: 1.4;
+}
+.exercise-symbol {
+  width: 35px;
+  height: 40px;
+  background: #e6efda;
+  color: #5a7d35;
+}
+.exercise-option.added {
+  border: 2px solid #83a832;
+  background: #edf6d7;
+  padding: 17px 14px;
+}
+.add-symbol {
+  color: #547627;
+}
+.library-state {
+  color: #536e3c;
+}
+@media (max-width: 1100px) {
+  .builder-grid {
+    grid-template-columns: 1fr;
+  }
+  .anatomy {
+    width: 230px;
+    max-width: 40%;
+  }
+  .library-intro {
+    padding-right: 35px;
+  }
+  .library-copy h3 {
+    font-size: 32px;
+  }
+  .exercise-cards {
+    max-height: 470px;
+  }
+}
+@media (max-width: 550px) {
+  .builder-heading h2 {
+    font-size: 27px;
+  }
+  .builder-heading p:last-child {
+    font-size: 14px;
+  }
+  .selection-count {
+    font-size: 12px;
+    padding: 10px;
+  }
+  .library-intro {
+    padding: 18px 14px 18px 0;
+    gap: 5px;
+    min-height: 300px;
+  }
+  .anatomy {
+    width: 160px;
+    max-width: 47%;
+  }
+  .sculpture-view {
+    height: 245px;
+  }
+  .library-copy h3 {
+    font-size: 24px;
+  }
+  .library-copy p {
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .tiny-tag {
+    font-size: 10px;
+    padding: 6px;
+  }
+  .focus-muscle {
+    font-size: 10px;
+  }
+  .library-number {
+    font-size: 29px;
+  }
+  .library-number small {
+    font-size: 11px;
+  }
+  .body-view button {
+    font-size: 12px;
+    padding: 7px 10px;
+  }
+  .exercise-cards {
+    grid-template-columns: 1fr;
+    max-height: 480px;
+  }
+  .exercise-symbol {
+    display: grid;
+  }
+  .exercise-option {
+    padding: 16px;
+    min-height: 82px;
+  }
+  .exercise-option.added {
+    padding: 15px;
+  }
+  .exercise-option strong {
+    font-size: 17px;
+  }
+  .exercise-option small {
+    font-size: 13px;
+  }
+  .muscle-filters button {
+    font-size: 13px;
+    padding: 9px 13px;
+  }
+  .search-box input {
+    font-size: 15px;
+  }
+}

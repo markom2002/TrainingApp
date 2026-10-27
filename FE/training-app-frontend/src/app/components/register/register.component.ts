@@ -10,21 +10,32 @@ import { finalize } from 'rxjs';
   standalone: true,
   imports: [FormsModule, RouterModule],
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css']
+  styleUrls: [
+    '../../auth-scene.css',
+    '../../auth-page.css',
+    '../../auth-impact.css',
+  ],
 })
 export class RegisterComponent {
   email = '';
   password = '';
+  showPassword = false;
   confirmPassword = '';
   gender = '';
   errorMessage = '';
   submitting = false;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+  ) {}
 
   onRegister(form: NgForm) {
     this.errorMessage = '';
-    if (form.invalid || this.submitting) { form.control.markAllAsTouched(); return; }
+    if (form.invalid || this.submitting) {
+      form.control.markAllAsTouched();
+      return;
+    }
     if (this.password !== this.confirmPassword) {
       this.errorMessage = 'Passwords do not match.';
       return;
@@ -34,11 +45,15 @@ export class RegisterComponent {
       return;
     }
     this.submitting = true;
-    this.authService.register(this.email.trim(), this.password, this.gender)
-      .pipe(finalize(() => this.submitting = false))
+    this.authService
+      .register(this.email.trim(), this.password, this.gender)
+      .pipe(finalize(() => (this.submitting = false)))
       .subscribe({
-        next: () => this.router.navigate(['/login'], { queryParams: { registered: 'true' } }),
-        error: error => this.errorMessage = apiErrorMessage(error)
+        next: () =>
+          this.router.navigate(['/login'], {
+            queryParams: { registered: 'true' },
+          }),
+        error: (error) => (this.errorMessage = apiErrorMessage(error)),
       });
   }
 }

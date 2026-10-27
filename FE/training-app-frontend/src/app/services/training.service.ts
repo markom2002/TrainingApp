@@ -1,61 +1,49 @@
 import { API_BASE_URL } from '../api.config';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { Training, PagedResult, TrainingQuery, DashboardOverview, MonthlyTrainingStats } from '../models/training.model';
-import { AuthService } from './auth.service';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import {
+  Training,
+  PagedResult,
+  TrainingQuery,
+  DashboardOverview,
+  MonthlyTrainingStats,
+} from '../models/training.model';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class TrainingService {
+  private readonly apiUrl = `${API_BASE_URL}/trainings`;
+  constructor(private http: HttpClient) {}
 
-  private apiUrl = `${API_BASE_URL}/trainings`;
-
-  constructor(private http: HttpClient, private authService: AuthService) { }
-
-  private getAuthHeaders() {
-    const token = this.authService.getToken();
-    return new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    });
+  // The authentication interceptor owns all Bearer headers and refresh retries.
+  add(training: Training) {
+    return this.http.post<Training>(this.apiUrl, training);
+  }
+  update(id: number, training: Training) {
+    return this.http.put<Training>(`${this.apiUrl}/${id}`, training);
+  }
+  delete(id: number) {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+  getById(id: number) {
+    return this.http.get<Training>(`${this.apiUrl}/${id}`);
   }
 
-  add(training: Training): Observable<Training> {
-    return this.http.post<Training>(this.apiUrl, training, { headers: this.getAuthHeaders() });
-  }
-
-  getAll(query: TrainingQuery): Observable<PagedResult<Training>> {
+  getAll(query: TrainingQuery) {
     let params = new HttpParams();
     for (const [key, value] of Object.entries(query)) {
-      if (value !== undefined && value !== '') params = params.set(key, String(value));
+      if (value !== undefined && value !== '')
+        params = params.set(key, String(value));
     }
-    return this.http.get<PagedResult<Training>>(this.apiUrl, { params, headers: this.getAuthHeaders() });
+    return this.http.get<PagedResult<Training>>(this.apiUrl, { params });
   }
-
-  update(id: number, training: Training): Observable<Training> {
-    return this.http.put<Training>(`${this.apiUrl}/${id}`, training, { headers: this.getAuthHeaders() });
+  getMonthlyStats(year: number, month: number) {
+    return this.http.get<MonthlyTrainingStats[]>(`${this.apiUrl}/month`, {
+      params: { year, month },
+    });
   }
-
-  delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers: this.getAuthHeaders() });
+  getOverview(year: number, month: number) {
+    return this.http.get<DashboardOverview>(`${this.apiUrl}/overview`, {
+      params: { year, month },
+    });
   }
-
-  getMonthlyStats(year: number, month: number): Observable<MonthlyTrainingStats[]> {
-    return this.http.get<MonthlyTrainingStats[]>(`${this.apiUrl}/month?year=${year}&month=${month}`, { headers: this.getAuthHeaders() });
-  }
-
-  getOverview(year: number, month: number): Observable<DashboardOverview> {
-    return this.http.get<DashboardOverview>(`${this.apiUrl}/overview`, { params: { year, month } });
-  }
-
-  getById(id: number) {
-  return this.http.get<Training>(
-    `${this.apiUrl}/${id}`,
-    { headers: this.getAuthHeaders() }
-  );
-}
-
-
 }

@@ -1,0 +1,185 @@
+.app-shell {
+  grid-template-columns: 84px minmax(0, 1fr);
+}
+.sidebar {
+  padding: 28px 14px;
+  align-items: center;
+  gap: 30px;
+}
+.sidebar .brand {
+  display: block;
+}
+.sidebar nav {
+  margin-top: 25px;
+  gap: 16px;
+  width: 100%;
+}
+.sidebar .nav-item {
+  font-size: 0;
+  padding: 13px 0;
+  justify-content: center;
+  width: 100%;
+  border-radius: 10px;
+}
+.sidebar .sign-out {
+  margin-top: auto;
+}
+.sidebar .brand-icon {
+  width: 42px;
+  height: 43px;
+}
+.sidebar .nav-item:hover {
+  background: #edf3e1;
+}
+.workspace-tabs {
+  display: flex;
+  gap: 6px;
+  background: #eaece5;
+  border: 1px solid #e4e7dd;
+  padding: 4px;
+  border-radius: 25px;
+}
+.workspace-tabs button {
+  border: 0;
+  padding: 9px 16px;
+  border-radius: 20px;
+  background: none;
+  color: #7c8870;
+}
+.workspace-tabs .selected {
+  background: #d9f576;
+  color: #41522e;
+}
+.profile-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #e3e7d9;
+  padding: 5px 12px 5px 6px;
+  border-radius: 25px;
+  background: #fff;
+  color: #7d8d6a;
+}
+.profile-button-name {
+  order: 1;
+}
+.profile-button > span:last-child {
+  order: 2;
+}
+.profile-button .avatar {
+  height: 29px;
+  width: 29px;
+}
+h1 {
+  font-size: 28px;
+}
+.section-heading {
+  margin-bottom: 18px;
+}
+.daily-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.weekly-plan,
+.personal-focus {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: #fff;
+  border-radius: 13px;
+  border: 1px solid #e7eade;
+}
+.mini-ring {
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.mini-ring > span {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  background: #fff;
+  border-radius: 50%;
+  font-weight: 650;
+  letter-spacing: -0.8px;
+}
+.mini-ring small {
+  margin-left: 1px;
+}
+.daily-row h3 {
+  margin: 0 0 7px;
+  letter-spacing: -0.3px;
+}
+.weekly-plan p {
+  margin: 0 0 7px;
+}
+.weekly-plan button {
+  background: none;
+  border: 0;
+  padding: 0;
+}
+.personal-focus .eyebrow {
+  margin-bottom: 8px;
+}
+.focus-icon {
+  display: grid;
+  place-items: center;
+  background: #f1f6e8;
+  border-radius: 15px;
+  color: #93aa60;
+}
+.personal-focus > button {
+  margin-left: auto;
+  background: none;
+  border: 1px solid #e5eadc;
+  border-radius: 50%;
+  padding: 6px 10px;
+}
+@media (max-width: 900px) {
+  .workspace-tabs button {
+    padding: 8px 10px;
+  }
+  .profile-button-name {
+    display: none;
+  }
+  .weekly-plan,
+  .personal-focus {
+    gap: 14px;
+  }
+}
+@media (max-width: 650px) {
+  .app-shell {
+    display: block;
+  }
+  .sidebar {
+    display: none;
+  }
+  .topline {
+    gap: 10px;
+  }
+  .workspace-tabs {
+    gap: 0;
+  }
+  .workspace-tabs button {
+    padding: 8px 10px;
+  }
+  .profile-button {
+    padding: 4px;
+    border: 0;
+  }
+  .profile-button > span:last-child {
+    display: none;
+  }
+  h1 {
+    font-size: 25px;
+  }
+  .daily-row {
+    grid-template-columns: 1fr;
+  }
+  .personal-focus {
+    padding: 17px;
+  }
+  .workspace-tabs button:last-child {
+    display: none;
+  }
+}

@@ -1,0 +1,280 @@
+<section class="exercise-builder">
+  <header class="builder-heading">
+    <div>
+      <p class="eyebrow">THE MOVEMENTS BEHIND THE WORK</p>
+      <h2>Build your session<span>.</span></h2>
+      <p>Choose the exercises you completed. Make every set count.</p>
+    </div>
+    <span class="selection-count">{{ selected.length }} / 40 selected</span>
+  </header>
+  <div class="builder-grid">
+    <div class="exercise-library">
+      <div class="library-intro">
+        <div class="anatomy" [class.female]="variant === 'Women'">
+          <div
+            class="sculpture-view"
+            [class.female-sculpture]="variant === 'Women'"
+            [class.back-view]="bodySide === 'Back'"
+            role="img"
+            [attr.aria-label]="
+              (variant === 'Women' ? 'Female' : 'Male') +
+              ' athletic sculpture, ' +
+              bodySide.toLowerCase() +
+              ' view'
+            "
+          ></div>
+          <div class="body-view">
+            <button
+              type="button"
+              (click)="bodySide = 'Front'"
+              [class.chosen]="bodySide === 'Front'"
+            >
+              Front</button
+            ><button
+              type="button"
+              (click)="bodySide = 'Back'"
+              [class.chosen]="bodySide === 'Back'"
+            >
+              Back
+            </button>
+          </div>
+        </div>
+        <div class="library-copy">
+          <span class="tiny-tag">{{
+            variant === "Women"
+              ? "WOMEN'S VIEW"
+              : variant === "Men"
+                ? "MEN'S VIEW"
+                : "ALL ATHLETES"
+          }}</span>
+          <h3>
+            {{
+              group === "All"
+                ? "Every muscle. Every goal."
+                : group + " in focus."
+            }}
+          </h3>
+          <p>
+            One exercise library for every body. Use the muscle filters to find
+            your movements.
+          </p>
+          <span class="focus-muscle"
+            >FOCUS /
+            {{ group === "All" ? "FULL LIBRARY" : group.toUpperCase() }}</span
+          ><span class="library-number"
+            >{{ catalog.length }}<small>exercises to choose from</small></span
+          >
+        </div>
+      </div>
+      <label class="search-box"
+        ><span aria-hidden="true">&#9906;</span
+        ><input
+          type="search"
+          [(ngModel)]="search"
+          [ngModelOptions]="{ standalone: true }"
+          placeholder="Search exercises or equipment..."
+          aria-label="Search exercise library"
+      /></label>
+      <div class="muscle-filters" aria-label="Filter by muscle group">
+        @for (muscle of groups; track muscle) {
+          <button
+            type="button"
+            (click)="selectGroup(muscle)"
+            [class.selected]="group === muscle"
+            [attr.aria-pressed]="group === muscle"
+          >
+            {{ muscle }}
+          </button>
+        }
+      </div>
+      @if (loading) {
+        <p class="library-state" role="status">
+          Loading the exercise library...
+        </p>
+      }
+      @if (error) {
+        <p class="library-state" role="alert">
+          {{ error }} <button type="button" (click)="load()">Retry</button>
+        </p>
+      }
+      <div class="exercise-cards">
+        @for (exercise of visible; track exercise.id) {
+          <button
+            type="button"
+            class="exercise-option"
+            [class.added]="has(exercise.id)"
+            [disabled]="
+              disabled || (!has(exercise.id) && selected.length >= 40)
+            "
+            (click)="toggle(exercise)"
+            [attr.aria-pressed]="has(exercise.id)"
+          >
+            <span class="exercise-symbol" aria-hidden="true">
+              @if (exercise.timed) {
+                &#9719;
+              } @else {
+                &#9906;
+              }</span
+            ><span
+              ><strong>{{ exercise.name }}</strong
+              ><small
+                >{{ exercise.muscleGroup }} &middot;
+                {{ exercise.equipment }}</small
+              ></span
+            ><span class="add-symbol" aria-hidden="true">
+              @if (has(exercise.id)) {
+                &#10003;
+              } @else {
+                +
+              }
+            </span>
+          </button>
+        }
+      </div>
+      @if (!loading && !error && visible.length === 0) {
+        <p class="library-state">
+          No exercises match. Try a different muscle group or search.
+        </p>
+      }
+    </div>
+    <aside class="session-panel">
+      <div class="session-heading">
+        <div>
+          <p class="eyebrow">YOUR WORKOUT, YOUR WAY</p>
+          <h3>Session lineup</h3>
+        </div>
+        <span>{{ selected.length }}</span>
+      </div>
+      <p class="quick-label">QUICK ADD</p>
+      <div class="quick-add">
+        @for (preset of ["Upper", "Lower", "Full body"]; track preset) {
+          <button
+            type="button"
+            (click)="quickAdd(preset)"
+            [disabled]="disabled || loading || !!error"
+          >
+            {{ preset }} +
+          </button>
+        }
+      </div>
+      <p class="preset-note">
+        Shortcuts only. Adjust to match what you actually did.
+      </p>
+      @if (selected.length === 0) {
+        <div class="empty-session">
+          <span aria-hidden="true">+</span>
+          <h4>Start with one movement.</h4>
+          <p>
+            Select exercises on the left to log sets, reps or time, and weight.
+          </p>
+          <small>You can also save a session summary without exercises.</small>
+        </div>
+      }
+      <div class="session-exercises">
+        @for (entry of selected; track entry.exerciseId; let i = $index) {
+          <article class="session-exercise">
+            <div class="entry-title">
+              <span class="entry-number"
+                >{{ i + 1 < 10 ? "0" : "" }}{{ i + 1 }}</span
+              >
+              <div>
+                <h4>
+                  {{ definition(entry.exerciseId)?.name || entry.exerciseId }}
+                </h4>
+                <small>{{ definition(entry.exerciseId)?.muscleGroup }}</small>
+              </div>
+              <button
+                type="button"
+                (click)="remove(entry.exerciseId)"
+                [disabled]="disabled"
+                [attr.aria-label]="
+                  'Remove ' +
+                  (definition(entry.exerciseId)?.name || entry.exerciseId)
+                "
+              >
+                &#215;
+              </button>
+            </div>
+            <div class="entry-fields">
+              <label
+                >SETS<input
+                  type="number"
+                  [(ngModel)]="entry.sets"
+                  [ngModelOptions]="{ standalone: true }"
+                  (ngModelChange)="update()"
+                  min="1"
+                  max="30"
+                  step="1"
+                  [disabled]="disabled"
+                  [attr.aria-label]="'Sets for ' + entry.exerciseId"
+              /></label>
+              @if (definition(entry.exerciseId)?.timed) {
+                <label
+                  >SECONDS<input
+                    type="number"
+                    [(ngModel)]="entry.durationSeconds"
+                    [ngModelOptions]="{ standalone: true }"
+                    (ngModelChange)="update()"
+                    min="1"
+                    max="7200"
+                    step="1"
+                    [disabled]="disabled"
+                    [attr.aria-label]="'Seconds for ' + entry.exerciseId"
+                /></label>
+              } @else {
+                <label
+                  >REPS<input
+                    type="number"
+                    [(ngModel)]="entry.reps"
+                    [ngModelOptions]="{ standalone: true }"
+                    (ngModelChange)="update()"
+                    min="1"
+                    max="200"
+                    step="1"
+                    [disabled]="disabled"
+                    [attr.aria-label]="'Reps for ' + entry.exerciseId"
+                /></label>
+              }
+              <label
+                >WEIGHT / KG<input
+                  type="number"
+                  [(ngModel)]="entry.weightKg"
+                  [ngModelOptions]="{ standalone: true }"
+                  (ngModelChange)="update()"
+                  min="0"
+                  max="1000"
+                  step="0.01"
+                  [disabled]="disabled"
+                  [attr.aria-label]="'Weight for ' + entry.exerciseId"
+              /></label>
+            </div>
+            <div class="entry-footer">
+              <span>0 kg = bodyweight / no added load</span
+              ><button
+                type="button"
+                (click)="move(i, -1)"
+                [disabled]="disabled || i === 0"
+                aria-label="Move exercise up"
+              >
+                &#8593;</button
+              ><button
+                type="button"
+                (click)="move(i, 1)"
+                [disabled]="disabled || i === selected.length - 1"
+                aria-label="Move exercise down"
+              >
+                &#8595;
+              </button>
+            </div>
+          </article>
+        }
+      </div>
+      @if (validate()) {
+        <p role="alert" class="exercise-validation">
+          Check each exercise: 1-30 sets, 1-200 reps or 1-7200 seconds, and
+          0-1000 kg with up to two decimal places.
+        </p>
+      }
+    </aside>
+  </div>
+</section>

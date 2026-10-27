@@ -5,7 +5,10 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, finalize, shareReplay, tap } from 'rxjs';
 
-interface TokenResponse { token: string; expiresAtUtc: string; }
+interface TokenResponse {
+  token: string;
+  expiresAtUtc: string;
+}
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -13,32 +16,54 @@ export class AuthService {
   private token: string | null = null;
   private refreshRequest?: Observable<TokenResponse>;
 
-  constructor(private http: HttpClient, private router: Router) {
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+  ) {
     localStorage.removeItem('token');
   }
 
   register(email: string, password: string, gender: string) {
-    return this.http.post(`${this.apiUrl}/register`, { email, password, gender });
+    return this.http.post(`${this.apiUrl}/register`, {
+      email,
+      password,
+      gender,
+    });
   }
 
   login(email: string, password: string) {
-    return this.http.post<TokenResponse>(`${this.apiUrl}/login`, { email, password }, { withCredentials: true })
-      .pipe(tap(result => this.saveToken(result.token)));
+    return this.http
+      .post<TokenResponse>(
+        `${this.apiUrl}/login`,
+        { email, password },
+        { withCredentials: true },
+      )
+      .pipe(tap((result) => this.saveToken(result.token)));
   }
 
   refresh(): Observable<TokenResponse> {
     if (!this.refreshRequest) {
-      this.refreshRequest = this.http.post<TokenResponse>(`${this.apiUrl}/refresh`, {}, { withCredentials: true }).pipe(
-        tap(result => this.saveToken(result.token)),
-        finalize(() => this.refreshRequest = undefined),
-        shareReplay({ bufferSize: 1, refCount: false })
-      );
+      this.refreshRequest = this.http
+        .post<TokenResponse>(
+          `${this.apiUrl}/refresh`,
+          {},
+          { withCredentials: true },
+        )
+        .pipe(
+          tap((result) => this.saveToken(result.token)),
+          finalize(() => (this.refreshRequest = undefined)),
+          shareReplay({ bufferSize: 1, refCount: false }),
+        );
     }
     return this.refreshRequest;
   }
 
-  saveToken(token: string) { this.token = token; }
-  getToken(): string | null { return this.token; }
+  saveToken(token: string) {
+    this.token = token;
+  }
+  getToken(): string | null {
+    return this.token;
+  }
 
   clearSession() {
     this.token = null;
@@ -47,19 +72,29 @@ export class AuthService {
   }
 
   logout() {
-    this.http.post(`${this.apiUrl}/logout`, {}, { withCredentials: true }).subscribe({
-      next: () => this.clearSession(),
-      error: () => alert('Logout failed. Please try again.')
-    });
+    this.http
+      .post(`${this.apiUrl}/logout`, {}, { withCredentials: true })
+      .subscribe({
+        next: () => this.clearSession(),
+        error: () => alert('Logout failed. Please try again.'),
+      });
   }
 
   get role(): string {
     if (!this.token) return '';
     try {
       const claims = jwtDecode<Record<string, unknown>>(this.token);
-      return String(claims['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] ?? 'User');
-    } catch { return ''; }
+      return String(
+        claims[
+          'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
+        ] ?? 'User',
+      );
+    } catch {
+      return '';
+    }
   }
 
-  get isLoggedIn(): boolean { return !!this.token; }
+  get isLoggedIn(): boolean {
+    return !!this.token;
+  }
 }

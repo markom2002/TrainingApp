@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using BE.Data;
 using BE.DTOs;
 using BE.Models;
-using BCrypt.Net;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;

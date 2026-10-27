@@ -1,0 +1,123 @@
+.session-basics {
+  background: #fff;
+  border: 1px solid #e1e8d6;
+  border-radius: 13px;
+}
+.basics-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+.eyebrow {
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  color: #93a67e;
+  margin: 0 0 8px;
+}
+.basics-heading h2 {
+  margin: 0;
+  letter-spacing: -0.4px;
+}
+.variant-options {
+  display: flex;
+  gap: 3px;
+  padding: 4px;
+  border-radius: 20px;
+  background: #f1f4e9;
+}
+.variant-options label {
+  border-radius: 17px;
+  cursor: pointer;
+}
+.variant-options input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+.variant-options label:focus-within {
+  outline: 2px solid #91b450;
+  outline-offset: 2px;
+}
+.variant-note {
+  text-align: right;
+  margin: 10px 0 25px;
+}
+.basics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr 1fr 1fr;
+  gap: 18px;
+}
+.basics-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.basics-grid input,
+.basics-grid select {
+  min-width: 0;
+  box-sizing: border-box;
+  width: 100%;
+  border: 1px solid #e0e8d3;
+  border-radius: 7px;
+  font: inherit;
+  letter-spacing: 0;
+  outline: none;
+}
+.basics-grid input:focus,
+.basics-grid select:focus {
+  border-color: #adc979;
+}
+.effort-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 35px;
+  border-top: 1px solid #edf1e5;
+}
+.effort-grid label > span:first-child {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.effort-grid strong {
+  font-weight: 500;
+}
+.effort-grid input {
+  width: 100%;
+  cursor: pointer;
+  margin: 18px 0 12px;
+}
+.range-labels {
+  display: flex;
+  justify-content: space-between;
+  letter-spacing: 0.8px;
+}
+@media (max-width: 750px) {
+  .basics-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .basics-heading {
+    align-items: start;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .variant-note {
+    text-align: left;
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+  .effort-grid {
+    gap: 20px;
+  }
+}
+@media (max-width: 400px) {
+  .basics-grid,
+  .effort-grid {
+    grid-template-columns: 1fr;
+  }
+  .effort-grid {
+    gap: 12px;
+  }
+}

@@ -1,0 +1,195 @@
+<main class="workout-studio">
+  <header class="studio-nav">
+    <a routerLink="/dashboard">&larr; Back to your overview</a
+    ><span class="studio-brand"
+      >FORM<span>.</span><small>WORKOUT STUDIO</small></span
+    >
+  </header>
+  <section class="studio-hero">
+    <div>
+      <p class="eyebrow">
+        {{
+          trainingId ? "REFINE YOUR TRAINING RECORD" : "THE SESSION IS YOURS"
+        }}
+      </p>
+      <h1>Every rep.<br /><em>Recorded.</em></h1>
+      <p>Turn today's effort into a story you can build on.</p>
+    </div>
+    <div class="hero-summary">
+      <span class="hero-line" aria-hidden="true"></span>
+      <div>
+        <strong>{{ formModel.exercises.length }}</strong
+        ><span>EXERCISES</span>
+      </div>
+      <i></i>
+      <div>
+        <strong>{{ sets }}</strong
+        ><span>TOTAL SETS</span>
+      </div>
+      <small>{{ trainingId ? "EDIT WORKOUT" : "NEW WORKOUT" }} &#8599;</small>
+    </div>
+  </section>
+  @if (loading) {
+    <p class="state" role="status">Loading your workout...</p>
+  }
+  @if (errorMessage) {
+    <p class="error-message" role="alert">{{ errorMessage }}</p>
+  }
+  @if (!loading && !loadFailed) {
+    <form (ngSubmit)="submit(workoutForm)" #workoutForm="ngForm">
+      <fieldset [disabled]="submitting">
+        <section class="session-basics">
+          <div class="basics-heading">
+            <div>
+              <p class="eyebrow">01 / SET THE SCENE</p>
+              <h2>Session details</h2>
+            </div>
+            <div
+              class="variant-options"
+              role="group"
+              aria-label="Workout presentation"
+            >
+              <label [class.active]="formModel.trainingVariant === 'Unisex'"
+                ><input
+                  type="radio"
+                  name="trainingVariant"
+                  [(ngModel)]="formModel.trainingVariant"
+                  value="Unisex"
+                />Everyone</label
+              ><label [class.active]="formModel.trainingVariant === 'Men'"
+                ><input
+                  type="radio"
+                  name="trainingVariant"
+                  [(ngModel)]="formModel.trainingVariant"
+                  value="Men"
+                />Men</label
+              ><label [class.active]="formModel.trainingVariant === 'Women'"
+                ><input
+                  type="radio"
+                  name="trainingVariant"
+                  [(ngModel)]="formModel.trainingVariant"
+                  value="Women"
+                />Women</label
+              >
+            </div>
+          </div>
+          <p class="variant-note">
+            Choose your body illustration. Every exercise is available in every
+            view.
+          </p>
+          <div class="basics-grid">
+            <label
+              >SESSION TYPE<select
+                name="exerciseType"
+                [(ngModel)]="formModel.exerciseType"
+                required
+              >
+                <option [ngValue]="0">Cardio</option>
+                <option [ngValue]="1">Strength</option>
+                <option [ngValue]="2">Flexibility</option>
+              </select></label
+            ><label
+              >DATE & TIME<input
+                type="datetime-local"
+                name="trainingDate"
+                [(ngModel)]="formModel.trainingDate"
+                required /></label
+            ><label
+              >DURATION / MIN<input
+                type="number"
+                name="durationMinutes"
+                [(ngModel)]="formModel.durationMinutes"
+                min="1"
+                max="1440"
+                required /></label
+            ><label
+              >CALORIES LOGGED<input
+                type="number"
+                name="calories"
+                [(ngModel)]="formModel.calories"
+                min="0"
+                max="10000"
+                required
+            /></label>
+          </div>
+          <div class="effort-grid">
+            <label
+              ><span
+                >How hard did you push?
+                <strong
+                  >{{ formModel.intensity }}<small>/10</small></strong
+                ></span
+              ><input
+                type="range"
+                name="intensity"
+                [(ngModel)]="formModel.intensity"
+                min="1"
+                max="10"
+                step="1"
+                required
+              /><span class="range-labels"
+                ><small>LIGHT</small><small>MAXIMUM EFFORT</small></span
+              ></label
+            ><label
+              ><span
+                >How did you feel after?
+                <strong>{{ formModel.fatigue }}<small>/10</small></strong></span
+              ><input
+                type="range"
+                name="fatigue"
+                [(ngModel)]="formModel.fatigue"
+                min="1"
+                max="10"
+                step="1"
+                required
+              /><span class="range-labels"
+                ><small>FRESH</small><small>EXHAUSTED</small></span
+              ></label
+            >
+          </div>
+        </section>
+        <app-exercise-picker
+          name="exercises"
+          [(ngModel)]="formModel.exercises"
+          [variant]="formModel.trainingVariant"
+        ></app-exercise-picker>
+        <section class="session-notes">
+          <label for="session-notes"
+            ><span class="eyebrow">03 / THE LITTLE DETAILS</span>Session notes
+            <small>OPTIONAL</small></label
+          ><textarea
+            id="session-notes"
+            name="notes"
+            [(ngModel)]="formModel.notes"
+            maxlength="2000"
+            rows="3"
+            placeholder="A new personal best? More energy than usual? Leave a note for your future self."
+          ></textarea
+          ><span>{{ formModel.notes.length }} / 2000</span>
+        </section>
+        <div class="studio-save">
+          <div>
+            <strong>Your effort deserves a record.</strong
+            ><span>Save this session to your personal training journal.</span>
+          </div>
+          <div class="save-buttons">
+            <a routerLink="/dashboard">Cancel</a
+            ><button
+              type="submit"
+              [disabled]="workoutForm.invalid || submitting"
+            >
+              {{
+                submitting
+                  ? "Saving your session..."
+                  : trainingId
+                    ? "Save changes"
+                    : "Save workout"
+              }}
+              <span aria-hidden="true">&#8594;</span>
+            </button>
+          </div>
+        </div>
+      </fieldset>
+    </form>
+  }
+</main>

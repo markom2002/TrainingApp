@@ -1,7 +1,8 @@
+using BE.DTOs;
 using System.ComponentModel.DataAnnotations;
 using BE.Models;
 
-public class TrainingDto
+public class TrainingDto : IValidatableObject
 {
     [Required, EnumDataType(typeof(ExerciseType))]
     public ExerciseType? ExerciseType { get; set; }
@@ -23,4 +24,14 @@ public class TrainingDto
 
     [Required]
     public DateTime? TrainingDate { get; set; }
-}
+    [Required, RegularExpression("^(Unisex|Men|Women)$")]
+    public string TrainingVariant { get; set; } = "Unisex";
+    [Required, MaxLength(40)]
+    public List<TrainingExerciseDto> Exercises { get; set; } = new();
+    public IEnumerable<ValidationResult> Validate(ValidationContext context)
+    {
+        if (Exercises != null && Exercises.Any(e => e == null))
+            yield return new ValidationResult("Exercise entries cannot be null.", new[] { nameof(Exercises) });
+        else if (Exercises != null && Exercises.Select(e => e.ExerciseId).Distinct().Count() != Exercises.Count)
+            yield return new ValidationResult("An exercise can appear only once in a workout.", new[] { nameof(Exercises) });
+    }}

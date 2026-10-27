@@ -1,0 +1,162 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+.builder-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.builder-heading h2 {
+  letter-spacing: -0.7px;
+  margin: 0 0 8px;
+}
+.builder-heading h2 span {
+  color: #abc83f;
+}
+.builder-heading p:last-child {
+  margin: 0;
+}
+.selection-count {
+  font-size: 13px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+.builder-grid {
+  display: grid;
+}
+.exercise-library {
+  min-width: 0;
+}
+.library-intro {
+  display: flex;
+  align-items: center;
+  border-radius: 14px;
+  color: #fff;
+}
+.anatomy {
+  flex-shrink: 0;
+}
+.anatomy svg {
+  width: 95px;
+  height: 175px;
+  display: block;
+  margin: auto;
+}
+.body-base {
+  fill: #3c4b38;
+  stroke: #6d8055;
+  stroke-width: 1;
+}
+.muscle {
+  fill: #82956b;
+  opacity: 0.6;
+}
+.muscle.active {
+  fill: #d5f16d;
+  opacity: 1;
+}
+.body-view {
+  display: flex;
+  justify-content: center;
+}
+.body-view button {
+  background: transparent;
+  border: 1px solid #4e603f;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.tiny-tag {
+  letter-spacing: 1px;
+  border-radius: 4px;
+}
+.library-copy h3 {
+  letter-spacing: -0.5px;
+}
+.library-copy p {
+  margin: 0 0 14px;
+}
+.library-number small {
+  display: block;
+  margin-top: 3px;
+}
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  border-radius: 8px;
+  color: #8a9c73;
+}
+.search-box input {
+  border: 0;
+  background: transparent;
+  outline: none;
+  width: 100%;
+  font: inherit;
+}
+.muscle-filters {
+  display: flex;
+  flex-wrap: wrap;
+}
+.muscle-filters button {
+  cursor: pointer;
+  border: 1px solid #e0e8d5;
+  background: #fff;
+  border-radius: 20px;
+}
+.exercise-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  overflow: auto;
+}
+.exercise-option {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  text-align: left;
+  min-width: 0;
+}
+.exercise-option strong {
+  display: block;
+}
+.exercise-option small {
+  display: block;
+  margin-top: 5px;
+}
+.exercise-symbol {
+  display: grid;
+  place-items: center;
+  border-radius: 7px;
+  flex-shrink: 0;
+}
+.add-symbol {
+  margin-left: auto;
+  font-size: 22px;
+}
+.exercise-option.added {
+  border-color: #b8d871;
+}
+.library-state {
+  font-size: 16px;
+  padding: 20px;
+  text-align: center;
+}
+@media (max-width: 550px) {
+  .builder-heading {
+    align-items: start;
+    gap: 10px;
+  }
+  .selection-count {
+    font-size: 12px;
+  }
+  .exercise-option {
+    gap: 7px;
+  }
+  .exercise-symbol {
+    display: none;
+  }
+}

@@ -1,18 +1,123 @@
-.training-list-container { width: 100%; color: #30372a; }
-.list-header { margin-bottom: 22px; }.list-header h2 { font-size: 17px; margin: 0; letter-spacing: -.4px; }.line { display: none; }
-.table-wrapper { overflow-x: auto; border: 1px solid #edf0e6; border-radius: 9px; }
-table { width: 100%; border-collapse: collapse; min-width: 780px; }
-th { background: #f7f9f2; color: #89947a; font-size: 10px; text-transform: uppercase; letter-spacing: .6px; font-weight: 600; }
-th, td { padding: 16px 12px; text-align: left; border-bottom: 1px solid #edf0e6; }
-td { font-size: 11px; color: #5e6951; }tbody tr:hover { background: #fcfdf8; }
-.type-badge, .badge { padding: 5px 9px; border-radius: 5px; font-size: 10px; background: #eef5dd; color: #627640; white-space: nowrap; }
-.fatigue { background: #f0f1ec; color: #7b836e; }.calories { font-weight: 600; }
-.notes { max-width: 170px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }.empty { padding: 40px; text-align: center; color: #919d80; }
-.actions { display: flex; gap: 8px; }button { border: 1px solid #e0e6d5; border-radius: 6px; padding: 8px 10px; background: #fff; color: #697859; cursor: pointer; font-size: 10px; }
-button:hover { background: #f1f6e6; }.delete-btn { color: #ab685d; }.delete-btn:hover { background: #fbf1ef; }
-.history-filters { display: flex; flex-wrap: wrap; align-items: end; gap: 10px; margin-bottom: 20px; }.history-filters label { display: flex; flex-direction: column; gap: 7px; font-size: 10px; color: #909b80; }
-.history-filters input, .history-filters select { background: #fff; border: 1px solid #e1e7d7; padding: 9px 8px; border-radius: 6px; font: inherit; color: #667653; min-width: 75px; }
-.history-filters button { padding: 10px 13px; }.history-filters button[type=submit] { background: #def481; border-color: #def481; color: #4d602a; }
-.history-pagination { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 18px; font-size: 10px; color: #89967a; }button:disabled { opacity: .45; cursor: default; }
-button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid #8baf3b; outline-offset: 3px; }
-@media(max-width: 650px) { .history-filters { gap: 8px; }.history-filters label { flex: 1; }.history-filters input, .history-filters select { min-width: 100px; width: 100%; box-sizing: border-box; }.history-pagination { font-size: 9px; } }
+.training-list-container {
+  width: 100%;
+  color: #30372a;
+}
+.list-header {
+  margin-bottom: 22px;
+}
+.list-header h2 {
+  margin: 0;
+  letter-spacing: -0.4px;
+}
+.line {
+  display: none;
+}
+.table-wrapper {
+  overflow-x: auto;
+  border: 1px solid #edf0e6;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th {
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+th,
+td {
+  padding: 16px 12px;
+  text-align: left;
+  border-bottom: 1px solid #edf0e6;
+}
+tbody tr:hover {
+  background: #fcfdf8;
+}
+.type-badge,
+.badge {
+  border-radius: 5px;
+  background: #eef5dd;
+  color: #627640;
+  white-space: nowrap;
+}
+.fatigue {
+  background: #f0f1ec;
+}
+.calories {
+  font-weight: 600;
+}
+.notes {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.empty {
+  text-align: center;
+}
+.actions {
+  display: flex;
+  gap: 8px;
+}
+button {
+  border: 1px solid #e0e6d5;
+  border-radius: 6px;
+  padding: 8px 10px;
+  background: #fff;
+  color: #697859;
+  cursor: pointer;
+  font-size: 14px;
+}
+button:hover {
+  background: #f1f6e6;
+}
+.delete-btn {
+  color: #ab685d;
+}
+.delete-btn:hover {
+  background: #fbf1ef;
+}
+.history-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+}
+.history-filters label {
+  display: flex;
+  flex-direction: column;
+}
+.history-filters input,
+.history-filters select {
+  background: #fff;
+  border: 1px solid #e1e7d7;
+  border-radius: 6px;
+  font: inherit;
+  min-width: 75px;
+}
+.history-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid #8baf3b;
+  outline-offset: 3px;
+}
+@media (max-width: 650px) {
+  .history-filters label {
+    flex: 1;
+  }
+  .history-filters input,
+  .history-filters select {
+    min-width: 100px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+}

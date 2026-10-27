@@ -1,0 +1,266 @@
+.welcome {
+  display: block;
+  min-height: 340px;
+  position: relative;
+  overflow: hidden;
+  padding: 42px;
+  margin: 26px 0 32px;
+  border-radius: 20px;
+  background:
+    linear-gradient(90deg, #0d1b12eb 0%, #172719be 45%, #17271910 100%),
+    url("/images/gym.webp") center 64% / cover;
+  box-shadow: 0 14px 32px #17271124;
+}
+.welcome > div {
+  max-width: 650px;
+}
+.welcome h1 {
+  font-size: 42px;
+  color: #fff;
+  line-height: 1.16;
+  letter-spacing: -1.4px;
+  overflow-wrap: anywhere;
+  margin: 13px 0 15px;
+}
+.welcome .eyebrow {
+  color: #d8ee9d;
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 2px;
+}
+.welcome .muted {
+  color: #d0dbc6;
+  font-size: 17px;
+  line-height: 1.7;
+  max-width: 550px;
+}
+.welcome .primary {
+  margin-top: 24px;
+  padding: 15px 23px;
+  font-size: 16px;
+  background: #d8f579;
+  color: #223618;
+  border-radius: 9px;
+  box-shadow: 0 7px 17px #0002;
+}
+.section-heading h2 {
+  font-size: 27px;
+  color: #294124;
+  font-weight: 700;
+}
+.section-heading .muted {
+  font-size: 16px;
+  color: #617651;
+}
+.month-picker {
+  border-color: #c4d1b4;
+  padding: 12px 16px;
+  color: #4d683a;
+  gap: 14px;
+}
+.month-picker input {
+  font-size: 15px;
+  width: 155px;
+}
+.daily-row {
+  gap: 22px;
+  margin-bottom: 24px;
+}
+.weekly-plan,
+.personal-focus {
+  padding: 25px;
+  border-color: #d0ddbf;
+  box-shadow: 0 5px 16px #29401b08;
+}
+.mini-ring {
+  width: 88px;
+  height: 88px;
+  padding: 9px;
+}
+.mini-ring > span {
+  font-size: 26px;
+}
+.mini-ring small {
+  font-size: 14px;
+}
+.daily-row h3 {
+  font-size: 21px;
+  color: #304c24;
+}
+.weekly-plan p {
+  font-size: 15px;
+  color: #667f50;
+  line-height: 1.6;
+}
+.weekly-plan button {
+  font-size: 14px;
+  color: #557c2f;
+  font-weight: 600;
+  margin-top: 7px;
+}
+.personal-focus .eyebrow {
+  font-size: 11px;
+  color: #648149;
+}
+.personal-focus > div > span {
+  font-size: 15px;
+  color: #708959;
+}
+.personal-focus > button {
+  min-width: 38px;
+  min-height: 38px;
+  color: #5b7a39;
+}
+.focus-icon {
+  width: 62px;
+  height: 62px;
+  font-size: 37px;
+}
+.metrics {
+  gap: 20px;
+}
+.metric {
+  padding: 27px;
+  border-color: #d5dfc6;
+  box-shadow: 0 4px 14px #2f481708;
+  gap: 21px;
+  border-radius: 15px;
+}
+.metric.featured {
+  background: #def19e;
+  border-color: #cade9c;
+}
+.metric-top {
+  font-size: 16px;
+  color: #526c3c;
+  font-weight: 550;
+}
+.metric-top span {
+  font-size: 23px;
+  color: #77954b;
+}
+.metric > strong {
+  font-size: 43px;
+  color: #24391b;
+}
+.metric small {
+  font-size: 16px;
+  color: #6b8450;
+}
+.metric-bottom {
+  font-size: 14px;
+  color: #677f4d;
+  min-height: 40px;
+  line-height: 1.6;
+}
+.panel {
+  border-color: #d0ddbd;
+  padding: 28px;
+  box-shadow: 0 6px 18px #1e3d0c08;
+  border-radius: 16px;
+}
+.panel h2 {
+  font-size: 24px;
+  color: #2b4521;
+}
+.panel .eyebrow {
+  color: #67884b;
+  font-size: 12px;
+}
+.legend {
+  font-size: 14px;
+  color: #627c4a;
+}
+.legend i {
+  width: 9px;
+  height: 9px;
+}
+.bar-track {
+  height: 180px;
+  max-width: 48px;
+}
+.bar-label {
+  font-size: 14px;
+  color: #47632e;
+}
+.bar-value {
+  font-size: 14px;
+  color: #496f2c;
+  font-weight: 600;
+}
+.bar-count {
+  font-size: 12px;
+  color: #71875d;
+}
+.chart-footnote {
+  font-size: 12px;
+  color: #6d8558;
+}
+.mix-title {
+  font-size: 16px;
+  color: #38572a;
+}
+.mix-title strong {
+  font-size: 17px;
+}
+.mix-title small {
+  font-size: 13px;
+  color: #768f61;
+}
+.mix-row p {
+  font-size: 13px;
+  color: #6e8757;
+}
+.mix-track {
+  height: 10px;
+}
+.mini-tag {
+  font-size: 13px;
+  color: #617f41;
+  border-color: #d2dfbd;
+}
+.empty-mix {
+  font-size: 16px;
+  color: #647d4e;
+}
+.empty-mix h3 {
+  font-size: 23px;
+}
+.empty-mix .secondary {
+  font-size: 15px;
+}
+.encouragement {
+  padding: 23px 26px;
+  background: #e0e9cc;
+}
+.encouragement p {
+  font-size: 15px;
+  color: #5c7546;
+}
+.encouragement button {
+  font-size: 14px;
+  color: #3c6323;
+  font-weight: 600;
+}
+.topline {
+  height: 82px;
+}
+.workspace-tabs button {
+  font-size: 14px;
+  min-height: 40px;
+}
+.profile-button {
+  font-size: 14px;
+}
+.sidebar .nav-item {
+  min-height: 50px;
+}
+.sidebar .nav-item span {
+  font-size: 25px;
+}
+footer span {
+  font-size: 13px;
+}
+footer strong {
+  font-size: 17px;
+}

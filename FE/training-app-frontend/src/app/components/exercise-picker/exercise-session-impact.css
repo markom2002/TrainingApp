@@ -1,0 +1,165 @@
+.session-panel {
+  padding: 27px;
+  border: 1px solid #cad8ba;
+  box-shadow: 0 6px 20px #263b1810;
+  border-top: 5px solid #b8da55;
+}
+.session-heading h3 {
+  font-size: 25px;
+  font-weight: 700;
+  color: #2b4423;
+}
+.session-heading > span {
+  width: 40px;
+  height: 40px;
+  font-size: 19px;
+  background: #dcefae;
+  color: #314e1e;
+}
+.eyebrow {
+  color: #617b48;
+  font-weight: 600;
+}
+.quick-label {
+  color: #536f3a;
+  font-size: 12px;
+  font-weight: 650;
+  margin-top: 28px;
+}
+.quick-add {
+  flex-wrap: wrap;
+  gap: 9px;
+}
+.quick-add button {
+  padding: 12px 17px;
+  font-size: 14px;
+  color: #45612b;
+  background: #eef4e3;
+  border-color: #c9d9b3;
+  font-weight: 600;
+}
+.preset-note {
+  font-size: 13px;
+  color: #657b50;
+}
+.empty-session {
+  padding: 40px 10px;
+  color: #6b8059;
+}
+.empty-session h4 {
+  font-size: 23px;
+  color: #3a5628;
+  line-height: 1.3;
+}
+.empty-session p {
+  font-size: 16px;
+}
+.empty-session small {
+  color: #6f835d;
+  font-size: 13px;
+}
+.empty-session > span {
+  background: #eff5e1;
+  width: 72px;
+  height: 72px;
+  color: #7f9f3d;
+}
+.session-exercise {
+  border-color: #cfdbbf;
+  padding: 18px;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #fff, #fafcf5);
+  margin-top: 16px;
+}
+.entry-title h4 {
+  font-size: 17px;
+  color: #2e4922;
+  font-weight: 650;
+  line-height: 1.4;
+}
+.entry-title small {
+  font-size: 13px;
+  color: #667f4e;
+}
+.entry-number {
+  color: #6c903b;
+  border-color: #d2dfc0;
+  background: #ecf4de;
+  font-size: 15px;
+}
+.entry-title > button {
+  color: #7a8e66;
+  font-size: 26px;
+  min-width: 32px;
+  min-height: 32px;
+}
+.entry-fields {
+  gap: 12px;
+  margin-top: 22px;
+}
+.entry-fields label {
+  color: #56713b;
+  font-size: 12px;
+  letter-spacing: 0.3px;
+  font-weight: 600;
+}
+.entry-fields input {
+  font-size: 18px;
+  font-weight: 600;
+  padding: 13px 10px;
+  color: #2d4d20;
+  border-color: #cbdcb4;
+  background: #fff;
+}
+.entry-fields input:focus {
+  border-color: #78a135;
+  outline: 2px solid #c8e69a;
+  outline-offset: 1px;
+}
+.entry-footer {
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+.entry-footer > span {
+  font-size: 11px;
+  color: #6c8258;
+}
+.entry-footer button {
+  min-width: 28px;
+  min-height: 28px;
+  font-size: 15px;
+  color: #546e3c;
+  border-color: #cfdcbc;
+}
+.exercise-validation {
+  font-size: 14px;
+  color: #8f472b;
+  line-height: 1.6;
+}
+@media (max-width: 550px) {
+  .session-panel {
+    padding: 21px;
+  }
+  .session-heading h3 {
+    font-size: 24px;
+  }
+  .session-exercise {
+    padding: 15px;
+  }
+  .entry-title h4 {
+    font-size: 16px;
+  }
+  .entry-fields {
+    gap: 8px;
+  }
+  .entry-fields label {
+    font-size: 11px;
+  }
+  .entry-fields input {
+    font-size: 17px;
+    padding: 12px 8px;
+  }
+  .entry-footer > span {
+    font-size: 10px;
+  }
+}

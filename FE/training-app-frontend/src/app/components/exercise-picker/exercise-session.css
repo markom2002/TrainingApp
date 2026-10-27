@@ -1,0 +1,141 @@
+* {
+  box-sizing: border-box;
+}
+.session-panel {
+  background: #fff;
+  border-radius: 13px;
+  align-self: start;
+  min-width: 0;
+}
+.session-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.session-heading h3 {
+  margin: 0;
+  letter-spacing: -0.4px;
+}
+.session-heading > span {
+  display: grid;
+  place-items: center;
+  border-radius: 7px;
+}
+.eyebrow {
+  font-size: 12px;
+  letter-spacing: 1.3px;
+  margin: 0 0 9px;
+}
+.quick-label {
+  letter-spacing: 1.5px;
+  margin: 24px 0 8px;
+}
+.quick-add {
+  display: flex;
+}
+.quick-add button {
+  cursor: pointer;
+  border: 1px solid #e4ead9;
+  border-radius: 6px;
+}
+.preset-note {
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+.empty-session {
+  text-align: center;
+}
+.empty-session > span {
+  display: grid;
+  place-items: center;
+  font-size: 28px;
+  border: 1px dashed #d6e2c2;
+  border-radius: 14px;
+  margin: 0 auto 20px;
+}
+.empty-session h4 {
+  font-weight: 550;
+  margin: 0 0 10px;
+}
+.empty-session p {
+  line-height: 1.8;
+}
+.empty-session small {
+  display: block;
+  line-height: 1.8;
+  margin-top: 25px;
+}
+.session-exercise {
+  border: 1px solid #e3ead9;
+}
+.entry-title {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.entry-number {
+  font-weight: 600;
+  border: 1px solid #e4ecd9;
+  border-radius: 6px;
+  padding: 8px 6px;
+}
+.entry-title h4 {
+  margin: 0;
+}
+.entry-title small {
+  display: block;
+  margin-top: 5px;
+}
+.entry-title > button {
+  cursor: pointer;
+  margin-left: auto;
+  background: none;
+  border: 0;
+}
+.entry-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.1fr;
+}
+.entry-fields label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.entry-fields input {
+  box-sizing: border-box;
+  min-width: 0;
+  width: 100%;
+  border: 1px solid #e2e9d6;
+  border-radius: 6px;
+  outline: none;
+}
+.entry-footer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.entry-footer > span {
+  margin-right: auto;
+}
+.entry-footer button {
+  cursor: pointer;
+  background: none;
+  border: 1px solid #e6ecdd;
+  border-radius: 4px;
+  padding: 2px 6px;
+}
+.exercise-validation {
+  background: #fbf2ed;
+  padding: 12px;
+  border-radius: 7px;
+}
+button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.session-exercises {
+  max-height: 650px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 3px;
+}

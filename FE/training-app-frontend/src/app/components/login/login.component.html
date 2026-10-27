@@ -1,42 +1,100 @@
-<div class="login-wrapper">
-
-  <div class="login-card">
-    <div class="brand">
-      <div class="logo">🏋️</div>
-      <h2>TrainingApp</h2>
-      <p class="subtitle">Track. Improve. Dominate.</p>
+<main class="auth-shell">
+  <section class="auth-story" aria-label="FORM training journal">
+    <a class="auth-brand" routerLink="/login"
+      ><span class="brand-mark">f.</span> FORM<span class="brand-sub"
+        >TRAINING JOURNAL</span
+      ></a
+    >
+    <div class="story-body">
+      <p class="eyebrow">YOUR EFFORT. YOUR EVOLUTION.</p>
+      <h1>
+        Built for your<br />next <em>personal<br />best.</em>
+      </h1>
+      <p class="story-copy">
+        A little structure. A little consistency.<br />A stronger version of
+        you.
+      </p>
+      <div class="orbit-art" aria-hidden="true">
+        <div class="orbit outer"></div>
+        <div class="orbit inner"></div>
+        <span class="orbit-dot"></span
+        ><span class="orbit-word">SHOW<br /><strong>UP.</strong></span
+        ><span class="floating-tag"
+          >ONE SESSION AT A TIME <span>&#8599;</span></span
+        >
+      </div>
     </div>
-
-    @if (registered) { <p role="status">Account created. Sign in to continue.</p> }
-    <form (ngSubmit)="onLogin(loginForm)" #loginForm="ngForm">
-      <div class="input-group">
-        <input 
-          type="text" 
-          [(ngModel)]="username" 
-          name="username" 
-          maxlength="254" placeholder="Email"
-          required />
-      </div>
-
-      <div class="input-group">
-        <input 
-          type="password" 
-          [(ngModel)]="password" 
-          name="password" 
-          placeholder="Password" 
-          required />
-      </div>
-
-      @if (errorMessage) { <p role="alert">{{ errorMessage }}</p> }
-      <button type="submit" class="login-btn" [disabled]="loginForm.invalid || submitting">
-        Login
-      </button>
-    </form>
-
-    <p class="register-text">
-      Don’t have an account?
-      <a routerLink="/register">Create one</a>
-    </p>
-  </div>
-
-</div>
+    <div class="story-footer">
+      <span>STRENGTH</span><i></i><span>ENDURANCE</span><i></i
+      ><span>CONSISTENCY</span>
+    </div>
+  </section>
+  <section class="auth-form-side">
+    <span class="top-note">YOUR SPACE TO GET STRONGER</span>
+    <div class="auth-form-content">
+      <span class="form-kicker">WELCOME TO YOUR TRAINING JOURNAL</span>
+      <h2>Good to see you<span>.</span></h2>
+      <p class="form-intro">Sign in and pick up where you left off.</p>
+      @if (registered) {
+        <p class="success-message" role="status">
+          Your account is ready. Sign in to start your journey.
+        </p>
+      }
+      <form (ngSubmit)="onLogin(loginForm)" #loginForm="ngForm">
+        <label for="login-email">Email address</label
+        ><input
+          id="login-email"
+          type="text"
+          name="username"
+          [(ngModel)]="username"
+          maxlength="254"
+          placeholder="you@example.com"
+          autocomplete="username"
+          required
+        />
+        <label for="login-password">Password</label>
+        <div class="password-field">
+          <input
+            id="login-password"
+            [type]="showPassword ? 'text' : 'password'"
+            name="password"
+            [(ngModel)]="password"
+            placeholder="Enter your password"
+            autocomplete="current-password"
+            required
+          /><button
+            type="button"
+            class="show-password"
+            (click)="showPassword = !showPassword"
+            [attr.aria-pressed]="showPassword"
+          >
+            {{ showPassword ? "Hide" : "Show" }}
+          </button>
+        </div>
+        @if (errorMessage) {
+          <p class="error-message" role="alert">{{ errorMessage }}</p>
+        }
+        <button
+          class="auth-submit"
+          type="submit"
+          [disabled]="loginForm.invalid || submitting"
+        >
+          {{ submitting ? "Signing you in..." : "Sign in" }}
+          <span aria-hidden="true">&#8594;</span>
+        </button>
+      </form>
+      <p class="switch-auth">
+        New to FORM?
+        <a routerLink="/register"
+          >Create an account <span aria-hidden="true">&#8599;</span></a
+        >
+      </p>
+      <div class="form-divider"></div>
+      <p class="privacy-note">
+        <span aria-hidden="true">&#9671;</span> Your workouts. Your goals. Your
+        own pace.
+      </p>
+    </div>
+    <footer>PROGRESS IS PERSONAL. MAKE IT YOURS.</footer>
+  </section>
+</main>

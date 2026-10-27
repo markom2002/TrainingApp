@@ -1,0 +1,122 @@
+header {
+  padding: 36px;
+  border-radius: 17px;
+  background:
+    linear-gradient(90deg, #132713f0, #18381da3),
+    url("/images/equipment.webp") center 55% / cover;
+  border: 1px solid #355229;
+  box-shadow: 0 10px 24px #233e1820;
+}
+header h1 {
+  color: #fff;
+  font-size: 42px;
+}
+header .eyebrow {
+  color: #d1e8a7;
+  font-size: 12px;
+}
+header .muted {
+  color: #d0dfbf;
+  font-size: 17px;
+}
+.back-link {
+  color: #587a3a;
+  font-size: 15px;
+}
+.filters-card {
+  padding: 28px;
+  border-color: #c9d8b3;
+  gap: 22px;
+}
+.filters-card label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #4f7033;
+}
+.filters-card input,
+.filters-card select {
+  min-height: 50px;
+  font-size: 16px;
+  padding: 13px;
+  color: #395d26;
+  border-color: #c2d5a8;
+}
+.filters-card button {
+  min-height: 50px;
+  font-size: 16px;
+  padding: 14px 23px;
+  font-weight: 600;
+  background: #cfe975;
+  color: #344e20;
+}
+.table-card {
+  border-color: #c9d9b2;
+}
+caption {
+  font-size: 14px;
+  color: #607e44;
+  padding: 24px;
+}
+th,
+td {
+  padding: 23px;
+  font-size: 16px;
+}
+thead th {
+  color: #527335;
+  font-size: 13px;
+  background: #edf4df;
+}
+.badge {
+  font-size: 15px;
+  background: #e2efc7;
+  color: #50782b;
+}
+.empty-card h2 {
+  font-size: 28px;
+  color: #345821;
+}
+.empty-card p {
+  font-size: 17px;
+  color: #6a854d;
+}
+.empty-card a {
+  font-size: 16px;
+  color: #4c7729;
+}
+.state {
+  color: #58793c;
+  font-size: 16px;
+}
+@media (max-width: 600px) {
+  header {
+    padding: 28px;
+  }
+  header h1 {
+    font-size: 34px;
+  }
+  header .muted {
+    font-size: 16px;
+  }
+  .filters-card {
+    padding: 22px;
+    gap: 18px;
+  }
+  .filters-card label {
+    font-size: 13px;
+  }
+  .filters-card input,
+  .filters-card select {
+    font-size: 16px;
+    min-width: 100px;
+  }
+  caption {
+    font-size: 13px;
+  }
+  .empty-card {
+    padding: 30px 20px;
+  }
+  .empty-card h2 {
+    font-size: 25px;
+  }
+}

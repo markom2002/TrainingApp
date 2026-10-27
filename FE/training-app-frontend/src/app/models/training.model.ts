@@ -1,10 +1,13 @@
+import { WorkoutExercise } from './exercise.model';
 export enum ExerciseType {
   Cardio = 0,
   Strength = 1,
-  Flexibility = 2
+  Flexibility = 2,
 }
 
 export interface Training {
+  trainingVariant?: string;
+  exercises?: WorkoutExercise[];
   id?: number;
   userId?: number;
   exerciseType: ExerciseType;
@@ -45,7 +48,11 @@ export interface DashboardOverview {
   previousWorkouts: number;
   workoutChangePercent: number | null;
   weeklyActivity: { week: number; workouts: number; minutes: number }[];
-  exerciseBreakdown: { exerciseType: string; workouts: number; minutes: number }[];
+  exerciseBreakdown: {
+    exerciseType: string;
+    workouts: number;
+    minutes: number;
+  }[];
 }
 
 export interface MonthlyTrainingStats {

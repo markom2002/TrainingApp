@@ -1,0 +1,225 @@
+<main class="profile-page">
+  <header class="page-nav">
+    <a routerLink="/dashboard" class="back">&larr; Back to overview</a>
+    <div class="nav-account">
+      <span class="wordmark">FORM<span>.</span></span
+      ><button class="profile-signout" (click)="authService.logout()">
+        Sign out &#8618;
+      </button>
+    </div>
+  </header>
+  <div class="page-title">
+    <div>
+      <p class="eyebrow">A LITTLE MORE YOU</p>
+      <h1>Your personal space<span>.</span></h1>
+      <p class="muted">Define your goals. Build your own rhythm.</p>
+    </div>
+    <span class="private-label">&#9671; YOUR PROFILE</span>
+  </div>
+  @if (loading) {
+    <p role="status" class="state">Loading your profile...</p>
+  }
+  @if (errorMessage) {
+    <p role="alert" class="error">
+      {{ errorMessage }}
+      @if (!profile) {
+        <button (click)="load()">Try again</button>
+      }
+    </p>
+  }
+  @if (profile; as p) {
+    <section class="profile-hero">
+      <div class="hero-pattern" aria-hidden="true"></div>
+      <div class="identity">
+        <span class="profile-avatar">{{ initials }}</span>
+        <div>
+          <span class="role-pill"
+            >{{ p.experience }} &middot; {{ p.role }}</span
+          >
+          <h2>{{ p.displayName }}</h2>
+          <p>
+            {{
+              p.bio ||
+                "Your story is still being written. Make every session count."
+            }}
+          </p>
+          <span class="member"
+            >MEMBER SINCE {{ p.memberSince | date: "MMMM yyyy" }}</span
+          >
+        </div>
+      </div>
+      <a class="edit-link" href="#profile-form">Edit profile &#8599;</a>
+    </section>
+    <section class="lifetime" aria-label="Lifetime training totals">
+      <article>
+        <span>TOTAL WORKOUTS</span
+        ><strong>{{ p.totalWorkouts | number }}</strong
+        ><small>Times you showed up</small>
+      </article>
+      <article>
+        <span>TRAINING TIME</span
+        ><strong>{{ p.totalMinutes | number }}<em>min</em></strong
+        ><small>Invested in yourself</small>
+      </article>
+      <article>
+        <span>CALORIES LOGGED</span
+        ><strong>{{ p.totalCalories | number }}<em>kcal</em></strong
+        ><small>Across all your workouts</small>
+      </article>
+    </section>
+    <div class="profile-grid">
+      <section class="panel" id="profile-form">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">MAKE IT PERSONAL</p>
+            <h2>Profile details</h2>
+          </div>
+          <span class="tiny-tag">EDITABLE</span>
+        </div>
+        <form (ngSubmit)="save(profileForm)" #profileForm="ngForm">
+          <div class="form-grid">
+            <div>
+              <label for="display-name">Display name</label
+              ><input
+                id="display-name"
+                name="displayName"
+                [(ngModel)]="model.displayName"
+                required
+                maxlength="60"
+                autocomplete="nickname"
+                placeholder="What should we call you?"
+              />
+            </div>
+            <div>
+              <label for="profile-email">Email address</label
+              ><input
+                id="profile-email"
+                [value]="p.email"
+                readonly
+                aria-describedby="email-note"
+              /><small id="email-note" class="hint"
+                >Connected to your sign-in account.</small
+              >
+            </div>
+          </div>
+          <label for="bio"
+            >A little about you <span class="optional">OPTIONAL</span></label
+          ><textarea
+            id="bio"
+            name="bio"
+            [(ngModel)]="model.bio"
+            maxlength="280"
+            rows="3"
+            placeholder="What keeps you moving?"
+          ></textarea
+          ><span class="char-count">{{ model.bio.length }}/280</span>
+          <div class="form-grid">
+            <div>
+              <label for="goal">My focus</label
+              ><select id="goal" name="goal" [(ngModel)]="model.goal" required>
+                @for (goal of goals; track goal) {
+                  <option [value]="goal">{{ goal }}</option>
+                }
+              </select>
+            </div>
+            <div>
+              <label for="experience">Training experience</label
+              ><select
+                id="experience"
+                name="experience"
+                [(ngModel)]="model.experience"
+                required
+              >
+                @for (level of levels; track level) {
+                  <option [value]="level">{{ level }}</option>
+                }
+              </select>
+            </div>
+          </div>
+          <label for="weekly-goal">Weekly workout goal</label>
+          <div class="goal-input">
+            <input
+              id="weekly-goal"
+              name="weeklyGoal"
+              type="number"
+              [(ngModel)]="model.weeklyGoal"
+              min="1"
+              max="7"
+              step="1"
+              required
+            /><span
+              >sessions per week &middot; choose a rhythm that works for
+              you</span
+            >
+          </div>
+          @if (profileForm.invalid && profileForm.touched) {
+            <p class="error" role="alert">
+              Enter your name and choose a weekly goal between 1 and 7.
+            </p>
+          }
+          <div class="save-row">
+            <span class="save-note" role="status">{{
+              saved
+                ? "Profile saved. Looking good!"
+                : "Your profile is only visible to you."
+            }}</span
+            ><button
+              class="primary"
+              type="submit"
+              [disabled]="
+                profileForm.invalid || saving || !model.displayName.trim()
+              "
+            >
+              {{ saving ? "Saving..." : "Save changes" }} &#8594;
+            </button>
+          </div>
+        </form>
+      </section>
+      <aside class="profile-aside">
+        <section class="panel goal-panel">
+          <p class="eyebrow">CONSISTENCY IS YOUR SUPERPOWER</p>
+          <h2>Your weekly rhythm</h2>
+          <div
+            class="goal-ring"
+            [style.background]="
+              'conic-gradient(#cce968 ' + progress + '%, #eef2e5 0)'
+            "
+            role="img"
+            [attr.aria-label]="
+              p.weeklyWorkouts +
+              ' of ' +
+              p.weeklyGoal +
+              ' workouts completed this week'
+            "
+          >
+            <div>
+              <strong
+                >{{ p.weeklyWorkouts }}<span>/{{ p.weeklyGoal }}</span></strong
+              ><small>WORKOUTS THIS WEEK</small>
+            </div>
+          </div>
+          <p class="goal-caption">
+            {{
+              p.weeklyWorkouts >= p.weeklyGoal
+                ? "Goal reached. Celebrate your consistency."
+                : "Every session brings you a little closer."
+            }}
+          </p>
+          <a routerLink="/add-training" class="goal-cta"
+            >Log a workout &#8599;</a
+          >
+          <p class="week-note">Monday-Sunday &middot; UTC calendar week</p>
+        </section>
+        <section class="focus-card">
+          <span class="focus-symbol" aria-hidden="true">&#10035;</span>
+          <p>YOUR NORTH STAR</p>
+          <h3>{{ p.goal }}</h3>
+          <span
+            >Progress looks different on everyone.<br />Keep showing up for
+            yours.</span
+          >
+        </section>
+      </aside>
+    </div>
+  }
+</main>

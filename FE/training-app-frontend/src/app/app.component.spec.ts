@@ -5,7 +5,10 @@ import { AppComponent } from './app.component';
 // The app shell renders routed pages; the generated Angular welcome heading was removed.
 describe('AppComponent', () => {
   it('renders the router outlet', async () => {
-    await TestBed.configureTestingModule({ imports: [AppComponent], providers: [provideRouter([])] }).compileComponents();
+    await TestBed.configureTestingModule({
+      imports: [AppComponent],
+      providers: [provideRouter([])],
+    }).compileComponents();
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('router-outlet')).not.toBeNull();

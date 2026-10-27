@@ -1,4 +1,71 @@
-html { scroll-behavior: smooth; }
-body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; }
-button, input, select, textarea { font: inherit; }
-@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+html {
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  background: #edf0e7;
+  color: #1d2e21;
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+button,
+a,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+button:focus-visible,
+a:focus-visible {
+  outline: 3px solid #8cba33;
+  outline-offset: 4px;
+}
+::selection {
+  background: #d6f16d;
+  color: #20301a;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+/* Keep navigation available without adding another floating toolbar. */
+html {
+  scroll-padding-top: 96px;
+}
+body {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+app-root :is(.topline, .studio-nav, .page-nav) {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(244, 247, 237, 0.94);
+  backdrop-filter: blur(12px);
+}
+app-root
+  :is(
+    .exercise-option,
+    .auth-submit,
+    .primary,
+    .save-buttons button
+  ):active:not(:disabled) {
+  transform: translateY(1px);
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition: none !important;
+    animation: none !important;
+  }
+}

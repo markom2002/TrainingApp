@@ -1,0 +1,114 @@
+.list-header h2 {
+  font-size: 26px;
+  color: #2d4a21;
+}
+.history-filters {
+  gap: 14px;
+  margin-bottom: 26px;
+}
+.history-filters label {
+  color: #506d38;
+  font-size: 13px;
+  font-weight: 550;
+  gap: 10px;
+}
+.history-filters input,
+.history-filters select {
+  min-height: 46px;
+  padding: 11px 12px;
+  font-size: 14px;
+  border-color: #c6d6b0;
+  color: #39572a;
+}
+.history-filters button {
+  min-height: 46px;
+  font-size: 14px;
+  padding: 11px 18px;
+}
+.history-filters button[type="submit"] {
+  background: #d6ef88;
+  border-color: #b9d66b;
+  color: #2f4c1e;
+  font-weight: 650;
+}
+.table-wrapper {
+  border-color: #cddbb9;
+  border-radius: 11px;
+}
+table {
+  min-width: 1050px;
+}
+th {
+  font-size: 12px;
+  background: #edf3e1;
+  color: #516f38;
+  font-weight: 650;
+  padding: 19px 14px;
+}
+td {
+  font-size: 14px;
+  color: #405d2e;
+  padding: 20px 14px;
+}
+.type-badge,
+.badge {
+  font-size: 13px;
+  padding: 7px 10px;
+}
+.type-badge {
+  background: #e4efce;
+  color: #53752e;
+}
+.fatigue {
+  color: #6a7f56;
+}
+.actions button {
+  font-size: 13px;
+  padding: 10px 13px;
+  min-height: 39px;
+}
+.notes {
+  max-width: 200px;
+  color: #6b8058;
+}
+.empty {
+  font-size: 15px;
+  color: #688452;
+  padding: 45px 20px;
+}
+.history-pagination {
+  font-size: 14px;
+  color: #5f7d43;
+  margin-top: 22px;
+}
+.history-pagination button {
+  font-size: 14px;
+  padding: 12px 16px;
+}
+.training-list-container > p {
+  color: #5e7c40;
+  font-size: 15px;
+}
+@media (max-width: 650px) {
+  .list-header h2 {
+    font-size: 24px;
+  }
+  .history-filters {
+    gap: 12px;
+  }
+  .history-filters label {
+    font-size: 12px;
+  }
+  .history-filters input,
+  .history-filters select {
+    font-size: 14px;
+  }
+  .history-pagination {
+    font-size: 12px;
+    gap: 9px;
+  }
+  .history-pagination button {
+    font-size: 12px;
+    padding: 10px 12px;
+  }
+}

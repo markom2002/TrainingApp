@@ -1,176 +1,122 @@
-# Gym Training Tracker
+# FORM — Gym Training Tracker
 
-Angular 19 frontend and ASP.NET Core 8 / EF Core / SQL Server API.
+A personal training journal built with **Angular 19, ASP.NET Core 8, EF Core and SQL Server**. Log workouts and individual exercises, track progress, and manage a private athlete profile. Designed for local use and portfolio demonstrations.
 
-## Local setup
+## Features
 
-1. Install .NET 8 SDK, Node.js and SQL Server.
-2. Set `ConnectionStrings__DefaultConnection` to your SQL Server connection string.
-3. Local HTTPS launch uses `appsettings.Development.json` for the SQL connection, JWT development key and CORS origins. Environment variables such as `Jwt__Key` and `ConnectionStrings__DefaultConnection` override these values.
-4. Apply the schema: `dotnet ef database update --project BE`.
-5. Trust the development API certificate: `dotnet dev-certs https --trust`.
-6. Start the API: `dotnet run --project BE --launch-profile https`.
-7. In `FE/training-app-frontend`, run `npm install` and `npm start`.
-8. Open `https://localhost:4200` and accept the Angular development certificate. Both frontend and API must use HTTPS for the Secure / SameSite=Strict refresh cookie. Open `https://localhost:7089/swagger` to inspect the API.
+- **Workout Studio:** 47 exercises across 14 muscle groups, search, body filters, editable Upper/Lower/Full body drafts and front/back male/female sculpture views. Every exercise is available in every presentation.
+- **Exercise records:** sets, repetitions or seconds, added weight and exercise order. Each exercise entry uses one sets/reps-or-time/load combination.
+- **Dashboard:** monthly totals, previous-month comparison, weekly activity, exercise distribution and progress towards a personal weekly goal.
+- **History:** SQL pagination, inclusive date filters, exercise-type filtering, stable sorting and expandable exercise details.
+- **Private profiles:** display name, bio, training focus, experience, weekly target and lifetime totals.
+- **Authentication and authorization:** short-lived JWTs, rotating refresh cookies, User/Admin roles and ownership checks on workout operations.
+- **API documentation:** Swagger examples, response schemas and ProblemDetails errors.
 
-## Authentication (upgrade 1)
+## Run locally
 
-- Login returns a JWT valid for 15 minutes, held in frontend memory.
-- A random refresh token is sent only in a Secure, HttpOnly, SameSite=Strict cookie scoped to `/api/auth`. JavaScript cannot read it.
-- SQL stores only the SHA-256 hash. Sessions expire seven days after login; rotation does not extend that deadline.
-- `POST /api/auth/refresh` consumes the current token and issues its replacement. Expired or consumed tokens return 401. Optimistic concurrency prevents consuming the same token twice.
-- Angular retries an API request once after a 401 and shares one refresh request among concurrent requests. The route guard restores the session after a page reload.
-- `POST /api/auth/logout` revokes the current refresh token and deletes the cookie. Previously issued access JWTs can remain valid for their remaining 15-minute lifetime.
-- Authentication establishes identity. Authorization controls roles and workout ownership (implemented in upgrade 2).
-- Cross-origin deployment requires explicitly revisiting cookie, CORS and CSRF settings; the local setup assumes the same host and HTTPS for both applications.
+Requirements: .NET 8 SDK, EF CLI, Node.js 22, npm and a local SQL Server instance.
 
-## Verification
+1. Configure your SQL connection in [BE/appsettings.Development.json](BE/appsettings.Development.json), or override it with `ConnectionStrings__DefaultConnection`. The checked-in signing key is for local development; `Jwt__Key` overrides it.
+2. Restore dependencies and apply migrations from the repository root:
 
-`dotnet test BE.Tests/BE.Tests.csproj` runs xUnit tests against SQLite in memory for token rotation, reuse rejection, expiry, revoked tokens, missing/unknown cookies and logout.
+   ```powershell
+   dotnet restore BE/BE.sln
+   dotnet ef database update --project BE
+   dotnet dev-certs https --trust
+   ```
 
-`npm run build` in the frontend checks the production bundle.
+3. Start the backend:
 
-## Roadmap
+   ```powershell
+   dotnet run --project BE --launch-profile https
+   ```
 
-1. Refresh tokens and session lifecycle.
-2. User/Admin authorization and ownership tests.
-3. Input validation and consistent API errors.
-4. Pagination, filtering and sorting.
-5. Broader xUnit and frontend coverage.
-6. API documentation and examples.
-7. GitHub Actions for automated builds and tests (local-only application).
-8. Dashboard and progress visualizations.
+4. In a second terminal:
 
-## Authorization (upgrade 2)
+   ```powershell
+   cd FE/training-app-frontend
+   npm ci
+   npm start
+   ```
 
-Every existing account and new registration receives the `User` role. Registration ignores any client-supplied role. JWTs carry the server-side role, and refresh reads the current role from the database.
+5. Open **https://localhost:4200** and register an account. The API and Swagger are at **https://localhost:7089/swagger**. Both services use HTTPS. Accept the Angular local development certificate in the browser if prompted; opening plain HTTP on port 4200 will not work.
 
-- Anonymous requests to protected endpoints return **401** (authentication required).
-- A signed-in User requesting `GET /api/admin/summary` receives **403** (insufficient permissions).
-- An Admin receives aggregate user/training counts. The dashboard exposes the statistics button only for Admin accounts; the API enforces the permission independently.
-- Both Users and Admins may read, update and delete only their own training records. Foreign record IDs return **404** to avoid exposing their existence.
+No application hosting account is required. Existing workouts are preserved by the profile/exercise migrations. Example Swagger credentials are sample inputs, not seeded accounts.
 
-Admin provisioning is an operator action, not a registration field. To promote a specific development account, execute a parameterized update to `Users.Role = 'Admin'` for that account in your SQL administration tool, then log in again. No account is promoted automatically. Existing access tokens keep their claims until expiry (up to 15 minutes); refreshing or signing in reads the latest database role.
-
-The HTTP integration tests cover anonymous/User/Admin access, ownership enforcement for User and Admin, and attempted role escalation through registration.
-
-## Validation and error responses (upgrade 3)
-
-- New registrations require a valid email (up to 254 characters), a password of at least eight characters and at most 72 UTF-8 bytes, and gender `Male`, `Female` or `Other`. BCrypt's byte limit is validated before hashing. Login retains compatibility with existing shorter passwords and legacy account names.
-- Workouts require a supported exercise and date; duration is 1�1440 minutes, calories 0�10000, intensity/fatigue 1�10 and notes at most 2000 characters. Missing dates and exercise values are rejected rather than silently defaulted.
-- API validation returns `400 application/problem+json` with an `errors` dictionary keyed by field. Duplicate registrations return 409; invalid credentials return 401; inaccessible training IDs return 404. Unhandled errors use the global exception handler without exposing exception details.
-- Angular registration, login, add and edit forms show API error messages and prevent repeated submission while a request is pending. Registration redirects to login with a success notice.
-- No database migration is needed for this phase.
-
-Example validation response (additional fields may be present):
-
-```json
-{
-  "title": "One or more validation errors occurred.",
-  "status": 400,
-  "errors": { "DurationMinutes": ["The field DurationMinutes must be between 1 and 1440."] }
-}
-```
-
-## Pagination, filtering and sorting (upgrade 4)
-
-`GET /api/trainings` now returns an object instead of an array:
-
-```json
-{
-  "items": [],
-  "page": 1,
-  "pageSize": 10,
-  "totalCount": 0,
-  "totalPages": 0
-}
-```
-
-Query parameters:
-
-| Parameter | Default | Values |
-| --- | --- | --- |
-| `page` | 1 | 1�1000000 |
-| `pageSize` | 10 | 1�100 |
-| `exerciseType` | all | Cardio, Strength, Flexibility |
-| `from`, `to` | no limit | YYYY-MM-DD; both dates are inclusive |
-| `sortBy` | trainingDate | trainingDate, durationMinutes, calories, intensity |
-| `sortDirection` | desc | asc, desc |
-
-Example: `/api/trainings?page=1&pageSize=10&exerciseType=Strength&from=2026-01-01&to=2026-01-31&sortBy=durationMinutes&sortDirection=desc`.
-
-The API scopes the query to the signed-in user, filters and counts matching records, then sorts and applies SQL pagination. A unique ID secondary sort makes equal sort values deterministic. Pages beyond the last page return empty `items` with the actual count; no matches give `totalPages: 0`. Invalid query parameters return 400 ProblemDetails. Angular provides Apply/Reset filters, page-size selection, Previous/Next controls, loading/error states and recovery after deleting the last record on a page. Date filters compare stored training calendar dates without timezone conversion.
-
-The list-response change is intentional; the Angular client and integration tests were updated together. No database migration is required. Pagination is covered by the backend integration suite.
-
-## Automated tests and Swagger (upgrade 5)
-
-Run backend tests from the repository root:
+## Tests and builds
 
 ```powershell
-dotnet test BE.Tests/BE.Tests.csproj
-```
+# Repository root: 74 xUnit tests against isolated SQLite databases
+dotnet test BE.Tests/BE.Tests.csproj --configuration Release
 
-Run frontend tests and build from `FE/training-app-frontend`:
-
-```powershell
+# Angular directory: 19 tests in Chrome Headless
 npm run test:ci
 npm run build
+npm run build -- --configuration development
 ```
 
-The frontend test command requires Chrome/Chromium installed (`CHROME_BIN` can point to a custom installation). It runs once in Chrome Headless. `npm test` runs in watch mode.
+Chrome/Chromium must be installed for the frontend tests (`CHROME_BIN` can point to a custom installation). Tests do not modify the development SQL Server database.
 
-The suite contains 51 backend tests and 13 Angular tests. Backend tests use isolated SQLite databases and the real ASP.NET authentication/authorization middleware through WebApplicationFactory; they never modify the development SQL Server database. The suite covers JWT rejection, refresh cookies and rotation, logout, role updates, ownership, validation, pagination, monthly totals, deletion and the generated OpenAPI contract. SQLite is not a substitute for SQL Server deployment/migration checks. Angular HTTP tests verify token scoping, shared refresh, bounded retries, 403 handling and logout. They are not a complete end-to-end browser test of the application.
+[GitHub Actions](https://github.com/markom2002/TrainingApp/actions) runs the backend tests, Angular tests and both frontend builds on pushes and pull requests to `master`. Backend TRX reports are retained as workflow artifacts. The workflow can also be started manually.
 
-Swagger is at `https://localhost:7089/swagger` in Development. The raw OpenAPI document is `/swagger/v1/swagger.json`. It includes endpoint summaries, request examples, response schemas, validation errors and role requirements. Public authentication endpoints have no JWT security requirement; refresh/logout use the login cookie. Secured workout/Admin endpoints show the Bearer security requirement.
+Browser checks additionally cover login, profile editing, workout creation/history/editing, draft shortcuts and responsive layouts at phone, tablet and desktop widths. SQLite tests complement local SQL Server migration and persistence checks.
 
-To try the API:
+## API
 
-1. Register your own account using `POST /api/auth/register`. The example credentials are sample inputs, not a seeded account.
-2. Execute `POST /api/auth/login` with those credentials.
-3. Copy `token` and paste it into Swagger **Authorize**, without adding `Bearer`.
-4. Try `GET /api/trainings` and create a workout. User accounts receive 403 on Admin statistics.
-5. Execute refresh to rotate the browser cookie and get a new JWT. Swagger does not automatically replace the token in Authorize; paste the new token there when needed.
-6. Logout revokes the refresh cookie; access JWTs already issued remain valid until expiry.
+| Endpoint | Purpose | Access |
+| --- | --- | --- |
+| `POST /api/auth/register` | Create an account | Public |
+| `POST /api/auth/login` | Issue access JWT and refresh cookie | Public |
+| `POST /api/auth/refresh` | Rotate the refresh session | Refresh cookie |
+| `POST /api/auth/logout` | Revoke the refresh session | Refresh cookie |
+| `GET /api/exercises` | Shared exercise catalog | Signed in |
+| `GET, POST /api/trainings` | Paginated history / create workout | Owner |
+| `GET, PUT, DELETE /api/trainings/{id}` | Read, update or delete workout | Owner |
+| `GET /api/trainings/overview` | Monthly dashboard aggregates | Owner |
+| `GET /api/trainings/month` | Weekly totals for a month | Owner |
+| `GET, PUT /api/profile` | Read or update personal profile | Owner |
+| `GET /api/admin/summary` | Application counts | Admin |
+| `GET /health/live` | API process liveness | Public |
 
-`BE/BE.http` contains matching request examples and an access-token placeholder for HTTP clients.
+History example:
 
-## GitHub Actions and local configuration (upgrade 6)
+```text
+/api/trainings?page=1&pageSize=10&exerciseType=Strength&from=2026-01-01&to=2026-01-31&sortBy=durationMinutes&sortDirection=desc
+```
 
-This project is kept local for personal use and CV demonstrations. There is no deployment workflow, hosting service or public application.
+`pageSize` is limited to 100. Supported sort fields are `trainingDate`, `durationMinutes`, `calories` and `intensity`; direction is `asc` or `desc`. Responses contain `items`, `page`, `pageSize`, `totalCount` and `totalPages`. Invalid requests return `400 application/problem+json` with field errors.
 
-[Build and test workflow](.github/workflows/ci.yml) runs on pushes and pull requests to `master` and can be started manually from GitHub Actions:
+Workout requests can include:
 
-- The backend job installs .NET 8, restores the solution, executes the Release xUnit suite against SQLite and verifies the API build. TRX test reports are uploaded as workflow artifacts.
-- The frontend job installs Node.js 22, restores exact dependencies with `npm ci`, runs Chrome Headless tests, and builds both production and development configurations.
-- Jobs have read-only repository permissions, timeouts and cancellation of superseded runs. No database, hosting credentials or repository secrets are required.
+```json
+{
+  "trainingVariant": "Women",
+  "exercises": [
+    { "exerciseId": "bench-press", "sets": 3, "reps": 10, "weightKg": 40 },
+    { "exerciseId": "plank", "sets": 2, "durationSeconds": 30, "weightKg": 0 }
+  ]
+}
+```
 
-The Angular API base URL is centralized in `src/app/api.config.ts`. `npm start` uses `environment.development.ts` and calls `https://localhost:7089/api`. The production build uses a relative `/api` base; it is only a build check here, not a deployed application. Running the built files requires an API at that origin or a configured proxy.
+A workout supports up to 40 distinct exercises, 1–30 sets, 1–200 repetitions or 1–7200 seconds and 0–1000 kg of added load. Zero weight means no added load. Old session summaries remain valid without exercise entries. Full request examples are in [BE/BE.http](BE/BE.http).
 
-Machine-specific SQL settings, the example JWT development key and localhost CORS origins are in `BE/appsettings.Development.json`. The common settings file holds issuer/audience and logging settings. Startup validates that a signing key and database connection are configured. Never put real account passwords or private signing keys in committed files; use local environment variables or .NET user secrets for those.
+## Security model
 
-`GET https://localhost:7089/health/live` returns a small public liveness response. It verifies that the API process responds, not that SQL Server is reachable.
+Authentication establishes identity; authorization controls access. Anonymous protected requests return **401**, a User requesting Admin statistics gets **403**, and unknown/foreign workout IDs return **404**. Admin accounts retain the same workout ownership restrictions as ordinary users.
 
-CV example after a successful GitHub workflow run:
+JWTs last 15 minutes and stay in frontend memory. Refresh tokens use Secure, HttpOnly, SameSite=Strict cookies; SQL stores their SHA-256 hashes. Rotation consumes the old token and preserves the session's seven-day deadline. Logout revokes the refresh token; issued JWTs retain their remaining lifetime.
 
-> Configured GitHub Actions CI to run xUnit integration tests, Angular HTTP tests and release builds on pushes and pull requests.
+Registration always creates a User. Admin provisioning is an explicit database/operator action followed by a new login or refresh. Profile updates cannot change email, password, role or identity. New membership timestamps use UTC; weekly goals count Monday-to-Monday UTC calendar dates.
 
-## Dashboard and progress (upgrade 7)
+In Swagger, register and log in, then paste only `token` into **Authorize**; Swagger supplies `Bearer`. The browser manages the refresh cookie, while a refreshed JWT must be copied into Authorize again.
 
-The responsive FORM dashboard uses the signed-in user's real workout entries. Select a month to see:
+## Structure and optimization
 
-- workout count, total minutes and logged calories;
-- average intensity and fatigue (a dash instead of an average when there are no workouts);
-- workout count change against the previous calendar month, with no invented percentage when the previous count is zero;
-- weekly training minutes (days 1�7, 8�14, etc.), including empty weeks;
-- exercise mix by session count and training time.
+- `BE/Controllers`, `DTOs`, `Services`, `Models`, `Data`: API, validation, business logic and EF persistence.
+- `BE/Exercises`: stable exercise IDs and the shared catalog.
+- `BE/Migrations`: versioned SQL schema changes.
+- `BE.Tests`: HTTP integration and session tests.
+- `FE/training-app-frontend/src/app`: standalone Angular pages, shared controls and typed services.
+- `FE/training-app-frontend/public/images`: locally stored generated gym imagery and illustrative sculpture atlases.
 
-`GET /api/trainings/overview?year=2026&month=10` provides these aggregates. It requires a valid JWT and is always scoped to its owner, including Admin callers. Year is 2�9998 and month is 1�12. Monthly boundaries use the calendar dates recorded in workout entries. No database migration is required.
-
-The dashboard includes filterable/paginated history, Add/Edit/Delete controls, Admin-only application counts and sign-out. Deleting a workout updates the overview. Desktop has sidebar navigation; narrow screens stack the cards and let the history table scroll within its panel. Monthly progress also loads automatically and shows loading, empty and error states separately.
-
-New tests cover monthly aggregates, exercise mix, a year-boundary comparison, empty months and invalid dates, plus Angular rendering of populated/empty/error dashboards and monthly statistics. Visual checks used mock API responses in a separate browser context at desktop and mobile sizes without modifying development SQL data. No sleep, heart-rate or other unsupported metrics are fabricated.
-
-CV example:
-
-> Built a responsive Angular dashboard with EF Core monthly aggregates, workout trends, exercise distribution, and user-scoped REST endpoints backed by automated tests.
+Angular pages load on demand. The interceptor owns authentication headers and refresh retries. Monthly/profile totals are aggregated in SQL. Image assets were compressed from 7.44 MB of PNGs to **602 KB of WebP** (91.9% reduction); old wrappers, unused routes/templates and 533 overridden CSS declarations were removed. CSS and initial bundles stay within configured build budgets.
