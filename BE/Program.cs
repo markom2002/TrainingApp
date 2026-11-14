@@ -107,6 +107,28 @@ builder.Services.AddSwaggerGen(options =>
 
 
 var app = builder.Build();
+// A separate, setup-only HTTP origin lets a phone download the public certificate
+// before trusting HTTPS. Never expose login, private data or the app on this port.
+if (app.Environment.IsDevelopment() && app.Configuration.GetValue<bool>("PhoneSetup:Enabled"))
+{
+    app.Use(async (context, next) =>
+    {
+        if (context.Connection.LocalPort == 7088)
+        {
+            var path = context.Request.Path.Value;
+            if ((HttpMethods.IsGet(context.Request.Method) || HttpMethods.IsHead(context.Request.Method)) &&
+                (path == "/phone-setup.html" || path == "/certificates/form-local-root.cer"))
+            {
+                context.Response.Headers.CacheControl = "no-store";
+                await next();
+                return;
+            }
+            context.Response.StatusCode = StatusCodes.Status404NotFound;
+            return;
+        }
+        await next();
+    });
+}
 
 app.UseExceptionHandler();
 app.UseStatusCodePages();

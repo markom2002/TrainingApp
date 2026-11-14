@@ -14,7 +14,7 @@ export class AuthGuard implements CanActivate {
     if (this.authService.isLoggedIn) return true;
     return this.authService.refresh().pipe(
       map(() => true),
-      catchError(() => of(this.router.createUrlTree(['/login']))),
+      catchError(error => of(error.status === 0 && localStorage.getItem('form.offlineAccount') ? true : this.router.createUrlTree(['/login']))),
     );
   }
 }

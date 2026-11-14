@@ -77,14 +77,7 @@ public class JourneyService(AppDbContext db)
         {
             AccountId = userId,
             StartingWeightKg=athlete.StartingWeightKg,TargetWeightKg=athlete.TargetWeightKg,GoalProgressPercent=goalPercent,
-            Rank = RankLadder.FromXp(xp),
-            RankLadder = RankLadder.Tiers,
-            XpBreakdown = new[]
-            {
-                new XpSource("workouts", "Show up", "40 XP for every completed workout", workouts.Count, workouts.Count * 40),
-                new XpSource("records", "Raise the bar", "50 XP for each new daily weight record", records.Count, records.Count * 50),
-                new XpSource("achievements", "Make it a milestone", "Bonuses for unlocked achievements", achievements.Count(a => a.Unlocked), achievements.Where(a => a.Unlocked).Sum(a => a.Xp))
-            }
+
         };
     }
 

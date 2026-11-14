@@ -98,7 +98,6 @@
             ],
             "styles": [
               "src/styles.css",
-              "src/rank-animations.css",
               "src/performance-ui.css",
               "src/arena-ui.css"
             ],

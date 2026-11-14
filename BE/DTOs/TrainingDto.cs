@@ -4,6 +4,7 @@ using BE.Models;
 
 public class TrainingDto : IValidatableObject
 {
+    public Guid? ClientId { get; set; }
     [Required, EnumDataType(typeof(ExerciseType))]
     public ExerciseType? ExerciseType { get; set; }
 

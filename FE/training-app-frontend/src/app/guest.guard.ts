@@ -7,5 +7,5 @@ import { AuthService } from './services/auth.service';
 export const guestGuard: CanActivateFn = () => {
   const auth = inject(AuthService), router = inject(Router);
   if (auth.isLoggedIn) return router.createUrlTree(['/dashboard']);
-  return auth.refresh().pipe(map(() => router.createUrlTree(['/dashboard'])), catchError(() => of(true)));
+  return auth.refresh().pipe(map(() => router.createUrlTree(['/dashboard'])), catchError(error => of(error.status === 0 && localStorage.getItem('form.offlineAccount') ? router.createUrlTree(['/dashboard']) : true)));
 };

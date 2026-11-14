@@ -65,6 +65,7 @@ try {
     $env:Kestrel__Certificates__Default__Password = $previousPassword
 }
 Write-Host "Phone setup: $phoneUrl/phone-setup.html"
+Write-Host "First-time setup (no cached app or HTTPS trust required): http://${Address}:7088/phone-setup.html"
 Write-Host "App: $phoneUrl/dashboard"
 Write-Host "CA SHA-256: $fingerprint"
 Write-Host "Started process $($process.Id). Trust the public CA certificate once on each phone; private keys are never served."

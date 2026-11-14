@@ -1,0 +1,29 @@
+@if (offline.pending.length) {
+  <aside class="sync-status pending" aria-label="Offline workout sync">
+    <div class="sync-summary" role="status">
+      <span class="status-dot"></span>
+      <strong>{{ offline.pending.length }} workout{{ offline.pending.length === 1 ? '' : 's' }} saved on this device</strong>
+      <span>{{ offline.status() }}</span>
+      <button type="button" (click)="offline.sync()" [disabled]="offline.syncing() || !pwa.online">
+        {{ offline.syncing() ? 'Syncing...' : 'Sync now' }}
+      </button>
+    </div>
+    <details>
+      <summary>View offline workouts</summary>
+      @for (item of offline.pending; track item.clientId) {
+        <p>{{ item.body.trainingDate | date: 'd MMM, HH:mm' }} &middot; {{ item.body.exercises?.length || 0 }} exercises</p>
+      }
+    </details>
+  </aside>
+} @else if (!pwa.online) {
+  <p class="sync-status" role="status"><span class="status-dot"></span>Offline &middot; New workouts will be saved on this device.</p>
+} @else if (offline.account && pwa.offlineCapable) {
+  <p class="sync-status" [class.ready]="offline.ready()" role="status">
+    <span class="status-dot"></span>
+    {{ offline.ready() ? 'Offline ready on this device' : 'Preparing offline access - keep this page open' }}
+    @if (offline.status()) { <span class="sync-note">{{ offline.status() }}</span> }
+  </p>
+}
+<router-outlet />
+<app-mobile-nav />
+<app-achievement-toast />

@@ -4,11 +4,12 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './auth.interceptor';
 import { AuthGuard } from './auth.guard';
 import { guestGuard } from './guest.guard';
+import { offlineInterceptor } from './services/offline.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideHttpClient(withInterceptors([authInterceptor])),
+    provideHttpClient(withInterceptors([offlineInterceptor, authInterceptor])),
     provideRouter(
       [
         { path: '', redirectTo: 'login', pathMatch: 'full' },

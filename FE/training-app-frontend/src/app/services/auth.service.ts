@@ -62,6 +62,12 @@ export class AuthService {
 
   saveToken(token: string) {
     this.token = token;
+    try {
+      const claims=jwtDecode<Record<string,unknown>>(token);
+      const id=claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] ?? claims['sub'];
+      if(id){try{localStorage.setItem('form.offlineAccount',String(id));}catch{} window.dispatchEvent(new Event('form-session-ready'));}
+    } catch { /* An unreadable token cannot establish an offline identity. */ }
+
   }
   getToken(): string | null {
     return this.token;
@@ -70,6 +76,7 @@ export class AuthService {
   clearSession() {
     this.progression.dismissAll();
     this.token = null;
+    localStorage.removeItem('form.offlineAccount');
     localStorage.removeItem('userEmail');
     this.router.navigate(['/login']);
   }

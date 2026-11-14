@@ -79,9 +79,11 @@ namespace BE.Services.Implementations
 
         public Training Add(int userId, TrainingDto dto)
         {
+            if(dto.ClientId.HasValue){var existing=_context.Trainings.AsNoTracking().FirstOrDefault(t=>t.UserId==userId && t.ClientId==dto.ClientId);if(existing!=null)return GetById(existing.Id,userId)!;}
             var training = new Training
             {
                 UserId = userId,
+                ClientId = dto.ClientId,
                 ExerciseType = dto.ExerciseType!.Value,
                 DurationMinutes = dto.DurationMinutes,
                 Calories = dto.Calories,
@@ -94,7 +96,12 @@ namespace BE.Services.Implementations
             };
 
             _context.Trainings.Add(training);
-            _context.SaveChanges();
+            try { _context.SaveChanges(); }
+            catch(DbUpdateException) when(dto.ClientId.HasValue){
+                var existing=_context.Trainings.AsNoTracking().FirstOrDefault(t=>t.UserId==userId && t.ClientId==dto.ClientId);
+                if(existing==null)throw;
+                return GetById(existing.Id,userId)!;
+            }
 
             return training;
         }

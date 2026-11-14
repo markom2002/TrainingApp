@@ -5,8 +5,10 @@ $projectRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $programPath = Join-Path $projectRoot 'BE/bin/Release/net8.0/BE.exe'
 if (-not (Test-Path -LiteralPath $programPath)) { throw 'Build the app in Release configuration first.' }
 if (-not (Get-NetFirewallRule -Name $phoneRuleName -ErrorAction SilentlyContinue)) {
-    New-NetFirewallRule -Name $phoneRuleName -DisplayName 'FORM phone access - private Wi-Fi only' -Direction Inbound -Action Allow -Protocol TCP -LocalPort 7089 -RemoteAddress LocalSubnet -Profile Private -InterfaceType Wireless -Program $programPath | Out-Null
+    New-NetFirewallRule -Name $phoneRuleName -DisplayName 'FORM phone access - private Wi-Fi only' -Direction Inbound -Action Allow -Protocol TCP -LocalPort 7088,7089 -RemoteAddress LocalSubnet -Profile Private -InterfaceType Wireless -Program $programPath | Out-Null
 }
+Get-NetFirewallRule -Name $phoneRuleName | Get-NetFirewallPortFilter | Set-NetFirewallPortFilter -Protocol TCP -LocalPort 7088,7089
+Enable-NetFirewallRule -Name $phoneRuleName
 Write-Host 'FORM access is allowed on private Wi-Fi networks, for local devices only.'
 Get-NetIPConfiguration | Where-Object IPv4DefaultGateway | ForEach-Object {
     $phoneAddress = $_.IPv4Address.IPAddress

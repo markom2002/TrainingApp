@@ -40,14 +40,5 @@ public record JourneyOverview(int CurrentStreak, int BestStreak, int TotalWorkou
     public decimal? StartingWeightKg { get; init; }
     public decimal? TargetWeightKg { get; init; }
     public decimal GoalProgressPercent { get; init; }
-    [System.Text.Json.Serialization.JsonIgnore]
-    public RankProgress Rank { get; init; } = null!;
-    [System.Text.Json.Serialization.JsonIgnore]
-    public IReadOnlyList<RankTier> RankLadder { get; init; } = Array.Empty<RankTier>();
-    [System.Text.Json.Serialization.JsonIgnore]
-    public IReadOnlyList<XpSource> XpBreakdown { get; init; } = Array.Empty<XpSource>();
 }
-public record RankTier(string Id, int Index, string Name, string Motto, int MinXp, string Color, string Secondary);
-public record RankProgress(RankTier Current, RankTier? Next, int XpInRank, int RankSpan, int XpToNext, decimal Percent);
-public record XpSource(string Id, string Name, string Description, int Count, int TotalXp);
 public record MeasurementResponse(int Id, DateTime MeasuredOn, decimal WeightKg);

@@ -1,31 +1,24 @@
-// No private API responses, tokens or workout logs are stored by this worker.
-const CACHE = 'form-shell-v2';
-const SHELL = ['/offline.html', '/icons/icon-192.png'];
-self.addEventListener('install', (event) =>
-  event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(SHELL)).then(() => self.skipWaiting())),
-);
-self.addEventListener('activate', (event) =>
-  event.waitUntil(
-    caches
-      .keys()
-      .then((keys) =>
-        Promise.all(
-          keys
-            .filter((key) => key.startsWith('form-shell-') && key !== CACHE)
-            .map((key) => caches.delete(key)),
-        ),
-      )
-      .then(() => self.clients.claim()),
-  ),
-);
-self.addEventListener('fetch', (event) => {
-  if (
-    event.request.method !== 'GET' ||
-    event.request.mode !== 'navigate' ||
-    new URL(event.request.url).origin !== self.location.origin
-  )
-    return;
-  event.respondWith(
-    fetch(event.request).catch(() => caches.match('/offline.html')),
-  );
+// Public assets only. Account data is isolated in application storage.
+const CACHE='form-offline-__BUILD__';
+self.addEventListener('message',event=>{if(event.data?.type==='OFFLINE_STATUS')event.ports[0]?.postMessage({cache:CACHE});});
+self.addEventListener('install',event=>event.waitUntil((async()=>{
+ const response=await fetch('/offline-assets.json',{cache:'reload'});
+ if(!response.ok)throw new Error('Offline preparation unavailable');
+ const files=await response.json(),cache=await caches.open(CACHE);
+ await cache.addAll(files.map(url=>new Request(url,{cache:'reload'})));await self.skipWaiting();
+})()));
+self.addEventListener('activate',event=>event.waitUntil((async()=>{
+ for(const key of await caches.keys())if((key.startsWith('form-offline-')||key.startsWith('form-shell-'))&&key!==CACHE)await caches.delete(key);
+ await self.clients.claim();
+})()));
+self.addEventListener('fetch',event=>{
+ const url=new URL(event.request.url);
+ if(event.request.method!=='GET'||url.origin!==self.location.origin||url.pathname.startsWith('/api/')||url.pathname.startsWith('/certificates/')||url.pathname==='/phone-setup.html'||url.pathname==='/offline-assets.json')return;
+ if(event.request.mode==='navigate')event.respondWith((async()=>{
+   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),3000);
+   try{return await fetch(event.request,{signal:controller.signal});}
+   catch{return await caches.match('/index.html')||await caches.match('/offline.html');}
+   finally{clearTimeout(timer);}
+ })());
+ else event.respondWith(caches.match(event.request).then(hit=>hit||fetch(event.request)));
 });

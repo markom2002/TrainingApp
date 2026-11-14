@@ -3,23 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { API_BASE_URL } from '../api.config';
 import { tap } from 'rxjs';
 import { ProgressionService } from './progression.service';
-export interface RankTier {
-  id: string;
-  index: number;
-  name: string;
-  motto: string;
-  minXp: number;
-  color: string;
-  secondary: string;
-}
-export interface RankProgress {
-  current: RankTier;
-  next: RankTier | null;
-  xpInRank: number;
-  rankSpan: number;
-  xpToNext: number;
-  percent: number;
-}
 export interface Achievement {
   id: string;
   name: string;
@@ -46,15 +29,6 @@ export interface Measurement {
 export interface Journey {
   startingWeightKg?:number|null;targetWeightKg?:number|null;goalProgressPercent?:number;
   accountId?: number;
-  rank?: RankProgress;
-  rankLadder?: RankTier[];
-  xpBreakdown?: {
-    id: string;
-    name: string;
-    description: string;
-    count: number;
-    totalXp: number;
-  }[];
   currentStreak: number;
   bestStreak: number;
   totalWorkouts: number;

@@ -16,6 +16,7 @@ namespace BE.Data
         public DbSet<BodyMeasurement> BodyMeasurements { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Training>().HasIndex(t => new { t.UserId, t.ClientId }).IsUnique().HasFilter("[ClientId] IS NOT NULL");
             modelBuilder.Entity<Training>().Property(t => t.TrainingVariant).HasDefaultValue("Unisex");
             modelBuilder.Entity<TrainingExercise>().Property(e => e.WeightKg).HasPrecision(6, 2);
             modelBuilder.Entity<TrainingSet>().Property(e => e.WeightKg).HasPrecision(6, 2);

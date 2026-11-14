@@ -1,18 +1,13 @@
 import { Injectable, OnDestroy, signal } from '@angular/core';
-import type { Achievement, Journey, RankTier } from './journey.service';
+import type { Achievement, Journey } from './journey.service';
 export interface RewardEvent {
-  kind: 'achievement' | 'rank' | 'xp';
+  kind: 'achievement';
   title: string;
   description: string;
-  xp: number;
-  rank?: RankTier;
   achievement?: Achievement;
-  preview?: boolean;
 }
 interface ProgressSnapshot {
   version: 1;
-  xp: number;
-  highestRank: number;
   unlocked: string[];
 }
 @Injectable({ providedIn: 'root' })
@@ -29,11 +24,6 @@ export class ProgressionService implements OnDestroy {
     const earned = journey.achievements.filter((a) => a.unlocked);
     const next: ProgressSnapshot = {
       version: 1,
-      xp: journey.xp,
-      highestRank: Math.max(
-        previous?.highestRank ?? 0,
-        0,
-      ),
       unlocked: [
         ...new Set([...(previous?.unlocked ?? []), ...earned.map((a) => a.id)]),
       ],
@@ -47,12 +37,10 @@ export class ProgressionService implements OnDestroy {
         kind: 'achievement',
         title: a.name,
         description: a.description,
-        xp: a.xp,
         achievement: a,
       }));
     this.enqueue(events);
   }
-  preview(_rank: RankTier) {}
   advance() {
     this.clearTimer();
     this.current.set(this.queue.shift() ?? null);
@@ -70,7 +58,7 @@ export class ProgressionService implements OnDestroy {
   }
   resume() {
     this.clearTimer();
-    if (this.current() && this.current()!.kind !== 'rank')
+    if (this.current())
       this.timer = setTimeout(() => this.advance(), 5000);
   }
   ngOnDestroy() {
@@ -92,11 +80,6 @@ export class ProgressionService implements OnDestroy {
         const data = JSON.parse(raw) as ProgressSnapshot;
         if (
           data.version === 1 &&
-          Number.isInteger(data.xp) &&
-          data.xp >= 0 &&
-          Number.isInteger(data.highestRank) &&
-          data.highestRank >= 0 &&
-          data.highestRank <= 8 &&
           Array.isArray(data.unlocked) &&
           data.unlocked.every((id) => typeof id === 'string')
         )

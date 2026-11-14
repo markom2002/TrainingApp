@@ -22,16 +22,18 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
         return throwError(() => error);
       return auth.refresh().pipe(
         catchError((refreshError) => {
-          auth.clearSession();
+          if (refreshError.status !== 0) auth.clearSession();
           return throwError(() => refreshError);
         }),
-        switchMap((result) =>
-          next(
+        switchMap((result) => {
+          const owner=request.headers.get('X-Offline-Account');
+          if(owner && owner !== localStorage.getItem('form.offlineAccount'))return throwError(()=>new Error('Account changed; saved workouts were not sent.'));
+          return next(
             request.clone({
               setHeaders: { Authorization: `Bearer ${result.token}` },
             }),
-          ),
-        ),
+          );
+        }),
       );
     }),
   );

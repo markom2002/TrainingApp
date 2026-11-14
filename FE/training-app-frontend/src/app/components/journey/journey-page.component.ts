@@ -9,7 +9,7 @@ import { UiIconComponent } from '../ui-icon.component';
     <header class="journey-nav">
       <a routerLink="/dashboard">← Back to overview</a
       ><a class="journey-wordmark" routerLink="/dashboard"
-        >form<span>.</span></a
+        >🏋️<span>.</span></a
       >
     </header>
     <section class="journey-title">

@@ -3,6 +3,7 @@ namespace BE.Models
     public class Training
     {
         public int Id { get; set; }
+        public Guid? ClientId { get; set; }
 
         [System.ComponentModel.DataAnnotations.MaxLength(10)]
         public string TrainingVariant { get; set; } = "Unisex";

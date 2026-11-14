@@ -10,7 +10,7 @@ import { UiIconComponent } from './ui-icon.component';
       <span class="install-icon"><app-icon name="phone" /></span>
       <div>
         <strong>Your progress. In your pocket.</strong>
-        <p>Add FORM to your home screen. One tap from your next session.</p>
+        <p>Add 🏋️ to your home screen. One tap from your next session.</p>
       </div>
       <button type="button" (click)="install()">
         {{ pwa.promptEvent ? 'Install app' : 'How to install' }} <span>↗</span>
@@ -29,8 +29,7 @@ import { UiIconComponent } from './ui-icon.component';
           Home screen.
         </p>
         <p class="install-note">
-          Use a trusted HTTPS address. Saving workouts and signing in need a connection
-          to the running server.
+          Use a trusted HTTPS address. First sign-in and syncing need the server. After offline preparation, new workouts can be saved on this device without a connection.
         </p>
         <button type="button" (click)="showHelp = false">Got it</button>
       </div>

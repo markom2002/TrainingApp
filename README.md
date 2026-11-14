@@ -6,7 +6,7 @@ A personal training journal built with **Angular 19, ASP.NET Core 8, EF Core and
 
 - **Your journey:** recovery-friendly workout-day streaks, XP levels, 10 achievement milestones, added-weight personal records and an opt-in body-weight direction with weigh-in history.
 - **Individual sets:** keep quick sets/reps/load entry or log separate repetitions, seconds and load for each set. Repeat an earlier workout into a new day's draft.
-- **Installable app:** Android/iPhone/desktop PWA manifest, icons, install guidance, shared mobile navigation and an honest offline fallback. See [mobile app setup](MOBILNA-APLIKACIJA.md) for the single-origin .NET package and HTTPS requirements.
+- **Installable app:** Android/iPhone/desktop PWA manifest, icons, install guidance, shared mobile navigation and offline workout entry, cached screens and retry-safe synchronization. See [mobile app setup](MOBILNA-APLIKACIJA.md) for the single-origin .NET package and HTTPS requirements.
 - **Workout Studio:** 48 exercises across 14 muscle groups, search, body filters, editable Upper/Lower/Full body drafts and front/back male/female sculpture views. Every exercise is available in every presentation.
 - **Exercise records:** sets, repetitions or seconds, added weight and exercise order. Each exercise entry uses one sets/reps-or-time/load combination.
 - **Dashboard:** monthly totals, previous-month comparison, weekly activity, exercise distribution and progress towards a personal weekly goal.
@@ -129,3 +129,5 @@ In Swagger, register and log in, then paste only `token` into **Authorize**; Swa
 - `FE/training-app-frontend/public/images`: locally stored generated gym imagery and illustrative sculpture atlases.
 
 Angular pages load on demand. The interceptor owns authentication headers and refresh retries. Monthly/profile totals are aggregated in SQL. Image assets were compressed from 7.44 MB of PNGs to **602 KB of WebP** (91.9% reduction); old wrappers, unused routes/templates and 533 overridden CSS declarations were removed. CSS and initial bundles stay within configured build budgets.
+
+Offline use: sign in online once and wait for **Offline ready on this device**. New workouts are queued locally and synchronized when the server returns; retry IDs prevent duplicate entries. Previously fetched history is available offline. Existing server records and profile changes require a connection. See [phone and offline instructions](LICNA-APLIKACIJA.md).

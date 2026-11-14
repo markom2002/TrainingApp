@@ -92,6 +92,9 @@ namespace BE.Migrations
                     b.Property<int>("Calories")
                         .HasColumnType("int");
 
+                    b.Property<Guid?>("ClientId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int>("DurationMinutes")
                         .HasColumnType("int");
 
@@ -122,7 +125,9 @@ namespace BE.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId", "ClientId")
+                        .IsUnique()
+                        .HasFilter("[ClientId] IS NOT NULL");
 
                     b.ToTable("Trainings");
                 });
