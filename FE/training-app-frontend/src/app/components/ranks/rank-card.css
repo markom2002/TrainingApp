@@ -1,0 +1,158 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+.rank-card {
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  padding: 22px;
+  border: 1px solid color-mix(in srgb, var(--rank-color) 20%, transparent);
+  background:
+    radial-gradient(
+      ellipse at 15% 45%,
+      color-mix(in srgb, var(--rank-secondary) 14%, transparent),
+      transparent 70%
+    ),
+    #1a1720;
+}
+.rank-card::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  width: 170px;
+  height: 170px;
+  border: 1px solid color-mix(in srgb, var(--rank-color) 6%, transparent);
+  border-radius: 50%;
+  right: -70px;
+  top: -60px;
+}
+.rank-card-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 8px;
+  letter-spacing: 1.2px;
+  color: #a38eaf;
+}
+.rank-card-heading strong {
+  color: var(--rank-color);
+  font-weight: 500;
+  font-size: 10px;
+  letter-spacing: 0;
+}
+.rank-card-body {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin: 13px 0 17px;
+  min-height: 94px;
+}
+.rank-card-body app-rank-emblem {
+  width: 83px;
+  margin-left: -10px;
+}
+.rank-card-body > div {
+  min-width: 0;
+}
+.rank-card-body > div > span {
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: var(--rank-color);
+}
+.rank-card h3 {
+  font-size: 31px;
+  line-height: 1.15;
+  letter-spacing: -1px;
+  margin: 6px 0;
+  color: var(--rank-color) !important;
+  font-weight: 600;
+}
+.rank-card p {
+  font-size: 9px;
+  color: #9e89ab;
+  line-height: 1.7;
+  margin: 0;
+}
+.rank-card-progress {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 8px;
+  color: #a88fba;
+  margin-bottom: 9px;
+}
+.rank-card-progress > span:last-child {
+  color: var(--rank-color);
+}
+.rank-fill-track {
+  height: 7px;
+  background: #ffffff09;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.rank-fill-track > span {
+  height: 100%;
+  display: block;
+  background: linear-gradient(90deg, var(--rank-secondary), var(--rank-color));
+  border-radius: 8px;
+  position: relative;
+  box-shadow: 0 0 15px color-mix(in srgb, var(--rank-color) 30%, transparent);
+  transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.rank-fill-track > span::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, #ffffff60, transparent);
+  transform: translateX(-100%);
+  animation: rank-sheen 5s ease-in-out infinite;
+}
+.rank-card > a {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: #a993b8;
+  text-decoration: none;
+  font-size: 9px;
+  margin-top: 13px;
+}
+.rank-card > a > span {
+  color: var(--rank-color);
+}
+@keyframes rank-sheen {
+  0%,
+  65% {
+    transform: translateX(-110%);
+  }
+  95%,
+  100% {
+    transform: translateX(110%);
+  }
+}
+@media (max-width: 650px) {
+  .rank-card {
+    padding: 18px;
+  }
+  .rank-card-body {
+    margin: 14px 0;
+  }
+  .rank-card-body app-rank-emblem {
+    width: 95px;
+  }
+  .rank-card h3 {
+    font-size: 34px;
+  }
+  .rank-card p {
+    font-size: 11px;
+  }
+  .rank-card-heading {
+    font-size: 9px;
+  }
+  .rank-card-progress,
+  .rank-card > a {
+    font-size: 10px;
+  }
+}

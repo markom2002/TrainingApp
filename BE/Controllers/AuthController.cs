@@ -19,11 +19,13 @@ namespace BE.Controllers
     {
         private readonly AppDbContext _context;
         private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment? _environment;
 
-        public AuthController(AppDbContext context, IConfiguration configuration)
+        public AuthController(AppDbContext context, IConfiguration configuration, IWebHostEnvironment? environment = null)
         {
             _context = context;
             _configuration = configuration;
+            _environment = environment;
         }
 
         /// <summary>Create a User account.</summary>
@@ -52,7 +54,7 @@ namespace BE.Controllers
         }
 
 
-        /// <summary>Sign in and start a seven-day refresh session.</summary>
+        /// <summary>Sign in and start a 30-day refresh session.</summary>
         /// <remarks>Returns a 15-minute JWT and a Secure, HttpOnly refresh cookie. Paste only token into Authorize.</remarks>
         [ProducesResponseType(typeof(TokenResponse), 200)]
         [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
@@ -72,12 +74,13 @@ namespace BE.Controllers
             return await IssueTokens(user);
         }
 
-        private const string CookieName = "training_refresh";
+        private string CookieName => LocalPreview.SecureCookie(_configuration, _environment, HttpContext)
+            ? "training_refresh" : "training_refresh_local";
 
         private CookieOptions RefreshCookie(DateTime expires) => new()
         {
             HttpOnly = true,
-            Secure = true,
+            Secure = LocalPreview.SecureCookie(_configuration, _environment, HttpContext),
             SameSite = SameSiteMode.Strict,
             Path = "/api/auth",
             Expires = new DateTimeOffset(expires)
@@ -143,7 +146,7 @@ namespace BE.Controllers
                 claims: claims, expires: expires,
                 signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
             var rawToken = RefreshTokenSecurity.Generate();
-            var refreshExpiry = sessionExpiry ?? now.AddDays(7);
+            var refreshExpiry = sessionExpiry ?? now.AddDays(30);
             _context.RefreshTokens.Add(new RefreshToken
             {
                 TokenHash = RefreshTokenSecurity.Hash(rawToken),

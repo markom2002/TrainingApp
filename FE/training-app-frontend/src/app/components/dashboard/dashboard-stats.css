@@ -1,0 +1,80 @@
+.stat-grid,
+.loading-cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+.stat-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 17px 15px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  min-width: 0;
+}
+.stat-card.violet {
+  background: linear-gradient(135deg, #8c5ae5, #6231b9);
+  border-color: #af89ff36;
+}
+.stat-icon {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: #ffffff18;
+  color: #f0e6ff;
+  margin-bottom: 13px;
+}
+.stat-icon app-icon {
+  width: 16px;
+  height: 16px;
+}
+.stat-icon.mint {
+  background: #8ecfa51a;
+  color: #92d4ae;
+}
+.stat-icon.gold {
+  background: #e2bd731a;
+  color: #e2bd73;
+}
+.stat-icon.pink {
+  background: #d88dc71a;
+  color: #d88dc7;
+}
+.stat-label {
+  font-size: 10px;
+  color: #b1aabb;
+}
+.violet .stat-label {
+  color: #ebe0fa;
+}
+.stat-card > strong {
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -1.2px;
+  line-height: 1.4;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.stat-card small {
+  font-size: 10px;
+  font-weight: 400;
+  color: #a6a0b1;
+  margin-left: 4px;
+  letter-spacing: 0;
+}
+.stat-detail {
+  font-size: 8px;
+  color: #98929f;
+  margin-top: 7px;
+  line-height: 1.5;
+}
+.violet .stat-detail {
+  color: #e3d2f7;
+}
+.stat-detail b {
+  color: #fff;
+}

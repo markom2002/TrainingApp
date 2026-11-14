@@ -1,11 +1,25 @@
 <div class="training-list-container">
   <div class="list-header">
-    <h2>Workout History</h2>
-    <div class="line"></div>
+    <div>
+      <p class="eyebrow">YOUR WORK, ON RECORD</p>
+      <h2>Workout history</h2>
+    </div>
+    <button
+      type="button"
+      class="filter-toggle"
+      (click)="filtersOpen = !filtersOpen"
+      [attr.aria-expanded]="filtersOpen"
+      aria-controls="workout-filters"
+    >
+      {{ filtersOpen ? 'Hide filters' : 'Filter & sort' }}
+      <span aria-hidden="true">{{ filtersOpen ? '−' : '+' }}</span>
+    </button>
   </div>
 
   <form
     class="history-filters"
+    id="workout-filters"
+    [hidden]="!filtersOpen"
     (ngSubmit)="applyFilters(filterForm)"
     #filterForm="ngForm"
   >
@@ -90,34 +104,44 @@
 
       <tbody>
         <tr *ngFor="let t of trainings">
-          <td class="date">{{ t.trainingDate | date: "short" }}</td>
+          <td class="date" data-label="Date">
+            {{ t.trainingDate | date: 'short' }}
+          </td>
 
-          <td>
+          <td data-label="Type">
             <span class="type-badge">
               {{ t.exerciseType }}
             </span>
           </td>
 
-          <td>{{ t.durationMinutes }} min</td>
-          <td class="calories">{{ t.calories }}</td>
+          <td data-label="Duration">{{ t.durationMinutes }} min</td>
+          <td class="calories" data-label="Calories">{{ t.calories }}</td>
 
-          <td>
+          <td data-label="Intensity">
             <span class="badge intensity"> {{ t.intensity }}/10 </span>
           </td>
 
-          <td>
+          <td data-label="Fatigue">
             <span class="badge fatigue"> {{ t.fatigue }}/10 </span>
           </td>
 
-          <td>
+          <td data-label="Exercises">
             <app-workout-exercises
               [exercises]="t.exercises || []"
               [variant]="t.trainingVariant || 'Unisex'"
             ></app-workout-exercises>
           </td>
-          <td class="notes">{{ t.notes || "-" }}</td>
+          <td class="notes" data-label="Notes">{{ t.notes || '-' }}</td>
 
-          <td class="actions">
+          <td class="actions" data-label="Actions">
+            <button
+              type="button"
+              class="repeat-btn"
+              (click)="repeatTraining(t.id!)"
+              [disabled]="loading || deleting"
+            >
+              Repeat
+            </button>
             <button
               class="edit-btn"
               (click)="editTraining(t.id!)"

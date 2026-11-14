@@ -1,0 +1,10 @@
+.rank-fill-track > span,
+.hero-progress-track > span {
+  transform-origin: left;
+  animation: xp-fill-in 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes xp-fill-in {
+  from {
+    transform: scaleX(0);
+  }
+}

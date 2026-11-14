@@ -1,0 +1,103 @@
+<section
+  class="movement-guide movement-studio"
+  [attr.data-ready]="ready()"
+  [attr.data-exercise]="exercise?.id"
+>
+  <header>
+    <span><i></i> FORM / MOVEMENT STUDIO</span
+    ><span class="studio-mode">3D</span>
+  </header>
+  <div #viewport class="studio-viewport">
+    <canvas
+      #canvas
+      [attr.aria-label]="
+        exercise?.name +
+        ' 3D movement guide, highlighted target ' +
+        exercise?.muscleGroup
+      "
+      role="img"
+    ></canvas>
+    @if (!ready() && !error()) {
+      <div class="studio-loading" role="status">
+        <span></span>Preparing your movement…
+      </div>
+    }
+    @if (error()) {
+      <div class="studio-fallback">
+        <div class="athlete-reference"></div>
+        <strong>3D preview unavailable</strong
+        ><button type="button" (click)="retry()">Reload preview</button>
+      </div>
+    }
+    <span class="studio-equipment">{{ exercise?.equipment }}</span>
+    <span class="studio-target"
+      ><i></i>{{ exercise?.muscleGroup }}<small>PRIMARY</small></span
+    >
+    <span class="studio-watermark" aria-hidden="true">FORM.</span>
+  </div>
+  <div class="studio-playback">
+    <button
+      type="button"
+      (click)="toggle()"
+      [disabled]="!ready()"
+      [attr.aria-label]="paused() ? 'Play movement' : 'Pause movement'"
+    >
+      {{ paused() ? "▶ Play" : "Ⅱ Pause" }}
+    </button>
+    <span class="phase-label">{{ phaseLabel() }}</span>
+    <button
+      type="button"
+      class="speed-control"
+      (click)="speed = speed === 1 ? 0.5 : 1"
+      [attr.aria-label]="'Playback speed ' + speed + ' times'"
+    >
+      {{ speed }}×
+    </button>
+  </div>
+  <input
+    class="movement-scrubber"
+    aria-label="Inspect exercise position"
+    type="range"
+    min="0"
+    max="1"
+    step="0.01"
+    [value]="progress()"
+    (input)="seek($any($event.target).value)"
+    [disabled]="!ready()"
+  />
+  <div class="studio-views" role="group" aria-label="Movement camera angle">
+    <button
+      type="button"
+      [class.active]="view === 'three-quarter'"
+      [attr.aria-pressed]="view === 'three-quarter'"
+      (click)="setView('three-quarter')"
+    >
+      3/4 view
+    </button>
+    <button
+      type="button"
+      [class.active]="view === 'side'"
+      [attr.aria-pressed]="view === 'side'"
+      (click)="setView('side')"
+    >
+      Side
+    </button>
+    <button
+      type="button"
+      [class.active]="view === 'back'"
+      [attr.aria-pressed]="view === 'back'"
+      (click)="setView('back')"
+    >
+      Back
+    </button>
+  </div>
+  <div class="studio-copy">
+    <span class="studio-label">THE MOVEMENT</span>
+    <h3>{{ exercise?.name }}</h3>
+    <p>{{ guide.cue }}</p>
+  </div>
+  <footer>
+    <span><i></i>Highlighted primary muscles</span
+    ><small>Illustrated guide · individual technique may vary.</small>
+  </footer>
+</section>

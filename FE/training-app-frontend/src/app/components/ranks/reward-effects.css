@@ -1,0 +1,178 @@
+.celebration-orb {
+  position: absolute;
+  left: 50%;
+  top: 43%;
+  width: 650px;
+  height: 650px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(
+    color-mix(in srgb, var(--reward-color) 7%, transparent),
+    transparent 65%
+  );
+  animation: orb-open 1.5s ease-out both;
+}
+.celebration-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(
+      color-mix(in srgb, var(--reward-color) 3%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--reward-color) 3%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 65px 65px;
+  mask-image: radial-gradient(ellipse at 50% 50%, #000, transparent 65%);
+  animation: form-rank-grid-fade 1s both;
+}
+.celebration-rays {
+  position: absolute;
+  left: 50%;
+  top: 43%;
+  width: 850px;
+  height: 850px;
+  border-radius: 50%;
+  background: repeating-conic-gradient(
+    from 0deg,
+    transparent 0deg 14deg,
+    color-mix(in srgb, var(--reward-color) 3%, transparent) 15deg 17deg,
+    transparent 18deg 30deg
+  );
+  mask-image: radial-gradient(transparent 18%, #000 35%, transparent 65%);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+}
+.shockwave {
+  position: absolute;
+  left: 50%;
+  top: 43%;
+  width: 240px;
+  height: 240px;
+  border: 1px solid color-mix(in srgb, var(--reward-color) 40%, transparent);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: shock-expand 2s 0.2s ease-out both;
+  pointer-events: none;
+}
+.wave-two {
+  animation-delay: 0.45s;
+  opacity: 0.5;
+  display: none;
+}
+.wave-three {
+  animation-delay: 0.7s;
+  border-style: dashed;
+  display: none;
+}
+.rank-particles {
+  position: absolute;
+  left: 50%;
+  top: 43%;
+}
+.rank-particles > i {
+  position: absolute;
+  display: block;
+  width: 3px;
+  height: 7px;
+  border-radius: 1px;
+  background: var(--reward-color);
+  box-shadow: 0 0 9px color-mix(in srgb, var(--reward-color) 60%, transparent);
+  animation: rank-burst 2.1s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.rank-particles > i:nth-child(n + 13) {
+  display: none;
+}
+.rank-particles > i:nth-child(3n) {
+  background: var(--reward-secondary);
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+}
+.rank-celebration[data-tier='0'] .rank-particles > i:nth-child(n + 7) {
+  display: none;
+}
+.rank-celebration[data-tier='2'] .wave-two,
+.rank-celebration[data-tier='3'] .wave-two {
+  display: block;
+}
+.rank-celebration[data-tier='3'] .celebration-rays {
+  animation: rays-reveal 5s ease-out both;
+}
+.rank-celebration:is(
+    [data-tier='4'],
+    [data-tier='5'],
+    [data-tier='6'],
+    [data-tier='7'],
+    [data-tier='8']
+  )
+  .wave-two {
+  display: block;
+}
+.rank-celebration:is(
+    [data-tier='4'],
+    [data-tier='5'],
+    [data-tier='6'],
+    [data-tier='7'],
+    [data-tier='8']
+  )
+  .rank-particles
+  > i:nth-child(-n + 24) {
+  display: block;
+}
+.rank-celebration:is(
+    [data-tier='5'],
+    [data-tier='6'],
+    [data-tier='7'],
+    [data-tier='8']
+  )
+  .celebration-rays {
+  animation: rays-reveal 8s ease-out both;
+}
+.rank-celebration:is([data-tier='6'], [data-tier='7'], [data-tier='8'])
+  .wave-three {
+  display: block;
+}
+.rank-celebration:is([data-tier='6'], [data-tier='7'], [data-tier='8'])
+  .celebration-orb {
+  background: radial-gradient(
+    color-mix(in srgb, var(--reward-color) 13%, transparent),
+    transparent 65%
+  );
+}
+.rank-celebration[data-tier='7'] .reveal-emblem {
+  animation: master-aura 3.8s 1s ease-in-out infinite;
+}
+.rank-celebration[data-tier='8'] .rank-particles > i {
+  display: block;
+}
+.rank-celebration[data-tier='8'] .celebration-rays {
+  background: repeating-conic-gradient(
+    from 0deg,
+    transparent 0deg 10deg,
+    #ffe2a009 11deg 12deg,
+    transparent 13deg 20deg
+  );
+  animation: legend-galaxy 24s linear infinite;
+}
+.rank-celebration[data-tier='8'] .rank-reveal h2 {
+  background: linear-gradient(110deg, #ffe2a0, #fff7dc, #d6adfc, #ffe2a0);
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation:
+    text-reveal 0.8s 0.35s both,
+    legend-title 6s 1s ease-in-out infinite;
+}
+.rank-celebration[data-tier='8'] .emblem-halo {
+  border-color: #ffe2a030;
+  box-shadow:
+    0 0 60px #ffe2a008,
+    0 0 120px #a780e810;
+}
+.rank-celebration[data-tier='8'] .rank-particles > i:nth-child(2n) {
+  animation-duration: 3.5s;
+}

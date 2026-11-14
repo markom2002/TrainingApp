@@ -1,0 +1,66 @@
+.individual-sets-toggle {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  background: none;
+  border: 0;
+  padding: 13px 0 0;
+  color: #9c8bab;
+  font-size: 10px;
+  text-align: left;
+}
+.individual-sets-toggle span {
+  color: #c2a1f3;
+}
+.set-table {
+  margin-top: 20px;
+}
+.set-table-head,
+.individual-set {
+  display: grid;
+  grid-template-columns: 30px 1fr 1fr 30px;
+  gap: 9px;
+  align-items: center;
+}
+.set-table-head {
+  color: #92809f;
+  font-size: 8px;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+.individual-set {
+  margin-top: 7px;
+}
+.individual-set > span {
+  font-size: 11px;
+  color: #bd9aeb;
+}
+.individual-set input {
+  width: 100%;
+  min-width: 0;
+  text-align: center;
+  padding: 8px !important;
+}
+.individual-set > button {
+  border: 1px solid #ffffff0c;
+  border-radius: 7px;
+  background: #ffffff04;
+  color: #ae97c1;
+  min-height: 36px;
+}
+.add-set-button {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 12px;
+  margin-top: 12px;
+  background: #a078e711;
+  border: 1px dashed #a078e735;
+  border-radius: 8px;
+  color: #c7a6f1;
+  font-size: 11px;
+}
+.add-set-button small {
+  font-size: 9px;
+  color: #95819e;
+}

@@ -4,13 +4,22 @@ A personal training journal built with **Angular 19, ASP.NET Core 8, EF Core and
 
 ## Features
 
-- **Workout Studio:** 47 exercises across 14 muscle groups, search, body filters, editable Upper/Lower/Full body drafts and front/back male/female sculpture views. Every exercise is available in every presentation.
+- **Your journey:** recovery-friendly workout-day streaks, XP levels, 10 achievement milestones, added-weight personal records and an opt-in body-weight direction with weigh-in history.
+- **Individual sets:** keep quick sets/reps/load entry or log separate repetitions, seconds and load for each set. Repeat an earlier workout into a new day's draft.
+- **Installable app:** Android/iPhone/desktop PWA manifest, icons, install guidance, shared mobile navigation and an honest offline fallback. See [mobile app setup](MOBILNA-APLIKACIJA.md) for the single-origin .NET package and HTTPS requirements.
+- **Workout Studio:** 48 exercises across 14 muscle groups, search, body filters, editable Upper/Lower/Full body drafts and front/back male/female sculpture views. Every exercise is available in every presentation.
 - **Exercise records:** sets, repetitions or seconds, added weight and exercise order. Each exercise entry uses one sets/reps-or-time/load combination.
 - **Dashboard:** monthly totals, previous-month comparison, weekly activity, exercise distribution and progress towards a personal weekly goal.
 - **History:** SQL pagination, inclusive date filters, exercise-type filtering, stable sorting and expandable exercise details.
 - **Private profiles:** display name, bio, training focus, experience, weekly target and lifetime totals.
 - **Authentication and authorization:** short-lived JWTs, rotating refresh cookies, User/Admin roles and ownership checks on workout operations.
 - **API documentation:** Swagger examples, response schemas and ProblemDetails errors.
+
+## Personal performance edition
+
+Rank screens, rank celebrations and XP notices have been removed from the app. Achievements, streaks, records and body goals remain. Quick Log separates entry from Movement Lab; every exercise has its own kg/lbs preference. Login restores a valid HttpOnly session automatically, with a fixed 30-day deadline.
+
+For Android and iPhone, see [personal phone installation](LICNA-APLIKACIJA.md).
 
 ## Run locally
 
@@ -46,10 +55,10 @@ No application hosting account is required. Existing workouts are preserved by t
 ## Tests and builds
 
 ```powershell
-# Repository root: 74 xUnit tests against isolated SQLite databases
+# Repository root: 114 xUnit tests against isolated SQLite databases
 dotnet test BE.Tests/BE.Tests.csproj --configuration Release
 
-# Angular directory: 19 tests in Chrome Headless
+# Angular directory: 53 tests in Chrome Headless
 npm run test:ci
 npm run build
 npm run build -- --configuration development
@@ -104,7 +113,7 @@ A workout supports up to 40 distinct exercises, 1–30 sets, 1–200 repetitions
 
 Authentication establishes identity; authorization controls access. Anonymous protected requests return **401**, a User requesting Admin statistics gets **403**, and unknown/foreign workout IDs return **404**. Admin accounts retain the same workout ownership restrictions as ordinary users.
 
-JWTs last 15 minutes and stay in frontend memory. Refresh tokens use Secure, HttpOnly, SameSite=Strict cookies; SQL stores their SHA-256 hashes. Rotation consumes the old token and preserves the session's seven-day deadline. Logout revokes the refresh token; issued JWTs retain their remaining lifetime.
+JWTs last 15 minutes and stay in frontend memory. Refresh tokens use Secure, HttpOnly, SameSite=Strict cookies; SQL stores their SHA-256 hashes. Rotation consumes the old token and preserves the session's 30-day deadline. Logout revokes the refresh token; issued JWTs retain their remaining lifetime.
 
 Registration always creates a User. Admin provisioning is an explicit database/operator action followed by a new login or refresh. Profile updates cannot change email, password, role or identity. New membership timestamps use UTC; weekly goals count Monday-to-Monday UTC calendar dates.
 

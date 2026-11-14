@@ -1,0 +1,226 @@
+html:root[data-theme='dark'] app-root app-workout-exercises summary{background:#a078e710;border:1px solid #a078e725;color:#c4a0e5}html:root[data-theme='dark'] app-root app-workout-exercises .record-row strong{color:#dfc9f1}html:root[data-theme='dark'] app-root app-workout-exercises .record-row{border-color:#ffffff0b}
+html:root[data-theme='dark'] app-root>app-training-calendar{display:block;max-width:1250px;margin:auto;padding:35px 22px 100px}
+html:root[data-theme='dark'] body {
+  background: #0c0e13;
+}
+html:root[data-theme='dark'] app-root .workspace {
+  background:
+    radial-gradient(ellipse at 90% 0%, #9373dd08, transparent 45%), #0e0f14;
+}
+html:root[data-theme='dark'] app-root .page-heading h1 {
+  font-size: clamp(29px, 3vw, 42px);
+  letter-spacing: -1.8px;
+}
+html:root[data-theme='dark'] app-root .momentum-banner {
+  min-height: 210px;
+  background-position: center 62%;
+  border-radius: 18px;
+}
+html:root[data-theme='dark'] app-root .momentum-banner h2 {
+  font-size: 33px;
+}
+html:root[data-theme='dark'] app-root .stat-label {
+  font-size: 12px;
+}
+html:root[data-theme='dark'] app-root .stat-detail {
+  font-size: 10px;
+}
+html:root[data-theme='dark'] app-root .stat-card {
+  border-radius: 15px;
+}
+html:root[data-theme='dark'] app-root .history-section {
+  background: linear-gradient(145deg, #211a2a60, #17151c);
+  border-color: #b48be524;
+}
+html:root[data-theme='dark'] app-root .studio-hero {
+  margin: 20px 0;
+  padding: 22px 26px;
+}
+html:root[data-theme='dark'] app-root .studio-hero h1 {
+  font-size: 34px;
+}
+html:root[data-theme='dark'] app-root .studio-hero .hero-summary {
+  padding: 14px 22px;
+}
+html:root[data-theme='dark'] app-root .quick-details-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  list-style: none;
+  cursor: pointer;
+  padding: 2px 0;
+  color: #b392ce;
+}
+html:root[data-theme='dark'] app-root .quick-details-summary > span {
+  font-size: 9px;
+  letter-spacing: 1.4px;
+}
+html:root[data-theme='dark'] app-root .quick-details-summary > strong {
+  font-size: 13px;
+  color: #ddc4f3;
+  font-weight: 500;
+}
+html:root[data-theme='dark'] app-root .quick-details-summary > small {
+  font-size: 10px;
+}
+html:root[data-theme='dark']
+  app-root
+  details.session-basics[open]
+  > .quick-details-summary {
+  padding-bottom: 22px;
+  margin-bottom: 22px;
+  border-bottom: 1px solid #ffffff0a;
+}
+html:root[data-theme='dark'] app-root .session-basics .variant-options,
+html:root[data-theme='dark'] app-root .variant-note {
+  display: none;
+}
+html:root[data-theme='dark'] app-root .builder-heading {
+  margin-top: 22px;
+  padding-bottom: 12px;
+}
+html:root[data-theme='dark'] app-root .exercise-cards {
+  max-height: 430px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #70538340 transparent;
+  padding: 2px;
+}
+html:root[data-theme='dark'] app-root .fast-routines {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 17px;
+}
+.fast-routines > span {
+  font-size: 8px;
+  letter-spacing: 1.3px;
+  color: #9676ad;
+  margin-right: auto;
+}
+.fast-routines > button {
+  background: #a578df16;
+  color: #cfacf4;
+  border: 1px solid #a578df2c;
+  border-radius: 8px;
+  padding: 9px 13px;
+  font-size: 11px;
+}
+.movement-preview > summary {
+  font-size: 11px;
+  color: #b99ad1;
+  cursor: pointer;
+  padding: 10px 0 15px;
+  list-style: none;
+}
+.movement-preview > summary::after {
+  content: ' ↗';
+  color: #c5a2ef;
+}
+.edit-selected {
+  display: none;
+}
+.personal-target-fields {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 18px;
+}
+.personal-target-fields label {
+  display: grid;
+  gap: 8px;
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: #aa8cbb;
+}
+.personal-target-fields input {
+  width: 100%;
+  min-width: 0;
+  padding: 12px;
+}
+.goal-progress-caption {
+  font-size: 11px;
+  color: #c0a0de !important;
+  margin: 12px 0;
+}
+.achievement-category {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.achievement-category button,
+.more-achievements {
+  padding: 9px 13px;
+  background: #ad82df0c;
+  border: 1px solid #ad82df20;
+  border-radius: 8px;
+  color: #a58bb8;
+  font-size: 10px;
+}
+.achievement-category button.selected {
+  color: #dcc1f9;
+  background: #ad82df21;
+  border-color: #ad82df40;
+}
+.more-achievements {
+  display: block;
+  margin: 20px auto;
+  color: #c6a6e8;
+}
+.achievement-card {
+  transition:
+    transform 0.25s,
+    border-color 0.25s;
+}
+.achievement-card:hover {
+  transform: translateY(-3px);
+  border-color: #ad82df40;
+}
+.achievement-card.unlocked .achievement-medal {
+  animation: medal-breathe 5s ease-in-out infinite;
+}
+@keyframes medal-breathe {
+  50% {
+    box-shadow: 0 0 18px #b38be218;
+  }
+}
+@media (max-width: 750px) {
+  html:root[data-theme='dark'] app-root .exercise-cards {
+    max-height: 280px;
+  }
+  .edit-selected {
+    display: block;
+    grid-column: 1/-1;
+    border: 1px solid #b48ee342;
+    background: #a878e41a;
+    padding: 12px;
+    border-radius: 9px;
+    color: #cfadf1;
+    font-size: 12px;
+  }
+  .quick-details-summary {
+    flex-wrap: wrap;
+  }
+  .quick-details-summary > small {
+    margin-left: auto;
+  }
+  html:root[data-theme='dark'] app-root .momentum-banner {
+    min-height: 195px;
+    padding: 22px;
+  }
+  html:root[data-theme='dark'] app-root .momentum-banner h2 {
+    font-size: 29px;
+  }
+  html:root[data-theme='dark'] app-root .studio-hero .hero-summary {
+    display: none;
+  }
+  html:root[data-theme='dark'] app-root .studio-hero {
+    padding: 18px 21px;
+  }
+  html:root[data-theme='dark'] app-root .studio-hero h1 {
+    font-size: 30px;
+  }
+}

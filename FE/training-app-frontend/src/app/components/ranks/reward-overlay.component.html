@@ -1,0 +1,130 @@
+@for (event of rewards.current() ? [rewards.current()!] : []; track event) {
+  @if (event.kind === 'rank' && event.rank; as rankEvent) {
+    @if (event.rank; as rank) {
+      <div
+        class="rank-celebration"
+        [attr.data-tier]="rank.index"
+        [attr.data-theme]="presentation[rank.index].theme"
+        [style.--impact]="presentation[rank.index].impact + 's'"
+        [style.--arrival-delay]="presentation[rank.index].entry + 's'"
+        [style.--reward-color]="rank.color"
+        [style.--reward-secondary]="rank.secondary"
+        [style.--tier-power]="rank.index + 1"
+      >
+        <div class="celebration-backdrop"></div>
+        <app-rank-atmosphere [tier]="rank.index" [color]="rank.color" [secondary]="rank.secondary" [impact]="presentation[rank.index].impact" />
+        <section
+          #dialog
+          class="rank-reveal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="rank-reveal-title"
+          aria-describedby="rank-reveal-description"
+        >
+          <span class="reveal-overline">{{
+            event.preview
+              ? 'EFFECT PREVIEW / NO XP AWARDED'
+              : 'THE WORK HAS A NEW NAME'
+          }}</span>
+          <div class="reveal-emblem">
+            <span class="emblem-halo"></span><app-rank-emblem [rank]="rank" />
+          </div>
+          <span class="rank-up-label">{{
+            event.preview ? 'RANK EFFECT' : 'RANK UP'
+          }}</span>
+          <span class="tier-signature">{{ presentation[rank.index].signature }}</span>
+          <h2 id="rank-reveal-title">{{ rank.name }}</h2>
+          <p id="rank-reveal-description">{{ rank.motto }}</p>
+          <div class="rank-reveal-xp">
+            @if (event.preview) {
+              <span
+                >Unlocked at <b>{{ rank.minXp | number }} XP</b></span
+              >
+            } @else {
+              <span>NEW ATHLETE RANK</span
+              ><strong
+                >+{{ event.xp | number }}<small>XP THIS UPDATE</small></strong
+              >
+            }
+          </div>
+          <button
+            class="reveal-continue"
+            type="button"
+            (click)="rewards.advance()"
+          >
+            {{ event.preview ? 'Close preview' : 'Keep evolving'
+            }}<app-icon name="arrow" />
+          </button>
+          <div class="reveal-audio-controls">
+            <button type="button" (click)="audio.audition(rank.index)">Replay sound</button>
+            <button type="button" (click)="audio.stop()">Stop sound</button>
+          </div>
+          @if(audio.unavailable()){
+            <p role="status" class="audio-load-status">Sound could not load. Try Replay sound.</p>
+          }
+          @if (rewards.remaining()) {
+            <button
+              class="reveal-skip"
+              type="button"
+              (click)="rewards.dismissAll()"
+            >
+              Skip remaining celebrations ({{ rewards.remaining() }})
+            </button>
+          }
+          <span class="reveal-footnote">{{
+            event.preview
+              ? 'A glimpse of what is waiting for you.'
+              : 'EARNED BY EFFORT. BUILT TO LAST.'
+          }}</span>
+        </section>
+      </div>
+    }
+  } @else {
+    <aside
+      class="reward-toast"
+      [class.achievement-toast]="event.kind === 'achievement'"
+      role="status"
+      aria-live="polite"
+      (mouseenter)="rewards.pause()"
+      (mouseleave)="rewards.resume()"
+      (focusin)="rewards.pause()"
+      (focusout)="rewards.resume()"
+    >
+      <div class="toast-streak" aria-hidden="true"></div>
+      <span class="toast-medal"
+        ><app-icon [name]="event.achievement?.icon || 'bolt'"
+      /></span>
+      <div class="toast-copy">
+        <span class="toast-label">{{
+          event.kind === 'achievement'
+            ? 'ACHIEVEMENT UNLOCKED'
+            : 'PROGRESS EARNED'
+        }}</span>
+        <h3>{{ event.title }}</h3>
+        <p>{{ event.description }}</p>
+        <span class="toast-xp"
+          >+{{ event.xp | number }} XP <i></i>
+          {{
+            event.kind === 'achievement'
+              ? 'A MILESTONE WITH YOUR NAME ON IT.'
+              : 'ONE SESSION CLOSER.'
+          }}</span
+        >
+      </div>
+      <button
+        class="toast-close"
+        type="button"
+        (click)="rewards.advance()"
+        aria-label="Dismiss reward"
+      >
+        ×
+      </button>
+      <button class="toast-skip-all" type="button" (click)="rewards.dismissAll()">Skip celebrations</button><div class="toast-timer" aria-hidden="true"></div>
+      @if (rewards.remaining()) {
+        <button type="button" class="toast-next" (click)="rewards.advance()">
+          Next reward ({{ rewards.remaining() }}) →
+        </button>
+      }
+    </aside>
+  }
+}

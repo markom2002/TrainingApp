@@ -1,0 +1,200 @@
+.toast-skip-all{grid-column:2/-1;justify-self:start;font-size:9px;color:#92749f;border:0;background:none;padding:0;cursor:pointer}
+.reward-toast {
+  position: fixed;
+  z-index: 999;
+  bottom: 28px;
+  right: 28px;
+  width: min(470px, calc(100vw - 36px));
+  display: grid;
+  grid-template-columns: 54px 1fr 25px;
+  gap: 16px;
+  align-items: start;
+  padding: 23px;
+  border-radius: 15px;
+  border: 1px solid #bc91ef36;
+  background: linear-gradient(120deg, #282032f5, #17131ef8);
+  box-shadow:
+    0 15px 60px #0006,
+    0 0 35px #ad75e508;
+  backdrop-filter: blur(20px);
+  overflow: hidden;
+  animation: toast-arrive 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.toast-streak {
+  position: absolute;
+  left: 0;
+  top: 20%;
+  height: 60%;
+  width: 2px;
+  background: linear-gradient(transparent, #c8a0fa, transparent);
+  box-shadow: 0 0 15px #bd8ff6;
+}
+.toast-medal {
+  width: 51px;
+  height: 57px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #c2a1ed35;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #b18cdd25, #b18cdd05);
+  color: #d2aff8;
+  transform: rotate(-7deg);
+  animation: toast-medal 0.8s 0.15s both;
+}
+.toast-medal app-icon {
+  width: 26px;
+  height: 26px;
+  transform: rotate(7deg);
+}
+.toast-copy {
+  min-width: 0;
+}
+.toast-label {
+  font-size: 7px;
+  letter-spacing: 2px;
+  color: #b395cc;
+}
+.toast-copy h3 {
+  font-size: 20px;
+  letter-spacing: -0.6px;
+  margin: 8px 0;
+  color: #eadcf6 !important;
+  line-height: 1.2;
+}
+.toast-copy p {
+  font-size: 11px;
+  line-height: 1.7;
+  color: #ab91bb;
+  margin: 0;
+}
+.toast-xp {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+  font-size: 9px;
+  letter-spacing: 0.3px;
+  margin-top: 13px;
+  color: #cfa8f7;
+}
+.toast-xp i {
+  width: 3px;
+  height: 3px;
+  background: #7e5e96;
+  border-radius: 50%;
+}
+.toast-xp {
+  font-size: 8px;
+}
+.toast-close {
+  background: none;
+  border: 0;
+  color: #9b7fae;
+  font-size: 22px;
+  padding: 0;
+  cursor: pointer;
+}
+.toast-next {
+  grid-column: 2/-1;
+  border: 0;
+  background: none;
+  padding: 0;
+  font-size: 10px;
+  color: #bd97df;
+  text-align: left;
+  cursor: pointer;
+}
+.toast-timer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  width: 100%;
+  background: linear-gradient(90deg, #8d5fc2, #d1adf7);
+  transform-origin: left;
+  animation: toast-countdown 5s linear both;
+}
+.reward-toast:is(:hover, :focus-within) .toast-timer {
+  animation-play-state: paused;
+}
+.achievement-toast .toast-medal {
+  box-shadow: 0 0 25px #b18cdd12;
+}
+.achievement-toast::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    transparent 30%,
+    #ffffff05 45%,
+    transparent 60%
+  );
+  transform: translateX(-110%);
+  animation: achievement-sweep 1.2s 0.3s ease-out both;
+}
+@keyframes toast-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(25px) scale(0.97);
+  }
+}
+@keyframes toast-medal {
+  from {
+    opacity: 0;
+    transform: rotate(-25deg) scale(0.5);
+  }
+  60% {
+    transform: rotate(4deg) scale(1.15);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(-7deg) scale(1);
+  }
+}
+@keyframes toast-countdown {
+  to {
+    transform: scaleX(0);
+  }
+}
+@keyframes achievement-sweep {
+  to {
+    transform: translateX(110%);
+  }
+}
+@media (max-width: 700px) {
+  .reward-toast {
+    bottom: calc(82px + env(safe-area-inset-bottom));
+    right: 14px;
+    width: calc(100vw - 28px);
+    grid-template-columns: 43px 1fr 20px;
+    gap: 12px;
+    padding: 19px 16px;
+  }
+  .toast-medal {
+    width: 42px;
+    height: 49px;
+    border-radius: 12px;
+  }
+  .toast-medal app-icon {
+    width: 22px;
+    height: 22px;
+  }
+  .toast-copy h3 {
+    font-size: 18px;
+  }
+  .toast-copy p {
+    font-size: 10px;
+  }
+  .toast-label {
+    font-size: 6px;
+    letter-spacing: 1.5px;
+  }
+  .toast-xp {
+    font-size: 7px;
+  }
+  .toast-next {
+    font-size: 9px;
+  }
+}

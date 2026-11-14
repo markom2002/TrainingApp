@@ -9,24 +9,28 @@
     <div>
       <p class="eyebrow">
         {{
-          trainingId ? "REFINE YOUR TRAINING RECORD" : "THE SESSION IS YOURS"
+          trainingId ? 'REFINE YOUR TRAINING RECORD' : 'THE SESSION IS YOURS'
         }}
       </p>
-      <h1>Every rep.<br /><em>Recorded.</em></h1>
-      <p>Turn today's effort into a story you can build on.</p>
+      <h1>{{ trainingId ? 'Refine your' : 'Log your' }} <em>session.</em></h1>
+      <p>
+        {{
+          repeatedWorkout
+            ? 'Your previous movements, ready for a new day. Adjust each set to what you did.'
+            : 'Pick a movement. Enter your reps and weight. Done.'
+        }}
+      </p>
     </div>
     <div class="hero-summary">
       <span class="hero-line" aria-hidden="true"></span>
       <div>
-        <strong>{{ formModel.exercises.length }}</strong
-        ><span>EXERCISES</span>
+        <strong>{{ formModel.exercises.length }}</strong><span>EXERCISES</span>
       </div>
       <i></i>
       <div>
-        <strong>{{ sets }}</strong
-        ><span>TOTAL SETS</span>
+        <strong>{{ sets }}</strong><span>TOTAL SETS</span>
       </div>
-      <small>{{ trainingId ? "EDIT WORKOUT" : "NEW WORKOUT" }} &#8599;</small>
+      <small>{{ trainingId ? 'EDIT WORKOUT' : 'NEW WORKOUT' }} &#8599;</small>
     </div>
   </section>
   @if (loading) {
@@ -38,10 +42,10 @@
   @if (!loading && !loadFailed) {
     <form (ngSubmit)="submit(workoutForm)" #workoutForm="ngForm">
       <fieldset [disabled]="submitting">
-        <section class="session-basics">
+        <details class="session-basics" [open]="!!trainingId"><summary class="quick-details-summary"><span>01 / SESSION DETAILS</span><strong>{{formModel.durationMinutes}} min · {{formModel.trainingDate | date:"d MMM"}}</strong><small>Edit details +</small></summary>
           <div class="basics-heading">
             <div>
-              <p class="eyebrow">01 / SET THE SCENE</p>
+              <p class="eyebrow">01 / THE BASICS</p>
               <h2>Session details</h2>
             </div>
             <div
@@ -147,7 +151,7 @@
               ></label
             >
           </div>
-        </section>
+        </details>
         <app-exercise-picker
           name="exercises"
           [(ngModel)]="formModel.exercises"
@@ -169,8 +173,10 @@
         </section>
         <div class="studio-save">
           <div>
-            <strong>Your effort deserves a record.</strong
-            ><span>Save this session to your personal training journal.</span>
+            <strong
+              >{{ formModel.exercises.length }} exercises. {{ sets }} sets. All
+              yours.</strong
+            ><span>Ready when you are.</span>
           </div>
           <div class="save-buttons">
             <a routerLink="/dashboard">Cancel</a
@@ -180,10 +186,10 @@
             >
               {{
                 submitting
-                  ? "Saving your session..."
+                  ? 'Saving your session...'
                   : trainingId
-                    ? "Save changes"
-                    : "Save workout"
+                    ? 'Save changes'
+                    : 'Save workout'
               }}
               <span aria-hidden="true">&#8594;</span>
             </button>

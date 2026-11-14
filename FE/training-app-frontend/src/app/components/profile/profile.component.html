@@ -40,11 +40,11 @@
           <p>
             {{
               p.bio ||
-                "Your story is still being written. Make every session count."
+                'Your story is still being written. Make every session count.'
             }}
           </p>
           <span class="member"
-            >MEMBER SINCE {{ p.memberSince | date: "MMMM yyyy" }}</span
+            >MEMBER SINCE {{ p.memberSince | date: 'MMMM yyyy' }}</span
           >
         </div>
       </div>
@@ -160,17 +160,16 @@
           <div class="save-row">
             <span class="save-note" role="status">{{
               saved
-                ? "Profile saved. Looking good!"
-                : "Your profile is only visible to you."
-            }}</span
-            ><button
+                ? 'Profile saved. Looking good!'
+                : 'Your profile is only visible to you.'
+            }}</span><button
               class="primary"
               type="submit"
               [disabled]="
                 profileForm.invalid || saving || !model.displayName.trim()
               "
             >
-              {{ saving ? "Saving..." : "Save changes" }} &#8594;
+              {{ saving ? 'Saving...' : 'Save changes' }} &#8594;
             </button>
           </div>
         </form>
@@ -182,7 +181,7 @@
           <div
             class="goal-ring"
             [style.background]="
-              'conic-gradient(#cce968 ' + progress + '%, #eef2e5 0)'
+              'conic-gradient(#a781f8 ' + progress + '%, #292530 0)'
             "
             role="img"
             [attr.aria-label]="
@@ -201,8 +200,8 @@
           <p class="goal-caption">
             {{
               p.weeklyWorkouts >= p.weeklyGoal
-                ? "Goal reached. Celebrate your consistency."
-                : "Every session brings you a little closer."
+                ? 'Goal reached. Celebrate your consistency.'
+                : 'Every session brings you a little closer.'
             }}
           </p>
           <a routerLink="/add-training" class="goal-cta"

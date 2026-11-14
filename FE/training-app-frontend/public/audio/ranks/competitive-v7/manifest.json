@@ -1,0 +1,90 @@
+[
+  {
+    "id": "iron",
+    "duration": 2.3,
+    "voiceStart": 0.32,
+    "voiceLength": 0.5852607709750567,
+    "peak": 0.45,
+    "rms": 0.06940787800151885,
+    "sample": "explosionCrunch_000.ogg"
+  },
+  {
+    "id": "bronze",
+    "duration": 2.5999999999999996,
+    "voiceStart": 0.53,
+    "voiceLength": 0.5490929705215419,
+    "peak": 0.505,
+    "rms": 0.08766951333547943,
+    "sample": "explosionCrunch_001.ogg"
+  },
+  {
+    "id": "silver",
+    "duration": 2.9,
+    "voiceStart": 0.45,
+    "voiceLength": 0.5224716553287981,
+    "peak": 0.56,
+    "rms": 0.08672711470186237,
+    "sample": "explosionCrunch_002.ogg"
+  },
+  {
+    "id": "gold",
+    "duration": 3.1999999999999997,
+    "voiceStart": 0.6799999999999999,
+    "voiceLength": 0.44206349206349205,
+    "peak": 0.615,
+    "rms": 0.10210947163165912,
+    "sample": "explosionCrunch_003.ogg"
+  },
+  {
+    "id": "platinum",
+    "duration": 3.5,
+    "voiceStart": 0.8700000000000001,
+    "voiceLength": 0.5719501133786848,
+    "peak": 0.67,
+    "rms": 0.13758738678525817,
+    "sample": "explosionCrunch_004.ogg"
+  },
+  {
+    "id": "diamond",
+    "duration": 3.8,
+    "voiceStart": 0.76,
+    "voiceLength": 0.5541043083900227,
+    "peak": 0.7250000000000001,
+    "rms": 0.10361809646974618,
+    "sample": "explosionCrunch_000.ogg"
+  },
+  {
+    "id": "elite",
+    "duration": 4.1,
+    "voiceStart": 1.09,
+    "voiceLength": 0.46668934240362814,
+    "peak": 0.78,
+    "rms": 0.19461454857080115,
+    "sample": "explosionCrunch_001.ogg"
+  },
+  {
+    "id": "master",
+    "duration": 4.4,
+    "voiceStart": 1.19,
+    "voiceLength": 0.5503854875283447,
+    "peak": 0.835,
+    "rms": 0.17342087728973654,
+    "sample": "explosionCrunch_002.ogg"
+  },
+  {
+    "id": "legend",
+    "duration": 4.699999999999999,
+    "voiceStart": 1.3399999999999999,
+    "voiceLength": 0.5414739229024943,
+    "peak": 0.89,
+    "rms": 0.21220097732313922,
+    "sample": "explosionCrunch_003.ogg"
+  },
+  {
+    "id": "achievement",
+    "duration": 1.25,
+    "events": 3,
+    "peak": 0.89,
+    "rms": 0.2106
+  }
+]

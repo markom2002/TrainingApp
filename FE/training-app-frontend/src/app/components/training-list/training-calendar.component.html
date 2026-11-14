@@ -1,0 +1,125 @@
+<section class="training-calendar">
+  <header>
+    <div>
+      <p class="eyebrow">YOUR CONSISTENCY, IN COLOUR</p>
+      <h2>Training calendar<span>.</span></h2>
+      <p>
+        {{ trainedDays }} training days · {{ items.length }} sessions this month
+      </p>
+    </div>
+    <div class="calendar-controls">
+      <button type="button" (click)="shift(-1)" aria-label="Previous month">
+        ←</button
+      ><input
+        type="month"
+        [(ngModel)]="month"
+        (change)="load()"
+        min="0002-01"
+        max="9998-12"
+        aria-label="Training calendar month"
+      /><button type="button" (click)="shift(1)" aria-label="Next month">
+        →
+      </button>
+    </div>
+  </header>
+  @if (error) {
+    <p role="alert">
+      {{ error }} <button type="button" (click)="load()">Retry</button>
+    </p>
+  }
+  @if (loading) {
+    <p role="status">Loading your training days…</p>
+  }
+  <div class="calendar-layout">
+    <div>
+      <div class="calendar-weekdays">
+        @for (
+          day of ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+          track day
+        ) {
+          <span>{{ day }}</span>
+        }
+      </div>
+      <div class="calendar-grid" [attr.aria-busy]="loading">
+        @for (cell of cells; track $index) {
+          @if (cell.inMonth) {
+            <button
+              type="button"
+              class="calendar-day"
+              [class.trained]="cell.trainings.length"
+              [class.chosen]="selected === cell.key"
+              [class.today]="cell.key === key(today)"
+              (click)="selected = cell.key"
+              [attr.aria-label]="
+                cell.key + ', ' + cell.trainings.length + ' workouts'
+              "
+              [attr.aria-pressed]="selected === cell.key"
+            >
+              <strong>{{ cell.day }}</strong
+              ><span class="day-parts">
+                @for (part of parts(cell.trainings); track part) {
+                  <app-icon [name]="part" />
+                }
+                @if (cell.trainings.length && !parts(cell.trainings).length) {
+                  <app-icon name="activity" />
+                }
+              </span>
+              @if (cell.trainings.length) {
+                <small
+                  >{{ cell.trainings.length }} session{{
+                    cell.trainings.length === 1 ? '' : 's'
+                  }}</small
+                >
+              }
+            </button>
+          } @else {
+            <span class="calendar-blank"></span>
+          }
+        }
+      </div>
+      <div class="calendar-legend">
+        <span><app-icon name="arm" />Arms</span
+        ><span><app-icon name="leg" />Legs</span
+        ><span><app-icon name="dumbbell" />Upper / full</span
+        ><span><app-icon name="core" />Core</span>
+      </div>
+    </div>
+    <aside class="day-detail">
+      <p class="eyebrow">YOUR TRAINING LOG</p>
+      <h3>{{ selected | date: 'EEEE, d MMM' }}</h3>
+      @for (t of chosen; track t.id) {
+        <article>
+          <div class="day-session-heading">
+            <span>{{ t.exerciseType }}</span
+            ><strong>{{ t.durationMinutes }} min</strong>
+          </div>
+          <app-workout-exercises
+            [exercises]="t.exercises || []"
+            [variant]="t.trainingVariant || 'Unisex'"
+          />
+          @if (t.notes) {
+            <p>{{ t.notes }}</p>
+          }
+          <div class="day-actions">
+            <button type="button" (click)="repeat(t.id!)">Repeat ↗</button
+            ><button type="button" (click)="edit(t.id!)">Edit</button
+            ><button
+              type="button"
+              (click)="remove(t.id!)"
+              [disabled]="deleting"
+            >
+              Delete
+            </button>
+          </div>
+        </article>
+      } @empty {
+        <div class="rest-day">
+          <app-icon name="target" />
+          <h4>Room to recover.</h4>
+          <p>No workout logged for this day. Your next session is waiting.</p>
+          <button type="button" (click)="add()">Log a workout +</button>
+        </div>
+      }
+    </aside>
+  </div>
+</section>

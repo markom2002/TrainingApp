@@ -1,0 +1,21 @@
+@keyframes forge-arrival{from{opacity:0;transform:translateY(8px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes ember-arrival{0%{opacity:0;transform:translateY(28px) scale(.85)}70%{opacity:1;transform:translateY(-3px) scale(1.02)}100%{transform:none}}
+@keyframes tempest-arrival{0%{opacity:0;transform:translateX(-170px) rotateY(65deg);filter:blur(12px)}38%{opacity:1;transform:translateX(15px) rotateY(-14deg);filter:blur(0)}68%{transform:translateX(-5px) rotateY(6deg)}100%{transform:none}}
+@keyframes solar-arrival{0%{opacity:0;transform:scale(.2) rotateY(-100deg);filter:brightness(4) blur(8px)}48%{opacity:1;transform:scale(1.15) rotateY(12deg);filter:brightness(1.7)}75%{transform:scale(.98) rotateY(-3deg);filter:brightness(1)}100%{transform:none}}
+@keyframes aurora-arrival{0%{opacity:0;transform:translateY(60px) rotateX(70deg) scale(.65);filter:blur(12px)}42%{opacity:1;transform:translateY(-10px) rotateX(-12deg) scale(1.1);filter:blur(0)}75%{transform:rotateX(4deg) scale(.98)}100%{transform:none}}
+@keyframes prism-arrival{0%{opacity:0;transform:scale(1.9) rotateZ(-24deg) rotateY(-60deg);filter:blur(16px) brightness(3)}40%{opacity:1;transform:scale(.92) rotateZ(4deg) rotateY(12deg);filter:blur(0) brightness(1.7)}68%{transform:scale(1.05) rotateY(-8deg);filter:brightness(1)}100%{transform:none}}
+@keyframes void-arrival{0%{opacity:0;transform:scale(.02) rotateY(-160deg);filter:brightness(.2)}30%{opacity:.4;transform:scale(.6) rotateY(-50deg);filter:brightness(.4)}55%{opacity:1;transform:scale(1.19) rotateY(10deg);filter:brightness(2)}80%{transform:scale(.97);filter:brightness(1)}100%{transform:none}}
+@keyframes sovereign-arrival{0%{opacity:0;transform:translateY(-150px) rotateX(55deg) scale(1.4);filter:blur(12px)}35%{opacity:1;transform:translateY(18px) rotateX(-15deg) scale(.95);filter:blur(0) brightness(2)}55%{transform:translateY(-12px) rotateX(8deg) scale(1.08)}78%{transform:translateY(3px) scale(.99);filter:brightness(1)}100%{transform:none}}
+@keyframes eclipse-arrival{0%{opacity:0;transform:scale(.03) rotateY(-180deg);filter:blur(20px) brightness(.2)}28%{opacity:.5;transform:scale(.45) rotateY(-100deg);filter:blur(8px) brightness(.5)}52%{opacity:1;transform:scale(1.25) rotateY(12deg);filter:blur(0) brightness(3)}72%{transform:scale(.97) rotateY(-7deg);filter:brightness(1.4)}88%{transform:scale(1.03) rotateY(2deg)}100%{transform:none;filter:brightness(1)}}
+@keyframes cinema-type{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes title-strike{from{opacity:0;transform:scale(1.3) translateY(-8px);filter:blur(8px)}to{opacity:1;transform:none}}
+@keyframes cinema-bloom{0%{opacity:0;transform:scale(.3)}20%{opacity:1;transform:scale(1.5)}100%{opacity:.65;transform:scale(1)}}
+
+.rank-celebration[data-tier="1"] .reveal-emblem app-rank-emblem{animation-name:ember-arrival;animation-duration:1s}
+.rank-celebration[data-tier="2"] .reveal-emblem app-rank-emblem{animation-name:tempest-arrival;animation-duration:1.1s}
+.rank-celebration[data-tier="3"] .reveal-emblem app-rank-emblem{animation-name:solar-arrival;animation-duration:1.2s}
+.rank-celebration[data-tier="4"] .reveal-emblem app-rank-emblem{animation-name:aurora-arrival;animation-duration:1.25s}
+.rank-celebration[data-tier="5"] .reveal-emblem app-rank-emblem{animation-name:prism-arrival;animation-duration:1.35s}
+.rank-celebration[data-tier="6"] .reveal-emblem app-rank-emblem{animation-name:void-arrival;animation-duration:1.45s}
+.rank-celebration[data-tier="7"] .reveal-emblem app-rank-emblem{animation-name:sovereign-arrival;animation-duration:1.6s}
+.rank-celebration[data-tier="8"] .reveal-emblem app-rank-emblem{animation-name:eclipse-arrival;animation-duration:1.8s}

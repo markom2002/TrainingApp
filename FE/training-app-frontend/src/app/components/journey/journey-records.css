@@ -1,0 +1,180 @@
+.records-intro {
+  font-size: 11px;
+  color: #9b82ac;
+  line-height: 1.9;
+  margin-bottom: 25px;
+}
+.pr-row {
+  display: flex;
+  gap: 13px;
+  align-items: center;
+  padding: 17px 0;
+  border-bottom: 1px solid #ffffff08;
+}
+.pr-symbol {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 39px;
+  background: #a078e713;
+  color: #bfa0eb;
+  border-radius: 9px;
+  flex-shrink: 0;
+}
+.pr-symbol app-icon {
+  width: 18px;
+  height: 18px;
+}
+.pr-row > div {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+.pr-row > div > strong {
+  font-size: 12px;
+  font-weight: 500;
+  color: #ded1ea;
+}
+.pr-row > div > small {
+  font-size: 9px;
+  color: #997caa;
+}
+.pr-weight {
+  margin-left: auto;
+  display: grid;
+  gap: 5px;
+  text-align: right;
+  flex-shrink: 0;
+}
+.pr-weight > strong {
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: -0.7px;
+}
+.pr-weight small {
+  font-size: 9px;
+  color: #9a7ba9;
+  letter-spacing: 0;
+  margin-left: 3px;
+}
+.pr-weight > b {
+  font-size: 9px;
+  font-weight: 400;
+  color: #a6d4b6;
+}
+.records-empty {
+  padding: 35px 15px;
+  text-align: center;
+  color: #9d84ac;
+}
+.records-empty > app-icon {
+  width: 42px;
+  height: 42px;
+  color: #ac85db;
+}
+.records-empty h3 {
+  font-size: 20px;
+  color: #d8c3e7;
+  letter-spacing: -0.4px;
+}
+.records-empty p {
+  font-size: 12px;
+  line-height: 1.9;
+}
+.records-empty a {
+  display: inline-block;
+  margin-top: 12px;
+  font-size: 12px;
+  color: #c4a0ef;
+  text-decoration: none;
+}
+.recovery-card {
+  display: flex;
+  gap: 13px;
+  background: #a078e70a;
+  border: 1px solid #a078e719;
+  padding: 17px;
+  border-radius: 11px;
+  margin-top: 24px;
+}
+.recovery-card > app-icon {
+  color: #b28bdc;
+  width: 20px;
+}
+.recovery-card strong {
+  font-size: 11px;
+  font-weight: 500;
+  color: #c9afd9;
+}
+.recovery-card p {
+  font-size: 10px;
+  line-height: 1.8;
+  color: #9478a4;
+  margin: 7px 0 0;
+}
+.journey-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+.kicker {
+  font-size: 8px;
+  letter-spacing: 1.6px;
+  color: #a38ab4;
+  margin: 0 0 10px;
+}
+h2 {
+  font-size: 24px;
+  letter-spacing: -0.7px;
+  margin: 0;
+}
+h2 > span {
+  color: #c4a1ef;
+}
+@media (max-width: 850px) {
+  .journey-detail-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 650px) {
+  .body-card,
+  .records-card {
+    padding: 22px 18px;
+  }
+  .weight-reading > strong {
+    font-size: 42px;
+  }
+  .weight-reading > span {
+    font-size: 9px;
+  }
+  .weigh-in-form {
+    gap: 10px;
+  }
+  .weigh-in-form label {
+    font-size: 8px;
+  }
+  .body-direction > div {
+    flex-wrap: wrap;
+  }
+  .body-direction select {
+    font-size: 12px;
+    flex: 1;
+    min-width: 140px;
+  }
+  .body-direction > small {
+    font-size: 10px;
+  }
+  .pr-row {
+    gap: 9px;
+  }
+  .pr-row > div > strong {
+    font-size: 11px;
+  }
+  .pr-row > div > small {
+    font-size: 8px;
+  }
+  .pr-weight > strong {
+    font-size: 20px;
+  }
+}

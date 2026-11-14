@@ -4,7 +4,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { Subscription, finalize } from 'rxjs';
+import { Subscription, finalize, catchError, of, switchMap } from 'rxjs';
+import { JourneyService } from '../../services/journey.service';
 import { TrainingService } from '../../services/training.service';
 import { ExerciseType, Training } from '../../models/training.model';
 import { WorkoutExercise } from '../../models/exercise.model';
@@ -24,6 +25,7 @@ import { apiErrorMessage } from '../../services/api-error';
 })
 export class WorkoutEditorComponent implements OnInit, OnDestroy {
   trainingId?: number;
+  repeatedWorkout = false;
   loading = false;
   loadFailed = false;
   submitting = false;
@@ -46,6 +48,7 @@ export class WorkoutEditorComponent implements OnInit, OnDestroy {
     private router: Router,
     private service: TrainingService,
     private exerciseService: ExerciseService,
+    private journey: JourneyService,
   ) {}
   get sets() {
     return this.formModel.exercises.reduce((sum, e) => sum + (e.sets || 0), 0);
@@ -53,6 +56,33 @@ export class WorkoutEditorComponent implements OnInit, OnDestroy {
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) {
+      const repeat = Number(this.route.snapshot.queryParamMap.get('repeat'));
+      if (Number.isInteger(repeat) && repeat > 0) {
+        this.loading = true;
+        this.read = this.service
+          .getById(repeat)
+          .pipe(finalize(() => (this.loading = false)))
+          .subscribe({
+            next: (data) => {
+              this.repeatedWorkout = true;
+              this.formModel.exerciseType =
+                typeof data.exerciseType === 'string'
+                  ? ExerciseType[data.exerciseType as keyof typeof ExerciseType]
+                  : data.exerciseType;
+              this.formModel.durationMinutes = data.durationMinutes;
+              this.formModel.trainingVariant = data.trainingVariant ?? 'Unisex';
+              this.formModel.exercises = (data.exercises ?? []).map((e) => ({
+                ...e,
+                setEntries: e.setEntries?.map((s) => ({ ...s })) ?? [],
+              }));
+            },
+            error: (e) => {
+              this.loadFailed = true;
+              this.errorMessage = apiErrorMessage(e);
+            },
+          });
+        return;
+      }
       this.loadDraft();
       return;
     }
@@ -119,10 +149,16 @@ export class WorkoutEditorComponent implements OnInit, OnDestroy {
     const request = this.trainingId
       ? this.service.update(this.trainingId, workout)
       : this.service.add(workout);
-    this.save = request
+    this.save = this.journey
+      .get()
+      .pipe(
+        catchError(() => of(undefined)),
+        switchMap(() => request),
+      )
       .pipe(finalize(() => (this.submitting = false)))
       .subscribe({
-        next: () => this.router.navigate(['/dashboard']),
+        next: () =>
+          this.router.navigate(['/dashboard'], { queryParams: { saved: '1' } }),
         error: (error) => (this.errorMessage = apiErrorMessage(error)),
       });
   }

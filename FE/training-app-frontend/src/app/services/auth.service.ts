@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, finalize, shareReplay, tap } from 'rxjs';
+import { ProgressionService } from './progression.service';
 
 interface TokenResponse {
   token: string;
@@ -19,6 +20,7 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private router: Router,
+    private progression: ProgressionService,
   ) {
     localStorage.removeItem('token');
   }
@@ -66,6 +68,7 @@ export class AuthService {
   }
 
   clearSession() {
+    this.progression.dismissAll();
     this.token = null;
     localStorage.removeItem('userEmail');
     this.router.navigate(['/login']);

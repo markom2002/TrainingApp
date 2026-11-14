@@ -1,1 +1,1 @@
-export const environment = { apiUrl: 'https://localhost:7089/api' };
+export const environment = { apiUrl: '/api' };

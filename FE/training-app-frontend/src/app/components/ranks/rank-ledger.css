@@ -1,0 +1,61 @@
+.rank-side-ledger {
+  background: #0c0a101c;
+  border: 1px solid #ffffff06;
+  padding: 21px;
+  border-radius: 12px;
+}
+.rank-side-ledger > .rank-kicker {
+  font-size: 8px;
+  margin-bottom: 18px;
+}
+.xp-source {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 14px 0;
+  border-bottom: 1px solid #ffffff07;
+}
+.xp-source-icon {
+  width: 30px;
+  height: 32px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  background: #b18add0c;
+  color: #b297c6;
+  flex-shrink: 0;
+}
+.xp-source-icon app-icon {
+  width: 16px;
+  height: 16px;
+}
+.xp-source > div {
+  display: grid;
+  gap: 5px;
+}
+.xp-source strong {
+  font-size: 10px;
+  font-weight: 500;
+}
+.xp-source > div > small {
+  font-size: 8px;
+  color: #9375a1;
+}
+.xp-source > b {
+  margin-left: auto;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--rank-color);
+  letter-spacing: -0.3px;
+}
+.xp-source > b > small {
+  font-size: 7px;
+  margin-left: 3px;
+  color: #8d719d;
+}
+.ledger-note {
+  font-size: 8px;
+  color: #7c648b;
+  line-height: 1.8;
+  margin: 15px 0 0;
+}

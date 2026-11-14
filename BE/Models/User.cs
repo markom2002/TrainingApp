@@ -13,6 +13,10 @@ namespace BE.Models
         [System.ComponentModel.DataAnnotations.MaxLength(20)]
         public string Experience { get; set; } = "Beginner";
         public int WeeklyGoal { get; set; } = 3;
+        [System.ComponentModel.DataAnnotations.MaxLength(10)]
+        public string BodyGoal { get; set; } = "Track";
+        public decimal? StartingWeightKg { get; set; }
+        public decimal? TargetWeightKg { get; set; }
         public string Role { get; set; } = Roles.User;
 
         public string Email { get; set; } = string.Empty;

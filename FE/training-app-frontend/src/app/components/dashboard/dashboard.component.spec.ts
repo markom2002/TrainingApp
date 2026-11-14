@@ -39,18 +39,29 @@ describe('Dashboard', () => {
     fixture.componentInstance.period = '2026-01';
     requests = TestBed.inject(HttpTestingController);
     fixture.detectChanges();
+    requests.expectOne(`${API_BASE_URL}/journey`).flush({
+      currentStreak: 0,
+      bestStreak: 0,
+      totalWorkouts: 0,
+      xp: 0,
+      level: 1,
+      levelXp: 0,
+      nextLevelXp: 500,
+      trainedToday: false,
+      streakDeadline: null,
+      week: [],
+      achievements: [],
+      personalRecords: [],
+      bodyGoal: 'Track',
+      measurements: [],
+      weightChangeKg: null,
+    });
     requests
       .expectOne(`${API_BASE_URL}/profile`)
       .flush({ displayName: 'Athlete', weeklyWorkouts: 0, weeklyGoal: 3 });
     requests
-      .expectOne((r) => r.url === `${API_BASE_URL}/trainings`)
-      .flush({
-        items: [],
-        page: 1,
-        pageSize: 10,
-        totalPages: 0,
-        totalCount: 0,
-      });
+      .expectOne((r) => r.url === `${API_BASE_URL}/journey/calendar`)
+      .flush([]);
   });
   afterEach(() => {
     fixture.destroy();
@@ -66,15 +77,16 @@ describe('Dashboard', () => {
       )
       .flush(populated);
     fixture.detectChanges();
-    const metrics = fixture.nativeElement.querySelector('.metrics').textContent;
+    const metrics =
+      fixture.nativeElement.querySelector('.stat-grid').textContent;
     expect(metrics).toContain('150');
     expect(metrics).toContain('500');
-    expect(fixture.nativeElement.querySelectorAll('.chart-column').length).toBe(
-      5,
-    );
+    expect(
+      fixture.nativeElement.querySelectorAll('.activity-column').length,
+    ).toBe(5);
     expect(fixture.componentInstance.weeks[1].minutes).toBe(0);
     expect(fixture.nativeElement.textContent).toContain(
-      'No workouts in the previous month',
+      'Your monthly sessions',
     );
   });
 
@@ -93,7 +105,9 @@ describe('Dashboard', () => {
       });
     fixture.detectChanges();
     expect(fixture.nativeElement.textContent).toContain('A fresh start.');
-    expect(fixture.nativeElement.querySelectorAll('.mix-row').length).toBe(0);
+    expect(fixture.nativeElement.querySelectorAll('.balance-item').length).toBe(
+      0,
+    );
     expect(fixture.nativeElement.querySelector('.encouragement')).toBeNull();
   });
 
@@ -111,7 +125,7 @@ describe('Dashboard', () => {
         { status: 500, statusText: 'Server Error' },
       );
     fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('.metrics')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.stat-grid')).toBeNull();
     expect(
       fixture.nativeElement.querySelector('[role=alert]').textContent,
     ).toContain('Please retry.');

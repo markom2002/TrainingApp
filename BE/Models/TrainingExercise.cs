@@ -13,4 +13,7 @@ public class TrainingExercise
     public int? Reps { get; set; }
     public int? DurationSeconds { get; set; }
     public decimal WeightKg { get; set; }
+    [MaxLength(3)] public string? WeightUnit { get; set; }
+    public decimal? WeightValue { get; set; }
+    public List<TrainingSet> SetEntries { get; set; } = new();
 }

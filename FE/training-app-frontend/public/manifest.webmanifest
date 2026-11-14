@@ -1,0 +1,49 @@
+{
+  "id": "/",
+  "name": "FORM - Personal Performance",
+  "short_name": "FORM",
+  "description": "Log every set. Build your streak. Unlock your next best.",
+  "start_url": "/dashboard",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#080a09",
+  "theme_color": "#080a09",
+  "lang": "en",
+  "categories": [
+    "health",
+    "fitness",
+    "lifestyle"
+  ],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Log workout",
+      "url": "/add-training",
+      "short_name": "Train"
+    },
+    {
+      "name": "Achievements",
+      "url": "/journey",
+      "short_name": "Achievements"
+    }
+  ]
+}

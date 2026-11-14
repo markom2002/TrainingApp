@@ -1,0 +1,118 @@
+/* Performance Club: one visual system across the training workspace. */
+html:root[data-theme='dark'] { --club-accent: #d9f77c; --club-ink: #f4f3f7; }
+html:root[data-theme='dark'] app-root .workspace {
+  background: radial-gradient(ellipse at 100% 0, #a98bff0b, transparent 42%), #0b0d12;
+}
+html:root[data-theme='dark'] app-root .rail { background: #101218; border-right: 1px solid #ffffff09; }
+html:root[data-theme='dark'] app-root .rail nav button.current { background: #d9f77c10; color: #e0f4ae; border: 1px solid #d9f77c20; }
+html:root[data-theme='dark'] app-root .rail nav button.current::after { background: #d9f77c; box-shadow: 0 0 12px #d9f77c55; }
+html:root[data-theme='dark'] app-root .workspace-header { border-color: #ffffff0a; }
+html:root[data-theme='dark'] app-root .athlete-hero {
+  position: relative; isolation: isolate; display: grid; grid-template-columns: 1.4fr 1fr;
+  align-items: center; gap: 12px; overflow: hidden; min-height: 370px;
+  margin: 24px 0; padding: 38px 42px 57px; border: 1px solid #ffffff12; border-radius: 22px;
+  background: radial-gradient(ellipse at 78% 55%, #a583ec1c, transparent 48%),
+    linear-gradient(120deg, #1b1d27, #101219 72%);
+}
+html:root[data-theme='dark'] app-root .athlete-hero::before {
+  content: ''; position: absolute; z-index: -1; inset: 0; opacity: .38;
+  background: repeating-linear-gradient(115deg, transparent 0 68px, #ffffff05 69px 70px);
+  mask-image: linear-gradient(90deg, transparent, #000);
+}
+html:root[data-theme='dark'] app-root .athlete-hero::after {
+  content: ''; position: absolute; width: 190px; height: 3px; top: 0; left: 42px;
+  background: linear-gradient(90deg, #d9f77c, #d9f77c00);
+}
+html:root[data-theme='dark'] app-root .athlete-hero .kicker { color: #d9f77c; letter-spacing: 2px; font-size: 9px; display: flex; align-items: center; gap: 9px; }
+.hero-live-dot { width: 5px; height: 5px; background: #d9f77c; box-shadow: 0 0 12px #d9f77c55; border-radius: 50%; }
+html:root[data-theme='dark'] app-root .athlete-hero h1 {
+  font: italic 900 clamp(42px, 5.3vw, 77px)/.93 'Arial Black', 'Segoe UI', sans-serif;
+  letter-spacing: -4px; margin: 23px 0 19px; color: #f6f4fc;
+}
+html:root[data-theme='dark'] app-root .athlete-hero h1 span { color: #d9f77c; }
+html:root[data-theme='dark'] app-root .athlete-hero-content > p:last-of-type { color: #b6b5c7; font-size: 12px; margin: 0 0 22px; }
+html:root[data-theme='dark'] app-root .athlete-hero .button-primary {
+  color: #11150a; background: #d9f77c; border: 1px solid #e5ff9e; border-radius: 9px;
+  padding: 14px 20px; box-shadow: 0 4px 24px #d9f77c13; font-weight: 700; gap: 13px;
+}
+html:root[data-theme='dark'] app-root .athlete-hero .button-primary:hover { background: #e5ffa2; transform: translateY(-2px); box-shadow: 0 7px 28px #d9f77c25; }
+html:root[data-theme='dark'] app-root .hero-rank-display {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  position: relative; color: #e8e4f4; border: 0; background: transparent; min-width: 0; padding: 0 12px; cursor: pointer;
+}
+.hero-rank-caption { font-size: 8px; letter-spacing: 2px; color: #b5abc7; z-index: 1; }
+html:root[data-theme='dark'] app-root .hero-rank-display app-rank-emblem { width: 176px; position: relative; transition: transform .4s; }
+html:root[data-theme='dark'] app-root .hero-rank-display:hover app-rank-emblem { transform: translateY(-6px) scale(1.04); }
+.hero-rank-display > strong { font-size: 24px; letter-spacing: -.5px; margin-top: -3px; }
+.hero-rank-display > span:last-child { font-size: 10px; margin-top: 10px; color: var(--hero-rank-color); }
+.hero-rank-display i { display: block; font-style: normal; font-size: 7px; letter-spacing: 1.4px; margin-top: 11px; color: #b9b1c8; }
+.hero-rank-orbit { position: absolute; width: 235px; height: 235px; border: 1px solid #b898ed13; border-radius: 50%; background: radial-gradient(circle, #ae83ea0b, transparent 70%); }
+.hero-rank-orbit::after { content: ''; position: absolute; inset: 16px; border: 1px dashed #b898ed13; border-radius: 50%; }
+.hero-bottom-line { position: absolute; bottom: 0; left: 0; right: 0; display: flex; justify-content: space-between; gap: 10px; padding: 13px 42px; border-top: 1px solid #ffffff08; font-size: 7px; letter-spacing: 1.7px; color: #9f9dae; }
+html:root[data-theme='dark'] app-root :is(.stat-card,.streak-tile,.next-tile,.rank-card,.surface,.goal-card,.profile-card,.achievement-card) {
+  border-radius: 16px; border-color: #ffffff10; box-shadow: inset 0 1px 0 #ffffff04, 0 9px 30px #00000012;
+}
+html:root[data-theme='dark'] app-root .streak-tile { background: radial-gradient(ellipse at 100% 0, #ffb46816, transparent 80%), #19191e; }
+html:root[data-theme='dark'] app-root .rank-card { background: radial-gradient(ellipse at 5% 0, color-mix(in srgb, var(--rank-color) 13%, transparent), transparent 80%), #171821; border-color: color-mix(in srgb, var(--rank-color) 25%, transparent); }
+html:root[data-theme='dark'] app-root .next-tile { background: linear-gradient(130deg, #1b1a24, #14161d); }
+html:root[data-theme='dark'] app-root .stat-card.violet { background: linear-gradient(135deg, #b49ae9, #7953bb); }
+html:root[data-theme='dark'] app-root .stat-card > strong { letter-spacing: -1.5px; }
+html:root[data-theme='dark'] app-root .column-fill { background: linear-gradient(0deg, #7450bd, #cfb0ff); border-radius: 5px 5px 0 0; box-shadow: 0 -7px 25px #ad7ff115; }
+html:root[data-theme='dark'] app-root .momentum-banner { min-height: 190px; border-color: #d4c1ff20; }
+html:root[data-theme='dark'] app-root .momentum-banner h2 { font-weight: 800; letter-spacing: -1.5px; }
+html:root[data-theme='dark'] app-root .collection-card { border-radius: 14px; border: 1px solid #ffffff14; transition: transform .3s, box-shadow .3s; }
+html:root[data-theme='dark'] app-root .collection-card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px #0005; }
+html:root[data-theme='dark'] app-root .journey-title h1 { font-weight: 850; letter-spacing: -2.8px; }
+html:root[data-theme='dark'] app-root .journey-title h1 em { color: #d9f77c; }
+html:root[data-theme='dark'] app-root .rank-command { background: radial-gradient(ellipse at 13% 40%, color-mix(in srgb, var(--rank-color) 11%, transparent), transparent 48%), linear-gradient(135deg, #1d1d2a, #10131b); border-color: color-mix(in srgb, var(--rank-color) 26%, transparent); box-shadow: inset 0 1px 0 #ffffff09, 0 15px 50px #0003; }
+html:root[data-theme='dark'] app-root .rank-command h2 { font-size: clamp(26px, 3vw, 39px); font-weight: 750; letter-spacing: -1.6px; }
+html:root[data-theme='dark'] app-root .rank-hero-content h3 { font-weight: 850; letter-spacing: -2px; }
+html:root[data-theme='dark'] app-root .rank-hero-emblem app-rank-emblem { width: 208px; }
+html:root[data-theme='dark'] app-root .rank-stop { background: linear-gradient(160deg, #ffffff04, #ffffff00); border: 1px solid #ffffff07; border-radius: 12px; }
+html:root[data-theme='dark'] app-root .rank-stop.selected { border-color: color-mix(in srgb, var(--tier-color) 60%, transparent); background: linear-gradient(160deg, color-mix(in srgb, var(--tier-color) 12%, transparent), #ffffff02); }
+html:root[data-theme='dark'] app-root .rank-stop app-rank-emblem { width: 76px; }
+html:root[data-theme='dark'] app-root .rank-stop:not(.earned) app-rank-emblem { opacity: .7; filter: saturate(.7); }
+html:root[data-theme='dark'] app-root .rank-stop.selected app-rank-emblem { opacity: 1; filter: none; }
+html:root[data-theme='dark'] app-root .selected-rank { border-radius: 12px; background: #ffffff03; }
+.preview-audio-note { color: #a9a3bd; font-size: 10px; margin: 13px 0 0; text-align: right; }
+html:root[data-theme='dark'] app-root .achievement-card { background: linear-gradient(145deg, #1b1c26, #14161d); }
+html:root[data-theme='dark'] app-root .achievement-card.unlocked { border-color: #d9f77c35; background: radial-gradient(ellipse at 0 0, #d9f77c08, transparent 65%), #171b20; }
+html:root[data-theme='dark'] app-root .achievement-medal { border-radius: 12px; background: linear-gradient(135deg, #c8a4f52a, #c8a4f508); border: 1px solid #c8a4f530; box-shadow: inset 0 1px 0 #fff2; }
+html:root[data-theme='dark'] app-root .achievement-card.unlocked .achievement-medal { color: #d9f77c; border-color: #d9f77c40; background: #d9f77c10; }
+html:root[data-theme='dark'] app-root .calendar-day.trained { background: linear-gradient(145deg, #b992ec1b, #b992ec09); border-color: #b992ec30; }
+html:root[data-theme='dark'] app-root .calendar-day.selected { border-color: #d9f77c90; box-shadow: inset 0 0 0 1px #d9f77c20; }
+html:root[data-theme='dark'] app-root .studio-hero { border: 1px solid #ffffff12; border-radius: 16px; background: linear-gradient(125deg, #232231, #14151d); }
+html:root[data-theme='dark'] app-root .studio-hero h1 { font-weight: 800; letter-spacing: -1.5px; }
+html:root[data-theme='dark'] app-root .exercise-option.selected { border-color: #d9f77c65; background: #d9f77c0a; }
+html:root[data-theme='dark'] app-root .session-lineup { border-color: #b995e829; background: linear-gradient(145deg, #1c1c28, #13151d); }
+html:root[data-theme='dark'] app-root .mobile-nav { background: #10131bf2; border-top: 1px solid #ffffff12; backdrop-filter: blur(18px); }
+html:root[data-theme='dark'] app-root .reveal-audio-controls { display: flex; justify-content: center; gap: 10px; margin: 14px 0 0; }
+.reveal-audio-controls button { border: 1px solid #ffffff20; background: #ffffff06; color: #d0c7dc; padding: 8px 14px; border-radius: 7px; font-size: 10px; cursor: pointer; }
+.reveal-audio-controls button:hover { border-color: var(--reward-color); color: var(--reward-color); }
+html:root[data-theme='dark'] app-root .rank-celebration .rank-reveal h2 { font-weight: 900; text-shadow: 0 0 45px color-mix(in srgb, var(--reward-color) 25%, transparent); }
+@media (prefers-reduced-motion: no-preference) {
+  .athlete-hero-content { animation: club-enter .65s ease-out both; }
+  .hero-rank-display { animation: club-enter .85s ease-out both; }
+  @keyframes club-enter { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+}
+@media (max-width: 1100px) {
+  html:root[data-theme='dark'] app-root .athlete-hero { padding: 30px 28px 55px; min-height: 340px; }
+  html:root[data-theme='dark'] app-root .athlete-hero h1 { font-size: 57px; letter-spacing: -3px; }
+}
+@media (max-width: 650px) {
+  html:root[data-theme='dark'] app-root .athlete-hero { grid-template-columns: 1fr .6fr; min-height: 300px; margin: 15px 0; padding: 24px 18px 48px; border-radius: 16px; gap: 0; }
+  html:root[data-theme='dark'] app-root .athlete-hero .kicker { font-size: 6px; letter-spacing: 1px; gap: 5px; }
+  html:root[data-theme='dark'] app-root .athlete-hero h1 { font-size: clamp(32px, 8.4vw, 51px); letter-spacing: -1.9px; margin: 18px 0 13px; }
+  html:root[data-theme='dark'] app-root .athlete-hero-content > p:last-of-type { font-size: 10px; line-height: 1.6; max-width: 180px; }
+  html:root[data-theme='dark'] app-root .athlete-hero .button-primary { padding: 12px; gap: 8px; font-size: 10px; }
+  html:root[data-theme='dark'] app-root .hero-rank-display { padding: 0; }
+  html:root[data-theme='dark'] app-root .hero-rank-display app-rank-emblem { width: 108px; max-width: 100%; }
+  .hero-rank-caption { font-size: 5px; letter-spacing: .6px; }
+  .hero-rank-display > strong { font-size: 19px; }
+  .hero-rank-display > span:last-child { font-size: 8px; }
+  .hero-rank-display i { font-size: 5px; letter-spacing: .4px; }
+  .hero-rank-orbit { width: 135px; height: 135px; }
+  .hero-bottom-line { padding: 12px 18px; font-size: 5px; letter-spacing: .7px; }
+  .preview-audio-note { text-align: left; line-height: 1.6; }
+  html:root[data-theme='dark'] app-root .rank-hero-emblem app-rank-emblem { width: 178px; }
+}

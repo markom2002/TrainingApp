@@ -1,0 +1,103 @@
+@media (max-width: 1100px) {
+  .journey-summary {
+    grid-template-columns: 1fr 1fr;
+  }
+  .next-tile {
+    display: none;
+  }
+  .achievement-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 650px) {
+  .journey-summary {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .journey-summary > article {
+    padding: 16px;
+  }
+  .streak-tile {
+    grid-column: 1/-1;
+  }
+  .streak-number > strong {
+    font-size: 63px;
+  }
+  .streak-week i {
+    width: 31px;
+    height: 31px;
+  }
+  .level-tile {
+    grid-column: 1/-1;
+  }
+  app-rank-card {
+    grid-column: 1/-1;
+  }
+  .level-content {
+    margin: 22px 0;
+  }
+  .level-content strong {
+    font-size: 22px;
+  }
+  .tile-label {
+    font-size: 9px;
+  }
+  .level-tile > p,
+  .recovery-note {
+    font-size: 10px;
+  }
+  .live-dot {
+    font-size: 8px;
+  }
+  .journey-summary {
+    margin-bottom: 22px;
+  }
+  .achievement-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .achievement-card {
+    padding: 16px 13px;
+  }
+  .achievement-card h3 {
+    font-size: 14px;
+  }
+  .achievement-card > p {
+    font-size: 10px;
+    min-height: 90px;
+  }
+  .achievement-status {
+    font-size: 6px;
+  }
+  .achievement-medal {
+    width: 34px;
+    height: 39px;
+  }
+  .achievement-medal app-icon {
+    width: 19px;
+    height: 19px;
+  }
+  .journey-section-heading {
+    flex-wrap: wrap;
+    gap: 18px;
+  }
+  h2 {
+    font-size: 24px;
+  }
+  .achievement-filters {
+    width: 100%;
+  }
+  .achievement-filters button {
+    flex: 1;
+    font-size: 11px;
+  }
+  .session-celebration {
+    padding: 16px;
+  }
+  .session-celebration p {
+    font-size: 10px;
+  }
+  .session-celebration strong {
+    font-size: 13px;
+  }
+}

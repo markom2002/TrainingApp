@@ -1,0 +1,144 @@
+.rank-ladder-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 8px;
+  letter-spacing: 1.5px;
+  color: #a58ab5;
+  margin-bottom: 15px;
+}
+.rank-ladder-heading > span:last-child {
+  color: #705b7e;
+  font-size: 7px;
+}
+.rank-ladder {
+  display: grid;
+  grid-template-columns: repeat(9, minmax(0, 1fr));
+  gap: 8px;
+  position: relative;
+  overflow-x: auto;
+  padding: 3px 0 10px;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: #6a4e8430 transparent;
+}
+.rank-stop {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  min-width: 0;
+  scroll-snap-align: center;
+  background: #0c0a101f;
+  border: 1px solid #ffffff06;
+  border-radius: 10px;
+  color: #877293;
+  padding: 11px 5px;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    border-color 0.2s,
+    transform 0.2s;
+}
+.rank-stop:hover {
+  background: color-mix(in srgb, var(--tier-color) 5%, transparent);
+  border-color: color-mix(in srgb, var(--tier-color) 30%, transparent);
+}
+.rank-stop.selected {
+  border-color: color-mix(in srgb, var(--tier-color) 45%, transparent);
+  background: color-mix(in srgb, var(--tier-color) 6%, transparent);
+}
+.rank-stop app-rank-emblem {
+  width: 67px;
+  margin: 5px 0;
+  opacity: 0.28;
+  filter: grayscale(0.65);
+}
+.rank-stop.earned app-rank-emblem {
+  opacity: 1;
+  filter: none;
+}
+.rank-stop.selected app-rank-emblem {
+  opacity: 0.8;
+  filter: none;
+}
+.rank-node-number {
+  font-size: 8px;
+  letter-spacing: 1px;
+  color: #725d80;
+}
+.rank-stop strong {
+  font-size: 10px;
+  font-weight: 500;
+  color: #a38bb2;
+  margin-bottom: 6px;
+}
+.rank-stop.earned strong,
+.rank-stop.selected strong {
+  color: var(--tier-color);
+}
+.rank-stop > small {
+  font-size: 8px;
+  color: #795f88;
+}
+.rank-node-state {
+  font-size: 5px;
+  letter-spacing: 0.7px;
+  color: #594565;
+  margin-top: 12px;
+  min-height: 8px;
+}
+.rank-stop.current .rank-node-state {
+  color: var(--tier-color);
+}
+.rank-stop.current::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 30%;
+  width: 40%;
+  height: 2px;
+  background: var(--tier-color);
+  box-shadow: 0 0 12px var(--tier-color);
+}
+.selected-rank {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  border-top: 1px solid #ffffff08;
+  padding-top: 16px;
+  margin-top: 8px;
+}
+.selected-rank-label {
+  font-size: 7px;
+  letter-spacing: 1.2px;
+  color: var(--tier-color);
+}
+.selected-rank > p {
+  font-size: 10px;
+  margin: 0;
+  color: #ad91be;
+}
+.selected-rank > span:nth-last-child(2) {
+  font-size: 9px;
+  color: #7d6290;
+  margin-left: auto;
+}
+.selected-rank button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 9px;
+  padding: 9px 12px;
+  border: 1px solid color-mix(in srgb, var(--tier-color) 20%, transparent);
+  border-radius: 7px;
+  background: color-mix(in srgb, var(--tier-color) 6%, transparent);
+  color: var(--tier-color);
+  cursor: pointer;
+}
+.selected-rank button app-icon {
+  width: 12px;
+  height: 12px;
+}

@@ -1,0 +1,394 @@
+@if (celebration && data) {
+  <div class="session-celebration" role="status">
+    <span class="celebration-icon"><app-icon name="check" /></span>
+    <div>
+      <strong>Another one in the books.</strong>
+      <p>
+        Workout saved. Your streak, records and achievements are up to date.
+      </p>
+    </div>
+    <button
+      type="button"
+      (click)="celebration = false"
+      aria-label="Dismiss workout confirmation"
+    >
+      ×
+    </button>
+  </div>
+}
+@if (loading && !data) {
+  <div class="journey-loading" role="status">Loading your next chapter…</div>
+}
+@if (error) {
+  <div class="journey-error" role="alert">
+    {{ error }}<button type="button" (click)="load()">Try again</button>
+  </div>
+}
+@if (data; as j) {
+  <section class="journey-summary" aria-label="Your training journey">
+    <article class="streak-tile">
+      <div class="tile-label">
+        <span><app-icon name="flame" />THE STREAK</span
+        ><span class="live-dot">{{
+          j.trainedToday
+            ? 'DONE TODAY'
+            : j.currentStreak
+              ? 'KEEP IT GOING'
+              : 'YOUR NEXT CHAPTER'
+        }}</span>
+      </div>
+      <div class="streak-number">
+        <strong>{{ j.currentStreak }}</strong>
+        <div>
+          <b>workout {{ j.currentStreak === 1 ? 'day' : 'days' }}</b
+          ><span>Best streak: {{ j.bestStreak }}</span>
+        </div>
+        <span class="streak-art" aria-hidden="true"
+          ><app-icon name="flame"
+        /></span>
+      </div>
+      <div class="streak-week">
+        @for (day of j.week; track day.date) {
+          <span
+            [class.trained]="day.trained"
+            [attr.aria-label]="
+              (day.date | date: 'EEEE' : 'UTC') +
+              (day.trained ? ': trained' : ': no workout')
+            "
+            ><small>{{ day.date | date: 'EEEEE' : 'UTC' }}</small
+            ><i>
+              @if (day.trained) {
+                <app-icon name="check" />
+              } @else {
+                <span>·</span>
+              }
+            </i></span
+          >
+        }
+      </div>
+      <p class="recovery-note">
+        One point per workout day. Two days of recovery between sessions are
+        welcome. UTC days.
+      </p>
+    </article>
+    <article class="milestone-total"><span>YOUR PROOF OF WORK</span><strong>{{unlocked}}<small>/ {{j.achievements.length}}</small></strong><h3>Achievements earned.</h3><p>Real sessions. Real milestones. Every one is yours.</p><a routerLink="/journey">OPEN THE COLLECTION &#8599;</a></article>
+    <article class="next-tile">
+      <div class="tile-label">
+        <span><app-icon name="trophy" />NEXT TO UNLOCK</span
+        ><span>{{ unlocked }}/{{ j.achievements.length }}</span>
+      </div>
+      @if (next; as a) {
+        <span class="next-medal"><app-icon [name]="a.icon" /></span>
+        <h3>{{ a.name }}</h3>
+        <p>{{ a.description }}</p>
+        <div class="next-bottom">
+          <span>{{ a.progress | number: '1.0-2' }} / {{ a.target }}</span
+          ><strong>{{a.unlocked ? "EARNED" : "IN PROGRESS"}}</strong>
+        </div>
+      } @else {
+        <span class="next-medal"><app-icon name="trophy" /></span>
+        <h3>Every milestone. Earned.</h3>
+        <p>Every milestone unlocked. Keep writing your story.</p>
+      }
+      @if (!expanded) {
+        <a routerLink="/journey" class="journey-link"
+          >Explore your journey <app-icon name="arrow"
+        /></a>
+      }
+    </article>
+  </section>
+  @if (expanded) {
+
+
+    <section class="achievement-section" aria-labelledby="achievements-title">
+      <div class="journey-section-heading">
+        <div>
+          <p class="kicker">EARNED. NEVER GIVEN.</p>
+          <h2 id="achievements-title">Your trophy room<span>.</span></h2>
+        </div>
+        <div class="achievement-filters" aria-label="Filter achievements">
+          @for (option of ['all', 'unlocked', 'locked']; track option) {
+            <button
+              type="button"
+              [class.selected]="filter === option"
+              [attr.aria-pressed]="filter === option"
+              (click)="filter = option"
+            >
+              {{ option | titlecase }}
+            </button>
+          }
+        </div>
+      </div>
+      <div class="achievement-category">
+        @for (
+          category of ['all', 'training', 'strength', 'body'];
+          track category
+        ) {
+          <button
+            type="button"
+            [class.selected]="rewardCategory === category"
+            (click)="rewardCategory = category; showAllRewards = false"
+          >
+            {{ category | titlecase }}
+          </button>
+        }
+      </div>
+      <div class="achievement-grid">
+        @for (a of visible; track a.id) {
+          <article
+            class="achievement-card"
+            [class.unlocked]="a.unlocked"
+            [attr.data-color]="a.color"
+          >
+            <div class="achievement-top">
+              <span class="achievement-medal"><app-icon [name]="a.icon" /></span
+              ><span class="achievement-status">
+                @if (a.unlocked) {
+                  <app-icon name="check" /> EARNED
+                } @else {
+                  <app-icon name="lock" /> LOCKED
+                }
+              </span>
+            </div>
+            <h3>{{ a.name }}</h3>
+            <p>{{ a.description }}</p>
+            <div class="achievement-progress">
+              <span [style.width.%]="(a.progress / a.target) * 100"></span>
+            </div>
+            <div class="achievement-foot">
+              <span>{{ a.progress | number: '1.0-2' }} / {{ a.target }}</span
+              ><strong>{{a.unlocked ? "EARNED" : "IN PROGRESS"}}</strong>
+            </div>
+          </article>
+        } @empty {
+          <p class="empty-journey">
+            No achievements in this view yet. Every session is a step closer.
+          </p>
+        }
+      </div>
+      <button
+        class="more-achievements"
+        type="button"
+        (click)="showAllRewards = !showAllRewards"
+      >
+        {{
+          showAllRewards
+            ? 'Show fewer milestones'
+            : 'Explore all milestones (' + j.achievements.length + ')'
+        }}
+      </button>
+      <p class="journey-fineprint">
+        Progress follows your saved records. Editing or deleting a log
+        recalculates records and milestones. Future-dated workouts do not
+        count.
+      </p>
+    </section>
+    <div class="journey-detail-grid">
+      <section class="body-card" aria-labelledby="body-title">
+        <div class="journey-section-heading">
+          <div>
+            <p class="kicker">YOUR BODY. YOUR DIRECTION.</p>
+            <h2 id="body-title">Beyond the barbell<span>.</span></h2>
+          </div>
+          <app-icon name="scale" />
+        </div>
+        <div class="weight-reading">
+          <strong
+            >{{ latest ? (latest.weightKg | number: '1.0-2') : '—'
+            }}<small>kg</small></strong
+          ><span>
+            @if (j.weightChangeKg !== null) {
+              <b
+                >{{ j.weightChangeKg > 0 ? '+' : ''
+                }}{{ j.weightChangeKg | number: '1.0-2' }} kg</b
+              >
+              since first weigh-in
+            } @else {
+              Your starting point starts here.
+            }
+          </span>
+        </div>
+        @if (chartPoints) {
+          <svg
+            class="weight-chart"
+            viewBox="0 0 300 110"
+            role="img"
+            aria-label="Body weight trend, last 20 weigh-ins"
+          >
+            <defs>
+              <linearGradient id="weightGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#aa85ed" stop-opacity="0.3" />
+                <stop offset="100%" stop-color="#aa85ed" stop-opacity="0" />
+              </linearGradient>
+            </defs>
+            <polygon
+              [attr.points]="'10,110 ' + chartPoints + ' 290,110'"
+              fill="url(#weightGradient)"
+            />
+            <polyline
+              [attr.points]="chartPoints"
+              fill="none"
+              stroke="#ba97f4"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        }
+        <form
+          class="weigh-in-form"
+          (ngSubmit)="saveWeight(weightForm)"
+          #weightForm="ngForm"
+        >
+          <label
+            >WEIGHT / KG<input
+              type="number"
+              name="weightKg"
+              [(ngModel)]="weightKg"
+              min="20"
+              max="400"
+              step="0.01"
+              required
+              placeholder="e.g. 78.5" /></label
+          ><label
+            >DATE / UTC<input
+              type="date"
+              name="measuredOn"
+              [(ngModel)]="measuredOn"
+              min="2000-01-01"
+              [max]="today"
+              required /></label
+          ><button type="submit" [disabled]="weightForm.invalid || saving">
+            {{ saving ? 'Saving…' : '+ Log weigh-in' }}
+          </button>
+        </form>
+        <p class="measurement-note">
+          One weigh-in per date. Saving again corrects that entry.
+        </p>
+        <div class="body-direction">
+          <label for="body-direction">Your direction</label>
+          <div>
+            <select
+              id="body-direction"
+              [(ngModel)]="bodyGoal"
+              [disabled]="saving"
+            >
+              <option value="Track">Just tracking</option>
+              <option value="Gain">Build / gain weight</option>
+              <option value="Lose">Cut / lose weight</option></select
+            ><button type="button" (click)="saveGoal()" [disabled]="saving">
+              Save goal
+            </button>
+          </div>
+          @if (bodyGoal !== 'Track') {
+            <div class="personal-target-fields">
+              <label
+                >START / KG<input
+                  type="number"
+                  [(ngModel)]="startWeight"
+                  min="20"
+                  max="400"
+                  step="0.1"
+                  placeholder="e.g. 71" /></label
+              ><label
+                >TARGET / KG<input
+                  type="number"
+                  [(ngModel)]="targetWeight"
+                  min="20"
+                  max="400"
+                  step="0.1"
+                  placeholder="e.g. 76"
+              /></label>
+            </div>
+            <p class="goal-progress-caption">
+              {{ j.goalProgressPercent ?? 0 | number: '1.0-1' }}% of your
+              personal target reached
+            </p>
+          }
+          <small
+             >Milestones adapt to your starting weight and chosen target. Progress
+              uses your latest saved weigh-in. Tracking is always enough.</small
+          >
+        </div>
+        @if (notice) {
+          <p class="journey-notice" role="status">{{ notice }}</p>
+        }
+        @if (j.measurements.length) {
+          <details class="measurement-history">
+            <summary>
+              Weigh-in history <span>{{ j.measurements.length }} entries</span>
+            </summary>
+            @for (m of j.measurements.slice().reverse(); track m.id) {
+              <div>
+                <span>{{ m.measuredOn | date: 'd MMM y' : 'UTC' }}</span><strong
+                  >{{ m.weightKg }} kg</strong
+                ><button
+                  type="button"
+                  [disabled]="saving"
+                  (click)="removeWeight(m.id)"
+                  [attr.aria-label]="
+                    'Delete weigh-in for ' +
+                    (m.measuredOn | date: 'd MMM y' : 'UTC')
+                  "
+                >
+                  ×
+                </button>
+              </div>
+            }
+          </details>
+        }
+      </section>
+      <section class="records-card" aria-labelledby="records-title">
+        <div class="journey-section-heading">
+          <div>
+            <p class="kicker">YOU VS. YOUR YESTERDAY.</p>
+            <h2 id="records-title">Raise the bar<span>.</span></h2>
+          </div>
+          <app-icon name="up" />
+        </div>
+        <p class="records-intro">
+          Your latest added-weight bests. A first log sets the baseline; a
+          heavier day sets a record.
+        </p>
+        @for (pr of j.personalRecords; track pr.exerciseId + pr.achievedOn) {
+          <article class="pr-row">
+            <span class="pr-symbol"><app-icon name="dumbbell" /></span>
+            <div>
+              <strong>{{ pr.name }}</strong><small
+                >{{ pr.achievedOn | date: 'd MMM y' : 'UTC' }} · previous
+                {{ pr.previousKg }} kg</small
+              >
+            </div>
+            <span class="pr-weight"
+              ><strong>{{ pr.weightKg }}<small>kg</small></strong
+              ><b
+                >+{{ pr.weightKg - pr.previousKg | number: '1.0-2' }} kg</b
+              ></span
+            >
+          </article>
+        } @empty {
+          <div class="records-empty">
+            <app-icon name="dumbbell" />
+            <h3>Your next best is waiting.</h3>
+            <p>
+              Log the same exercise on two different days. Add more weight to
+              set your first personal record.
+            </p>
+            <a routerLink="/add-training">Build your next session →</a>
+          </div>
+        }
+        <div class="recovery-card">
+          <app-icon name="target" />
+          <div>
+            <strong>Recovery is part of the work.</strong>
+            <p>
+              Your streak makes room for two rest days. Progress is about
+              showing up consistently, at your pace.
+            </p>
+          </div>
+        </div>
+      </section>
+    </div>
+    <app-install-app />
+  }
+}

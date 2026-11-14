@@ -1,0 +1,77 @@
+.workout-collection {
+  margin-top: 28px;
+}
+.collection-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.collection-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  min-height: 238px;
+  overflow: hidden;
+  border: 1px solid #ffffff15;
+  border-radius: 13px;
+  text-align: left;
+  padding: 16px;
+  color: white;
+  background-size: cover;
+  background-position: center;
+}
+.collection-card.upper {
+  background-image:
+    linear-gradient(0deg, #241334fa, #39224355), url('/images/male.webp');
+}
+.collection-card.lower {
+  background-image:
+    linear-gradient(0deg, #193025fa, #1c352655), url('/images/female.webp');
+}
+.collection-card.full {
+  background-image:
+    linear-gradient(0deg, #3c2c15fa, #382b2255), url('/images/equipment.webp');
+}
+.collection-top {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: #ffffffa0;
+}
+.collection-top app-icon {
+  width: 16px;
+}
+.collection-content {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.collection-content > small {
+  font-size: 7px;
+  letter-spacing: 1.2px;
+  color: #e0d5ef;
+}
+.collection-content > strong {
+  font-size: 23px;
+  line-height: 1.1;
+  letter-spacing: -0.7px;
+  font-weight: 600;
+}
+.collection-content > span {
+  font-size: 8px;
+  color: #d4cdd9;
+}
+.collection-content .collection-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #ffffff20;
+  padding-top: 12px;
+  margin-top: 5px;
+  font-size: 9px;
+  color: white;
+}
+.collection-link app-icon {
+  width: 14px;
+}

@@ -1,13 +1,70 @@
+@layer components;
+.repeat-btn {
+  background: #a078e71a;
+  color: #d0b3f3;
+  border: 1px solid #a078e730;
+  border-radius: 6px;
+  font-size: 10px;
+  padding: 10px 13px;
+  min-height: 39px;
+}
+.actions {
+  flex-wrap: wrap;
+}
+.connection-banner {
+  margin: 0;
+  padding: 10px 18px;
+  text-align: center;
+  color: #f2c894;
+  background: #38281f;
+  font-size: 12px;
+  border-bottom: 1px solid #f2c89430;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+@media (max-width: 700px) {
+  html:root[data-theme='dark'] app-root app-dashboard .rail,
+  html:root[data-theme='dark'] app-root .journey-mobile-nav {
+    display: none;
+  }
+  html:root[data-theme='dark']
+    app-root
+    :is(app-profile, app-progress, app-workout-editor) {
+    padding-bottom: 100px;
+  }
+  html:root[data-theme='dark'] app-root .studio-save {
+    bottom: calc(75px + env(safe-area-inset-bottom));
+  }
+}
+:root {
+  color-scheme: dark;
+  --bg: #101014;
+  --surface: #1a191f;
+  --surface-raised: #222029;
+  --border: #ffffff0c;
+  --text: #f0edf7;
+  --muted: #928b9f;
+  --accent: #9565eb;
+  --accent-soft: #b99af8;
+  --mint: #9dd5ad;
+  --gold: #e7c580;
+}
+* {
+  box-sizing: border-box;
+}
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 24px;
 }
 body {
   margin: 0;
-  font-family: "Segoe UI", Arial, sans-serif;
-  font-size: 16px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Segoe UI Variable', 'Segoe UI', Arial, sans-serif;
+  font-size: 14px;
   line-height: 1.5;
-  background: #edf0e7;
-  color: #1d2e21;
+  -webkit-font-smoothing: antialiased;
 }
 button,
 input,
@@ -16,56 +73,1299 @@ textarea {
   font: inherit;
 }
 button,
+a {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+button:not(:disabled),
+summary {
+  cursor: pointer;
+}
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+button,
 a,
 input,
 select,
-textarea {
-  -webkit-tap-highlight-color: transparent;
+textarea,
+summary {
+  outline-offset: 4px;
 }
-button:focus-visible,
-a:focus-visible {
-  outline: 3px solid #8cba33;
+html:root[data-theme='dark']
+  app-root
+  :is(button, a, input, select, textarea, summary):focus-visible {
+  outline: 2px solid #bd9cfc;
   outline-offset: 4px;
 }
 ::selection {
-  background: #d6f16d;
-  color: #20301a;
+  background: #9565eb66;
+  color: white;
 }
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
-/* Keep navigation available without adding another floating toolbar. */
-html {
-  scroll-padding-top: 96px;
+[hidden] {
+  display: none !important;
 }
-body {
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+app-root {
+  display: block;
 }
-app-root :is(.topline, .studio-nav, .page-nav) {
+html:root[data-theme='dark']
+  app-root
+  :is(app-exercise-picker, app-training-list, app-workout-exercises) {
+  color: inherit;
+  font-family: inherit;
+}
+/* Common surfaces and forms for all routes. */
+html:root[data-theme='dark']
+  app-root
+  :is(app-profile, app-progress, app-workout-editor, app-login, app-register) {
+  background: var(--bg);
+  color: var(--text);
+  font-family: inherit;
+}
+html:root[data-theme='dark'] app-root :is(h1, h2, h3, h4) {
+  color: var(--text);
+}
+html:root[data-theme='dark']
+  app-root
+  :is(.eyebrow, .form-kicker, .tiny-tag, .top-note) {
+  color: var(--accent-soft);
+}
+html:root[data-theme='dark']
+  app-root
+  :is(
+    .muted,
+    .hint,
+    .optional,
+    .char-count,
+    .save-note,
+    .week-note,
+    .member,
+    .preset-note,
+    .privacy-note,
+    .form-intro,
+    .switch-auth,
+    .goal-caption,
+    .form-description
+  ) {
+  color: var(--muted);
+}
+html:root[data-theme='dark']
+  app-root
+  :is(
+    .panel,
+    .session-basics,
+    .session-notes,
+    .filters-card,
+    .table-card,
+    .empty-card,
+    .state,
+    .lifetime article
+  ) {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: none;
+  border-radius: 15px;
+}
+html:root[data-theme='dark']
+  app-root
+  :is(
+    .primary,
+    .auth-submit,
+    .save-buttons button,
+    .filters-card > button,
+    .goal-cta
+  ) {
+  background: var(--accent);
+  color: #fff;
+  border-radius: 9px;
+  border: 0;
+  box-shadow: 0 4px 20px #9565eb12;
+  font-weight: 600;
+}
+html:root[data-theme='dark']
+  app-root
+  :is(
+    .primary,
+    .auth-submit,
+    .save-buttons button,
+    .filters-card > button,
+    .goal-cta
+  ):hover:not(:disabled) {
+  background: #a47af0;
+}
+html:root[data-theme='dark']
+  app-root
+  :is(
+    .back,
+    .back-link,
+    .studio-nav > a,
+    .edit-link,
+    .switch-auth a,
+    .empty-card a
+  ) {
+  color: var(--accent-soft);
+}
+html:root[data-theme='dark']
+  app-root
+  :is(.private-label, .tiny-tag, .role-pill, .edit-link) {
+  background: #9c77e512;
+  color: #c3a6f8;
+  border-color: #9c77e52b;
+}
+html:root[data-theme='dark'] app-root :is(.wordmark, .studio-brand) {
+  color: var(--text);
+  letter-spacing: -1px;
+}
+html:root[data-theme='dark']
+  app-root
+  :is(.wordmark > span, .studio-brand > span, h1 > span, h2 > span) {
+  color: var(--accent-soft);
+}
+html:root[data-theme='dark']
+  app-root
+  :is(
+    input:not([type='range']):not([type='radio']):not([type='checkbox']),
+    select,
+    textarea
+  ) {
+  color: #ece7f5;
+  background: #131217;
+  border: 1px solid #ffffff12;
+  border-radius: 9px;
+  min-height: 43px;
+  accent-color: var(--accent);
+}
+html:root[data-theme='dark'] app-root :is(input, textarea)::placeholder {
+  color: #797183;
+}
+html:root[data-theme='dark']
+  app-root
+  :is(input:not([type='range']), select, textarea):focus {
+  border-color: #a27de8;
+  box-shadow: 0 0 0 3px #9565eb15;
+}
+html:root[data-theme='dark'] app-root input[readonly] {
+  background: #ffffff03;
+  color: #9d95ab;
+}
+html:root[data-theme='dark'] app-root input[type='range'] {
+  accent-color: var(--accent);
+}
+html:root[data-theme='dark'] app-root :is(.studio-nav, .page-nav) {
+  background: #101014ed;
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border);
   position: sticky;
   top: 0;
   z-index: 20;
-  background: rgba(244, 247, 237, 0.94);
-  backdrop-filter: blur(12px);
 }
-app-root
+html:root[data-theme='dark'] app-root :is(.profile-signout, .save-buttons > a) {
+  color: #b6a9c9;
+}
+html:root[data-theme='dark']
+  app-root
+  :is(.error, .error-message, .exercise-validation) {
+  color: #f2a7b2;
+  background: #cb556913;
+  border-color: #cb556930;
+  border-radius: 9px;
+}
+html:root[data-theme='dark'] app-root .success-message {
+  color: #b2dfc0;
+  background: #8fcca215;
+  border-color: #8fcca230;
+}
+
+/* Sign-in and registration: photographic editorial panel and focused form. */
+html:root[data-theme='dark'] app-root .auth-shell {
+  grid-template-columns: 1.08fr 1fr;
+  background: var(--bg);
+}
+html:root[data-theme='dark'] app-root .auth-story {
+  min-height: 100dvh;
+  padding: 38px 10%;
+  background:
+    linear-gradient(145deg, #1c1229e8, #1d122eb5 55%, #100c17d9),
+    url('/images/gym.webp') 58% center/cover;
+  border-right: 1px solid #ffffff0d;
+}
+html:root[data-theme='dark'] app-root .brand-mark {
+  background: var(--accent);
+  color: white;
+  border-radius: 10px;
+}
+html:root[data-theme='dark'] app-root .brand-sub {
+  color: #c5b4d9;
+  border-color: #ffffff25;
+  font-size: 9px;
+}
+html:root[data-theme='dark'] app-root .story-body {
+  padding: 55px 0;
+}
+html:root[data-theme='dark'] app-root .auth-story h1 {
+  font-size: clamp(44px, 5vw, 78px);
+  line-height: 1.03;
+  font-weight: 650;
+  letter-spacing: -3px;
+}
+html:root[data-theme='dark'] app-root .auth-story h1 em {
+  color: #c2a0fc;
+}
+html:root[data-theme='dark'] app-root .story-copy {
+  color: #c4b6d3;
+  font-size: 15px;
+  line-height: 1.9;
+}
+html:root[data-theme='dark'] app-root .orbit-art {
+  height: 180px;
+  margin-top: 40px;
+  max-width: 340px;
+}
+html:root[data-theme='dark'] app-root .orbit {
+  border-color: #c0a0f329;
+}
+html:root[data-theme='dark'] app-root .orbit-word {
+  top: 40px;
+  left: 65px;
+  font-size: 18px;
+  color: #dfd1ef;
+}
+html:root[data-theme='dark'] app-root .orbit-word strong {
+  font-size: 43px;
+  color: #c7a5ff;
+}
+html:root[data-theme='dark'] app-root .orbit-dot {
+  background: #c5a4ff;
+  box-shadow: 0 0 25px #b388ff70;
+  top: 25px;
+  left: 40px;
+}
+html:root[data-theme='dark'] app-root .floating-tag {
+  bottom: 0;
+  left: 115px;
+  font-size: 8px;
+  border-color: #b295dc35;
+  background: #1e142b80;
+}
+html:root[data-theme='dark'] app-root .floating-tag span {
+  color: #c7a5ff;
+}
+html:root[data-theme='dark'] app-root .story-footer {
+  color: #b8a4cd;
+  font-size: 9px;
+  gap: 16px;
+}
+html:root[data-theme='dark'] app-root .story-footer i {
+  background: #b393e4;
+}
+html:root[data-theme='dark'] app-root .auth-form-side {
+  background: #121116;
+  padding: 38px 12%;
+}
+html:root[data-theme='dark'] app-root .auth-form-content {
+  max-width: 400px;
+  padding: 55px 0;
+}
+html:root[data-theme='dark'] app-root .auth-form-content h2 {
+  color: #f1edf7;
+  font-size: 36px;
+  font-weight: 600;
+  letter-spacing: -1.5px;
+}
+html:root[data-theme='dark'] app-root .auth-form-content label {
+  color: #c4bbd1;
+  font-size: 12px;
+  margin-top: 20px;
+}
+html:root[data-theme='dark'] app-root .auth-form-content input {
+  margin-top: 9px;
+  padding: 14px 16px;
+  min-height: 51px;
+  font-size: 13px;
+}
+html:root[data-theme='dark'] app-root .password-field input {
+  padding-right: 70px;
+}
+html:root[data-theme='dark'] app-root .show-password {
+  color: #bca3e3;
+  font-size: 11px;
+  right: 15px;
+  top: calc(50% + 4px);
+}
+html:root[data-theme='dark'] app-root .auth-submit {
+  margin-top: 28px;
+  padding: 16px 20px;
+  min-height: 52px;
+  font-size: 13px;
+}
+html:root[data-theme='dark'] app-root .form-intro {
+  font-size: 13px;
+  line-height: 1.8;
+}
+html:root[data-theme='dark'] app-root .form-kicker {
+  font-size: 9px;
+  letter-spacing: 1.5px;
+}
+html:root[data-theme='dark'] app-root .switch-auth {
+  font-size: 12px;
+}
+html:root[data-theme='dark'] app-root .form-divider {
+  border-color: var(--border);
+}
+html:root[data-theme='dark'] app-root .privacy-note {
+  font-size: 10px;
+}
+html:root[data-theme='dark'] app-root .auth-form-side footer {
+  color: #736a80;
+  font-size: 8px;
+}
+
+/* Session builder: compact header, searchable library, persistent save action. */
+html:root[data-theme='dark'] app-root .workout-studio {
+  max-width: 1320px;
+}
+html:root[data-theme='dark'] app-root .studio-nav {
+  height: 74px;
+}
+html:root[data-theme='dark'] app-root .studio-nav > a {
+  font-size: 12px;
+}
+html:root[data-theme='dark'] app-root .studio-brand {
+  font-size: 22px;
+}
+html:root[data-theme='dark'] app-root .studio-brand small {
+  color: #8f839e;
+  border-color: #ffffff15;
+  font-size: 8px;
+}
+html:root[data-theme='dark'] app-root .studio-hero {
+  min-height: 0;
+  margin: 28px 0;
+  padding: 26px 30px;
+  border-radius: 16px;
+  background:
+    radial-gradient(ellipse at top right, #9565eb20, transparent 60%),
+    var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: none;
+}
+html:root[data-theme='dark'] app-root .studio-hero h1 {
+  font-size: clamp(27px, 3vw, 40px);
+  font-weight: 600;
+  letter-spacing: -1.3px;
+  margin: 10px 0;
+}
+html:root[data-theme='dark'] app-root .studio-hero h1 em {
+  color: var(--accent-soft);
+}
+html:root[data-theme='dark'] app-root .studio-hero p:last-child {
+  color: var(--muted);
+  font-size: 12px;
+}
+html:root[data-theme='dark'] app-root .hero-summary {
+  padding: 20px 25px;
+  border-color: #ad87f624;
+  background: #a078e70a;
+  min-width: 245px;
+  gap: 28px;
+}
+html:root[data-theme='dark'] app-root .hero-summary strong {
+  color: #c4a6fb;
+  font-size: 29px;
+}
+html:root[data-theme='dark'] app-root .hero-summary > div > span {
+  color: #a89ab8;
+  font-size: 8px;
+}
+html:root[data-theme='dark'] app-root .hero-summary > small,
+html:root[data-theme='dark'] app-root .hero-line {
+  display: none;
+}
+html:root[data-theme='dark'] app-root .hero-summary i {
+  background: #b092dc26;
+  height: 32px;
+}
+html:root[data-theme='dark'] app-root .session-basics {
+  padding: 25px;
+}
+html:root[data-theme='dark'] app-root .session-basics h2 {
+  font-size: 20px;
+}
+html:root[data-theme='dark'] app-root .session-basics .eyebrow {
+  font-size: 9px;
+}
+html:root[data-theme='dark']
+  app-root
   :is(
-    .exercise-option,
-    .auth-submit,
-    .primary,
-    .save-buttons button
-  ):active:not(:disabled) {
-  transform: translateY(1px);
+    .basics-grid > label,
+    .effort-grid > label > span,
+    .session-notes > label
+  ) {
+  color: #c2b7d0;
+  font-size: 12px;
+}
+html:root[data-theme='dark'] app-root .variant-options {
+  background: #111015;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 4px;
+}
+html:root[data-theme='dark'] app-root .variant-options label {
+  color: #9f91b1;
+  background: none;
+  font-size: 10px;
+  border-radius: 6px;
+}
+html:root[data-theme='dark'] app-root .variant-options label.active {
+  background: #a37ae828;
+  color: #d5bcff;
+}
+html:root[data-theme='dark'] app-root .effort-grid {
+  border-top-color: var(--border);
+}
+html:root[data-theme='dark'] app-root .effort-grid strong {
+  color: #c4a6fb;
+}
+html:root[data-theme='dark'] app-root .range-labels small {
+  color: #84768f;
+  font-size: 8px;
+}
+html:root[data-theme='dark'] app-root .builder-heading {
+  margin: 30px 0 20px;
+}
+html:root[data-theme='dark'] app-root .builder-heading h2 {
+  font-size: 26px;
+  letter-spacing: -0.8px;
+}
+html:root[data-theme='dark'] app-root .builder-heading p {
+  color: var(--muted);
+  font-size: 12px;
+}
+html:root[data-theme='dark'] app-root .builder-heading .eyebrow {
+  color: var(--accent-soft);
+  font-size: 9px;
+}
+html:root[data-theme='dark'] app-root .selection-count {
+  color: #c0a6e7;
+  border-color: #a383d72c;
+  background: #a383d710;
+  font-size: 10px;
+  padding: 9px 12px;
+  border-radius: 8px;
+}
+html:root[data-theme='dark'] app-root .builder-grid {
+  grid-template-columns: minmax(0, 1.15fr) minmax(310px, 1fr);
+  gap: 22px;
+}
+html:root[data-theme='dark'] app-root .exercise-library {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 22px;
+}
+html:root[data-theme='dark'] app-root .body-preview {
+  margin-bottom: 16px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+}
+html:root[data-theme='dark'] app-root .body-preview > summary {
+  padding: 13px 15px;
+  color: #ae9ac5;
+  font-size: 11px;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+}
+html:root[data-theme='dark']
+  app-root
+  .body-preview
+  > summary::-webkit-details-marker {
+  display: none;
+}
+html:root[data-theme='dark'] app-root .body-preview[open] > summary > span {
+  transform: rotate(45deg);
+}
+html:root[data-theme='dark'] app-root .library-intro {
+  border: 0;
+  border-top: 1px solid var(--border);
+  border-radius: 0;
+  background: #15121b;
+  margin: 0;
+  box-shadow: none;
+}
+html:root[data-theme='dark'] app-root .library-copy h3 {
+  font-size: 24px;
+}
+html:root[data-theme='dark']
+  app-root
+  :is(.library-copy p, .library-number small, .focus-muscle) {
+  color: #9e8fae;
+}
+html:root[data-theme='dark'] app-root .library-number {
+  color: #c5a6f6;
+}
+html:root[data-theme='dark'] app-root .body-view {
+  background: #241b2e;
+}
+html:root[data-theme='dark'] app-root .body-view button {
+  color: #a68fbf;
+  background: none;
+}
+html:root[data-theme='dark'] app-root .body-view button.chosen {
+  background: var(--accent);
+  color: white;
+}
+html:root[data-theme='dark'] app-root .search-box {
+  margin-top: 0;
+  background: #111015;
+  border-color: #ffffff15;
+  border-radius: 9px;
+  min-height: 46px;
+  color: #ab8cdb;
+  padding: 0 14px;
+}
+html:root[data-theme='dark'] app-root .search-box input {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  font-size: 12px;
+  min-height: 44px;
+}
+html:root[data-theme='dark'] app-root .muscle-filters {
+  gap: 6px;
+  margin: 15px 0 20px;
+}
+html:root[data-theme='dark'] app-root .muscle-filters button {
+  border: 1px solid #ffffff0c;
+  background: #ffffff03;
+  color: #a59aaf;
+  font-size: 10px;
+  border-radius: 7px;
+  padding: 7px 10px;
+}
+html:root[data-theme='dark'] app-root .muscle-filters button.selected {
+  background: #a780ee22;
+  color: #d3b6ff;
+  border-color: #ad88f344;
+}
+html:root[data-theme='dark'] app-root .exercise-cards {
+  gap: 8px;
+}
+html:root[data-theme='dark'] app-root .exercise-option {
+  background: #ffffff03;
+  border: 1px solid #ffffff0b;
+  border-radius: 9px;
+  padding: 14px;
+  min-height: 76px;
+  color: var(--text);
+  box-shadow: none;
+}
+html:root[data-theme='dark'] app-root .exercise-option:hover:not(:disabled) {
+  background: #a980ec0d;
+  border-color: #a980ec40;
+}
+html:root[data-theme='dark'] app-root .exercise-option.added {
+  background: #a980ec15;
+  border-color: #a980ec50;
+}
+html:root[data-theme='dark'] app-root .exercise-option strong {
+  color: #e1d9ed;
+  font-size: 12px;
+}
+html:root[data-theme='dark'] app-root .exercise-option small {
+  color: #90839f;
+  font-size: 10px;
+  line-height: 1.5;
+}
+html:root[data-theme='dark'] app-root .exercise-symbol {
+  color: #b595e7;
+  background: #a780ee15;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  font-size: 20px;
+}
+html:root[data-theme='dark'] app-root .add-symbol {
+  color: #c4a6fb;
+  background: #a780ee15;
+  border-radius: 6px;
+  width: 24px;
+  height: 24px;
+  font-size: 17px;
+}
+html:root[data-theme='dark'] app-root .session-panel {
+  position: sticky;
+  top: 90px;
+  align-self: start;
+  max-height: calc(100dvh - 110px);
+  overflow: auto;
+  padding: 24px;
+  background: #1c1823;
+  border: 1px solid #a47ce923;
+  border-radius: 14px;
+}
+html:root[data-theme='dark'] app-root .session-heading h3 {
+  font-size: 22px;
+}
+html:root[data-theme='dark'] app-root .session-heading .eyebrow {
+  font-size: 8px;
+}
+html:root[data-theme='dark'] app-root .session-heading > span {
+  background: #a078e720;
+  color: #c5a5fa;
+  border-color: #a078e730;
+}
+html:root[data-theme='dark'] app-root .quick-label {
+  color: #9e8ab6;
+  font-size: 9px;
+}
+html:root[data-theme='dark'] app-root .quick-add button {
+  background: #a078e715;
+  border-color: #a078e72b;
+  color: #cbb0f3;
+  border-radius: 7px;
+  font-size: 10px;
+}
+html:root[data-theme='dark'] app-root .preset-note {
+  font-size: 10px;
+}
+html:root[data-theme='dark'] app-root .empty-session {
+  background: #ffffff02;
+  border: 1px dashed #b490e330;
+  color: var(--muted);
+  border-radius: 12px;
+}
+html:root[data-theme='dark'] app-root .empty-session > span {
+  color: #ae85e5;
+  border-color: #ae85e52b;
+  background: #ae85e511;
+}
+html:root[data-theme='dark'] app-root .empty-session h4 {
+  font-size: 16px;
+}
+html:root[data-theme='dark'] app-root .empty-session p {
+  font-size: 12px;
+}
+html:root[data-theme='dark'] app-root .empty-session small {
+  color: #8a7b99;
+  font-size: 10px;
+}
+html:root[data-theme='dark'] app-root .session-exercise {
+  background: #131017;
+  border: 1px solid #ffffff0c;
+  border-radius: 11px;
+  padding: 17px;
+}
+html:root[data-theme='dark'] app-root .entry-number {
+  color: #b996ed;
+  background: #9f73df15;
+  font-size: 11px;
+}
+html:root[data-theme='dark'] app-root .entry-title h4 {
+  color: #e4d9f0;
+  font-size: 13px;
+}
+html:root[data-theme='dark'] app-root .entry-title small {
+  color: #9b86af;
+  font-size: 10px;
+}
+html:root[data-theme='dark'] app-root .entry-title button {
+  color: #b7a4c8;
+  background: #ffffff06;
+  border-color: #ffffff0e;
+}
+html:root[data-theme='dark'] app-root .entry-fields label {
+  color: #9e8aaf;
+  font-size: 8px;
+}
+html:root[data-theme='dark'] app-root .entry-fields input {
+  background: #1b1521;
+  min-height: 42px;
+  font-size: 16px;
+  padding: 10px;
+}
+html:root[data-theme='dark'] app-root .entry-footer {
+  color: #84718f;
+  font-size: 8px;
+  border-color: #ffffff0b;
+}
+html:root[data-theme='dark'] app-root .entry-footer button {
+  color: #c1a6df;
+  border-color: #ffffff12;
+  background: #ffffff04;
+}
+html:root[data-theme='dark'] app-root .session-notes {
+  padding: 24px;
+}
+html:root[data-theme='dark'] app-root .session-notes .eyebrow {
+  font-size: 9px;
+}
+html:root[data-theme='dark'] app-root .session-notes textarea {
+  font-size: 12px;
+  padding: 15px;
+}
+html:root[data-theme='dark'] app-root .session-notes :is(small, > span) {
+  color: var(--muted);
+  font-size: 9px;
+}
+html:root[data-theme='dark'] app-root .studio-save {
+  position: sticky;
+  bottom: 0;
+  z-index: 25;
+  background: #17141eef;
+  backdrop-filter: blur(20px);
+  padding: 18px 22px;
+  border: 1px solid #a078e72b;
+  border-radius: 12px;
+  margin-top: 24px;
+  box-shadow: 0 -12px 40px #0003;
+}
+html:root[data-theme='dark'] app-root .studio-save strong {
+  color: #daccdf;
+  font-size: 12px;
+}
+html:root[data-theme='dark'] app-root .studio-save > div > span {
+  color: #95819f;
+  font-size: 10px;
+}
+html:root[data-theme='dark'] app-root .save-buttons button {
+  font-size: 12px;
+  padding: 13px 21px;
+  gap: 18px;
+  min-height: 45px;
+}
+
+/* History and progress: quiet tables with clear actions. */
+html:root[data-theme='dark'] app-root .builder-heading {
+  border-color: #ffffff0c;
+}
+html:root[data-theme='dark'] app-root :is(th, td) {
+  color: #b9aec7;
+}
+html:root[data-theme='dark'] app-root thead th {
+  background: #211e28;
+  color: #a293b2;
+  font-size: 10px;
+}
+html:root[data-theme='dark'] app-root .training-list-container {
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+  border: 0;
+}
+html:root[data-theme='dark'] app-root .list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 22px;
+  gap: 12px;
+}
+html:root[data-theme='dark'] app-root .list-header h2 {
+  color: #eee8f5;
+  font-size: 19px;
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+html:root[data-theme='dark'] app-root .list-header .eyebrow {
+  margin: 0 0 6px;
+  font-size: 8px;
+}
+html:root[data-theme='dark'] app-root .filter-toggle {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  background: #a078e70b;
+  color: #bca4dc;
+  border: 1px solid #a078e729;
+  border-radius: 7px;
+  padding: 9px 12px;
+  font-size: 10px;
+  white-space: nowrap;
+}
+html:root[data-theme='dark'] app-root .history-filters {
+  background: #ffffff02;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+html:root[data-theme='dark'] app-root .history-filters label {
+  color: #9d8eac;
+  font-size: 10px;
+}
+html:root[data-theme='dark'] app-root .history-filters :is(input, select) {
+  font-size: 11px;
+  min-height: 36px;
+}
+html:root[data-theme='dark']
+  app-root
+  :is(.history-filters button, .history-pagination button) {
+  background: #a078e716;
+  color: #c8b1e7;
+  border: 1px solid #a078e72b;
+  border-radius: 7px;
+  font-size: 11px;
+  padding: 9px 13px;
+}
+html:root[data-theme='dark'] app-root :is(.table-wrapper, .table-card) {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+html:root[data-theme='dark'] app-root table {
+  color: #c3b7d1;
+  background: transparent;
+  font-size: 12px;
+}
+html:root[data-theme='dark'] app-root :is(th, td) {
+  border-color: #ffffff08;
+  padding: 16px 13px;
+}
+html:root[data-theme='dark'] app-root thead {
+  background: #ffffff02;
+  color: #95879f;
+  font-size: 10px;
+}
+html:root[data-theme='dark'] app-root th {
+  font-weight: 500;
+}
+html:root[data-theme='dark'] app-root tbody tr {
+  background: transparent;
+}
+html:root[data-theme='dark'] app-root tbody tr:hover {
+  background: #a078e707;
+}
+html:root[data-theme='dark'] app-root :is(.date, .calories, td.notes) {
+  color: #b6a8c5;
+}
+html:root[data-theme='dark'] app-root :is(.badge, .type-badge) {
+  color: #ccb3ef;
+  background: #a078e719;
+  border: 1px solid #a078e71a;
+  border-radius: 6px;
+  font-size: 10px;
+}
+html:root[data-theme='dark'] app-root .badge.fatigue {
+  color: #e2bc86;
+  background: #d9b26c12;
+  border-color: #d9b26c15;
+}
+html:root[data-theme='dark'] app-root .edit-btn {
+  color: #c5a5fa;
+  background: #a078e715;
+  border: 1px solid #a078e725;
+  font-size: 10px;
+  border-radius: 6px;
+}
+html:root[data-theme='dark'] app-root .delete-btn {
+  color: #e4a0ad;
+  background: #c76a8010;
+  border: 1px solid #c76a8020;
+  font-size: 10px;
+  border-radius: 6px;
+}
+html:root[data-theme='dark'] app-root .empty {
+  color: #a291b2;
+  padding: 36px 20px;
+  font-size: 12px;
+}
+html:root[data-theme='dark'] app-root .history-pagination {
+  color: #8e809e;
+  font-size: 10px;
+  padding-top: 16px;
+}
+html:root[data-theme='dark']
+  app-root
+  app-workout-exercises
+  :is(summary, p, span, li) {
+  color: #bca7d0;
+}
+html:root[data-theme='dark'] app-root app-workout-exercises details {
+  background: #a078e708;
+  border-color: #a078e720;
+}
+html:root[data-theme='dark'] app-root .progress-wrapper {
+  max-width: 1120px;
+}
+html:root[data-theme='dark'] app-root .progress-wrapper > header {
+  padding: 24px 0;
+}
+html:root[data-theme='dark'] app-root .progress-wrapper h1 {
+  font-size: 38px;
+}
+html:root[data-theme='dark'] app-root .progress-wrapper .filters-card {
+  padding: 24px;
+  gap: 20px;
+}
+html:root[data-theme='dark'] app-root .progress-wrapper label {
+  color: #ae9bbc;
+  font-size: 12px;
+}
+html:root[data-theme='dark'] app-root .progress-wrapper .filters-card > button {
+  font-size: 12px;
+  min-height: 43px;
+}
+html:root[data-theme='dark'] app-root caption {
+  padding: 20px;
+  color: #a691b6;
+  font-size: 12px;
+}
+
+/* Profile: the same palette, with a calmer editing area. */
+html:root[data-theme='dark'] app-root .page-title {
+  padding: 35px 0;
+}
+html:root[data-theme='dark'] app-root .page-title h1 {
+  font-size: 35px;
+  letter-spacing: -1.2px;
+}
+html:root[data-theme='dark'] app-root .profile-hero {
+  background:
+    radial-gradient(ellipse at right, #9b6be329, transparent 65%), #211a2d;
+  border: 1px solid #a078e72b;
+  border-radius: 17px;
+  box-shadow: none;
+}
+html:root[data-theme='dark'] app-root .profile-avatar {
+  background: #ad87ed25;
+  color: #d6baf9;
+  border-color: #ad87ed18;
+}
+html:root[data-theme='dark'] app-root .identity p {
+  color: #bca9cb;
+}
+html:root[data-theme='dark'] app-root .hero-pattern {
+  border-color: #a078e720;
+  background: none;
+}
+html:root[data-theme='dark'] app-root .lifetime article {
+  padding: 24px;
+}
+html:root[data-theme='dark'] app-root .lifetime article > span {
+  color: #ab97bd;
+  font-size: 10px;
+}
+html:root[data-theme='dark'] app-root .lifetime strong {
+  color: #e5d9f2;
+  font-size: 33px;
+}
+html:root[data-theme='dark'] app-root .lifetime :is(small, em) {
+  color: #9e88b0;
+  font-size: 11px;
+}
+html:root[data-theme='dark'] app-root .profile-grid .panel {
+  padding: 26px;
+}
+html:root[data-theme='dark'] app-root .profile-grid h2 {
+  font-size: 21px;
+}
+html:root[data-theme='dark'] app-root .profile-grid label {
+  color: #baa8c9;
+  font-size: 12px;
+}
+html:root[data-theme='dark'] app-root .goal-input {
+  background: #ffffff03;
+  border-color: #ffffff0c;
+}
+html:root[data-theme='dark'] app-root .goal-input > span {
+  color: #a38cb6;
+  font-size: 11px;
+}
+html:root[data-theme='dark'] app-root .save-row {
+  border-color: var(--border);
+}
+html:root[data-theme='dark'] app-root .goal-ring > div {
+  background: var(--surface);
+  color: #e3d2f2;
+}
+html:root[data-theme='dark'] app-root .goal-ring strong {
+  color: #d6b8fa;
+}
+html:root[data-theme='dark'] app-root .goal-ring :is(small, strong > span) {
+  color: #a28bb6;
+}
+html:root[data-theme='dark'] app-root .profile-aside .focus-card {
+  background: linear-gradient(135deg, #362244, #221a2b);
+  border: 1px solid #a078e72b;
+  border-radius: 14px;
+}
+html:root[data-theme='dark'] app-root .profile-aside .focus-card :is(p, span) {
+  color: #b99dd3;
+}
+html:root[data-theme='dark'] app-root .profile-aside .focus-card h3 {
+  color: #e4cef9;
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  button,
+  a {
+    transition:
+      background 0.18s,
+      border-color 0.18s,
+      color 0.18s,
+      box-shadow 0.18s;
+  }
+  .collection-card {
+    transition:
+      transform 0.2s,
+      box-shadow 0.2s;
+  }
+  .collection-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px #0004;
+  }
+}
+@media (max-width: 1000px) {
+  html:root[data-theme='dark'] app-root .builder-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 1fr);
+  }
+  html:root[data-theme='dark'] app-root .exercise-cards {
+    grid-template-columns: 1fr;
+  }
+  html:root[data-theme='dark'] app-root .auth-form-side {
+    padding: 35px 9%;
+  }
+}
+@media (max-width: 750px) {
+  html:root[data-theme='dark'] app-root .builder-grid {
+    grid-template-columns: 1fr;
+  }
+  html:root[data-theme='dark'] app-root .session-panel {
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
+  html:root[data-theme='dark'] app-root .studio-hero {
+    padding: 22px;
+    gap: 22px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  html:root[data-theme='dark'] app-root .hero-summary {
+    padding: 15px 22px;
+    min-width: 0;
+    justify-content: space-around;
+  }
+  html:root[data-theme='dark'] app-root .hero-summary > div > span {
+    margin-top: 2px;
+  }
+  html:root[data-theme='dark'] app-root .hero-summary strong {
+    font-size: 24px;
+  }
+  html:root[data-theme='dark'] app-root .session-basics {
+    padding: 20px;
+  }
+  html:root[data-theme='dark'] app-root .exercise-library {
+    padding: 16px;
+  }
+  html:root[data-theme='dark'] app-root .studio-save {
+    padding: 14px 16px;
+    margin-bottom: -15px;
+  }
+  html:root[data-theme='dark'] app-root .studio-save > div:first-child {
+    display: none;
+  }
+  html:root[data-theme='dark'] app-root .save-buttons {
+    width: 100%;
+  }
+  html:root[data-theme='dark'] app-root .save-buttons button {
+    justify-content: center;
+  }
+  html:root[data-theme='dark'] app-root .save-buttons > a {
+    font-size: 12px;
+  }
+  html:root[data-theme='dark'] app-root .auth-shell {
+    grid-template-columns: 1fr;
+  }
+  html:root[data-theme='dark'] app-root .auth-story {
+    min-height: 0;
+    padding: 25px 28px;
+  }
+  html:root[data-theme='dark'] app-root .story-body {
+    padding: 30px 0 5px;
+  }
+  html:root[data-theme='dark'] app-root .auth-story h1 {
+    font-size: 41px;
+    letter-spacing: -1.8px;
+    margin: 15px 0;
+  }
+  html:root[data-theme='dark'] app-root .auth-story h1 br {
+    display: none;
+  }
+  html:root[data-theme='dark'] app-root .story-copy,
+  html:root[data-theme='dark'] app-root .orbit-art,
+  html:root[data-theme='dark'] app-root .story-footer {
+    display: none;
+  }
+  html:root[data-theme='dark'] app-root .auth-brand {
+    font-size: 13px;
+  }
+  html:root[data-theme='dark'] app-root .auth-form-side {
+    padding: 30px 28px;
+    min-height: 70dvh;
+  }
+  html:root[data-theme='dark'] app-root .auth-form-content {
+    padding: 30px 0 40px;
+  }
+  html:root[data-theme='dark'] app-root .top-note {
+    display: none;
+  }
+  html:root[data-theme='dark'] app-root .auth-form-content h2 {
+    font-size: 30px;
+  }
+  html:root[data-theme='dark'] app-root .page-title h1 {
+    font-size: 29px;
+  }
+  html:root[data-theme='dark'] app-root .private-label {
+    display: none;
+  }
+  html:root[data-theme='dark'] app-root .profile-grid .panel {
+    padding: 21px;
+  }
+  html:root[data-theme='dark'] app-root .lifetime article {
+    padding: 17px;
+  }
+  html:root[data-theme='dark'] app-root .lifetime strong {
+    font-size: 25px;
+  }
+  html:root[data-theme='dark'] app-root .goal-input > span {
+    font-size: 10px;
+  }
+  html:root[data-theme='dark'] app-root .progress-wrapper h1 {
+    font-size: 30px;
+  }
+  html:root[data-theme='dark'] app-root .progress-wrapper .filters-card {
+    padding: 18px;
+    gap: 12px;
+  }
+  html:root[data-theme='dark'] app-root .list-header h2 {
+    font-size: 17px;
+  }
+  html:root[data-theme='dark'] app-root .history-pagination {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  html:root[data-theme='dark']
+    app-root
+    :is(input:not([type='range']), select, textarea) {
+    font-size: 16px;
+  }
+  html:root[data-theme='dark'] app-root .period-control input {
+    min-height: 25px;
+    font-size: 11px;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     scroll-behavior: auto !important;
-    transition: none !important;
     animation: none !important;
+    transition: none !important;
   }
+}
+@media (max-width: 650px) {
+  html:root[data-theme='dark'] app-root app-training-list .table-wrapper {
+    border: 0;
+    overflow: visible;
+  }
+  html:root[data-theme='dark'] app-root app-training-list table {
+    min-width: 0;
+    display: block;
+  }
+  html:root[data-theme='dark'] app-root app-training-list thead {
+    display: none;
+  }
+  html:root[data-theme='dark'] app-root app-training-list tbody {
+    display: grid;
+    gap: 14px;
+  }
+  html:root[data-theme='dark'] app-root app-training-list tbody tr {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 14px;
+    border: 1px solid #ffffff0d;
+    background: #ffffff02;
+    border-radius: 11px;
+    gap: 12px;
+  }
+  html:root[data-theme='dark'] app-root app-training-list td {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border: 0;
+    padding: 0;
+    gap: 5px;
+    min-width: 0;
+    font-size: 12px;
+  }
+  html:root[data-theme='dark'] app-root app-training-list td::before {
+    content: attr(data-label);
+    font-size: 9px;
+    color: #847590;
+  }
+  html:root[data-theme='dark'] app-root app-training-list td.date {
+    grid-column: 1/-1;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #ffffff0b;
+    font-size: 14px;
+    color: #e3d6f1;
+  }
+  html:root[data-theme='dark'] app-root app-training-list td.notes {
+    max-width: none;
+    overflow-wrap: anywhere;
+    white-space: normal;
+  }
+  html:root[data-theme='dark'] app-root app-training-list td.actions {
+    grid-column: 1/-1;
+    flex-direction: row;
+    gap: 9px;
+    padding-top: 12px;
+    border-top: 1px solid #ffffff0b;
+  }
+  html:root[data-theme='dark'] app-root app-training-list td.actions::before,
+  html:root[data-theme='dark'] app-root app-training-list td.empty::before {
+    display: none;
+  }
+  html:root[data-theme='dark'] app-root app-training-list td.actions button {
+    flex: 1;
+    min-height: 40px;
+    font-size: 11px;
+  }
+  html:root[data-theme='dark'] app-root app-training-list td.empty {
+    grid-column: 1/-1;
+    padding: 22px 10px;
+    line-height: 1.8;
+  }
+}
+
+html:root[data-theme='dark']
+  app-root
+  :is(.variant-note, .entry-footer > span, .session-notes > span) {
+  color: #9f8aaf;
+  font-size: 10px;
+}
+html:root[data-theme='dark'] app-root .profile-hero {
+  background:
+    linear-gradient(90deg, #21162eeb, #271c3790),
+    url('/images/equipment.webp') center / cover;
+}
+html:root[data-theme='dark'] app-root .entry-number {
+  border: 1px solid #a078e72b;
+}
+html:root[data-theme='dark'] app-root input[type='range'] {
+  background: transparent;
 }

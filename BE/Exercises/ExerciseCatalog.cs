@@ -8,6 +8,7 @@ public static class ExerciseCatalog
     {
         new("bench-press", "Bench press", "Chest", "Barbell"), new("incline-dumbbell-press", "Incline dumbbell press", "Chest", "Dumbbells"), new("push-up", "Push-up", "Chest", "Bodyweight"), new("cable-fly", "Cable fly", "Chest", "Cable"),
         new("lat-pulldown", "Lat pulldown", "Back", "Machine"), new("seated-row", "Seated cable row", "Back", "Cable"), new("pull-up", "Pull-up", "Back", "Bodyweight"), new("dumbbell-row", "Single-arm row", "Back", "Dumbbells"),
+        new("behind-neck-lat-pulldown", "Lat pulldown iza glave (Behind-neck lat pulldown)", "Back", "Machine"),
         new("shoulder-press", "Shoulder press", "Shoulders", "Dumbbells"), new("lateral-raise", "Lateral raise", "Shoulders", "Dumbbells"), new("face-pull", "Face pull", "Shoulders", "Cable"), new("reverse-fly", "Reverse fly", "Shoulders", "Dumbbells"),
         new("biceps-curl", "Biceps curl", "Biceps", "Dumbbells"), new("hammer-curl", "Hammer curl", "Biceps", "Dumbbells"), new("preacher-curl", "Preacher curl", "Biceps", "Machine"),
         new("triceps-pushdown", "Triceps pushdown", "Triceps", "Cable"), new("overhead-extension", "Overhead triceps extension", "Triceps", "Dumbbells"), new("triceps-dip", "Triceps dip", "Triceps", "Bodyweight"),

@@ -22,6 +22,10 @@ import { apiErrorMessage } from '../../services/api-error';
   styleUrls: ['./training-list.component.css', './training-list-impact.css'],
 })
 export class TrainingListComponent implements OnInit, OnDestroy {
+  repeatTraining(id: number) {
+    this.router.navigate(['/add-training'], { queryParams: { repeat: id } });
+  }
+  filtersOpen = false;
   @Output() trainingDeleted = new EventEmitter<void>();
   trainings: Training[] = [];
   page = 1;

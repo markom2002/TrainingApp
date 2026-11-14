@@ -1,0 +1,9 @@
+.weight-unit-control { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 0; margin: 4px 0 12px; border-top: 1px solid #ffffff0c; border-bottom: 1px solid #ffffff0c; }
+.weight-unit-control > span { color: #aaa5bf; font-size: 9px; letter-spacing: 1.4px; }
+.weight-unit-control > div { display: flex; gap: 3px; padding: 3px; background: #080d15; border: 1px solid #ffffff13; border-radius: 8px; }
+.weight-unit-control button { min-width: 47px; min-height: 34px; padding: 6px 12px; border-radius: 5px; border: 1px solid transparent; background: transparent; color: #aaa4bc; font: inherit; font-size: 12px; cursor: pointer; transition: background .15s, color .15s; }
+.weight-unit-control button.active { color: #e0f5aa; background: #d9f77c13; border-color: #d9f77c35; font-weight: 700; }
+.weight-unit-control button:focus-visible { outline: 2px solid #d9f77c; outline-offset: 2px; }
+.weight-unit-control button:disabled { opacity: .5; cursor: default; }
+
+.inline-weight-unit{display:inline-flex;gap:3px;padding:3px;background:#090c14;border:1px solid #ffffff20;border-radius:8px;flex-shrink:0}.inline-weight-unit button{min-width:42px!important;min-height:34px!important;width:auto!important;padding:6px 10px!important;border:0!important;border-radius:5px;background:transparent;color:#aaa3b8;font-size:11px;font-weight:800;cursor:pointer}.inline-weight-unit button.active{background:#b6ed84!important;color:#11180c!important}.inline-weight-unit button:focus-visible{outline:2px solid #ccb0ff;outline-offset:2px}.entry-footer{flex-wrap:wrap;gap:10px}.entry-footer>span{min-width:120px;flex:1}

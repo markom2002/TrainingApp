@@ -2,7 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 
 export function apiErrorMessage(error: HttpErrorResponse): string {
   if (error.status === 0)
-    return 'Cannot reach the server. Check your connection and localhost HTTPS certificates.';
+    return 'Cannot reach the server. Check your connection and try again.';
   const body = error.error;
   if (body?.errors && typeof body.errors === 'object') {
     return Object.values(body.errors as Record<string, string[]>)

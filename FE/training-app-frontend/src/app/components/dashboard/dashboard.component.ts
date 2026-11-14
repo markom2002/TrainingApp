@@ -5,28 +5,40 @@ import { AuthService } from '../../services/auth.service';
 import { TrainingService } from '../../services/training.service';
 import { apiErrorMessage } from '../../services/api-error';
 import { DashboardOverview } from '../../models/training.model';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Subscription, finalize } from 'rxjs';
-import { TrainingListComponent } from '../training-list/training-list.component';
+import { TrainingCalendarComponent } from '../training-list/training-calendar.component';
+import { UiIconComponent } from '../ui-icon.component';
+import { JourneyPanelComponent } from '../journey/journey-panel.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, TrainingListComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterLink,
+    TrainingCalendarComponent,
+    UiIconComponent,
+    JourneyPanelComponent,
+  ],
   templateUrl: './dashboard.component.html',
   styleUrls: [
-    './dashboard.component.css',
-    './dashboard-shell.css',
-    './dashboard-refinement.css',
-    './dashboard-impact.css',
-    './dashboard-impact-responsive.css',
-    './training-focus.css',
+    './dashboard-v2.css',
+    './dashboard-panels.css',
+    './dashboard-stats.css',
+    './dashboard-collection.css',
+    './dashboard-goals.css',
+    './dashboard-responsive.css',
+    './dashboard-mobile.css',
   ],
 })
 export class DashboardComponent implements OnInit, OnDestroy {
+  @ViewChild(JourneyPanelComponent) journeyPanel?: JourneyPanelComponent;
+  activeSection = 'overview';
   profile?: Profile;
   private profileRequest?: Subscription;
   username = 'Athlete';
@@ -82,6 +94,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
   refreshDashboard() {
+    this.journeyPanel?.load();
     this.loadOverview();
     this.loadProfile();
   }
@@ -149,12 +162,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
       });
   }
   scrollTo(id: string) {
-    document
-      .getElementById(id)
-      ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    this.activeSection = id;
+    document.getElementById(id)?.scrollIntoView({
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        ? 'auto'
+        : 'smooth',
+      block: 'start',
+    });
   }
   goToProgress() {
     this.router.navigate(['/progress']);
+  }
+  goToJourney() {
+    this.router.navigate(['/journey']);
   }
   goToSession(focus: string) {
     this.router.navigate(['/add-training'], { queryParams: { focus } });

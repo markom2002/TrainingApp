@@ -1,279 +1,384 @@
-<div class="app-shell">
-  <aside class="sidebar" aria-label="Main navigation">
-    <a
-      class="brand"
-      routerLink="/dashboard"
-      aria-label="Form training dashboard"
-      ><span class="brand-icon">f<span>.</span></span></a
+<a class="skip-link" href="#overview">Skip to dashboard</a>
+<div class="workspace">
+  <aside class="rail" aria-label="Main navigation">
+    <a class="rail-brand" routerLink="/dashboard"
+      ><span class="logo-mark"><app-icon name="activity" /></span>form<span
+        class="brand-period"
+        >.</span
+      ></a
     >
-
+    <span class="rail-caption">PERSONAL PERFORMANCE</span>
     <nav>
       <button
-        class="nav-item active"
+        aria-label="Overview"
+        [class.current]="activeSection === 'overview'"
+        [attr.aria-current]="activeSection === 'overview' ? 'page' : null"
         (click)="scrollTo('overview')"
-        aria-current="page"
-        title="Overview"
       >
-        <span aria-hidden="true">&#9638;</span> Overview
+        <app-icon name="grid" /><span>Overview</span>
       </button>
       <button
-        class="nav-item"
+        aria-label="Workout history"
+        [class.current]="activeSection === 'history'"
+        [attr.aria-current]="activeSection === 'history' ? 'location' : null"
         (click)="scrollTo('history')"
-        title="Workout history"
       >
-        <span aria-hidden="true">&#9776;</span> Workout history
+        <app-icon name="history" /><span>Workout history</span>
       </button>
-      <button
-        class="nav-item"
-        (click)="goToProgress()"
-        title="Monthly progress"
-      >
-        <span aria-hidden="true">&#8599;</span> Monthly progress
+      <button aria-label="Achievements" (click)="goToJourney()">
+        <app-icon name="trophy" /><span>Achievements</span>
       </button>
-      <button class="nav-item" (click)="goToProfile()" title="My profile">
-        <span aria-hidden="true">&#9673;</span> My profile
+      <button aria-label="My profile" (click)="goToProfile()">
+        <app-icon name="user" /><span>My profile</span>
       </button>
     </nav>
-
-    <button class="nav-item sign-out" title="Sign out" (click)="logout()">
-      <span aria-hidden="true">&#8618;</span> Sign out
-    </button>
-  </aside>
-
-  <main id="overview">
-    <header class="topline">
-      <nav class="workspace-tabs" aria-label="Workspace">
-        <button class="selected" (click)="scrollTo('overview')">Overview</button
-        ><button (click)="scrollTo('history')">Workouts</button
-        ><button (click)="goToProgress()">Progress</button
-        ><button (click)="goToProfile()">My profile</button>
-      </nav>
-      <button
-        class="profile-button"
-        (click)="goToProfile()"
-        aria-label="Open my personal profile"
-      >
-        <span class="profile-button-name">{{ username }}</span
-        ><span class="avatar" aria-hidden="true">{{
-          username.charAt(0).toUpperCase()
-        }}</span
-        ><span aria-hidden="true">&#8964;</span>
-      </button>
-    </header>
-    <section class="welcome">
-      <div>
-        <p class="eyebrow">MAKE EVERY SESSION COUNT</p>
-        <h1>Welcome back, {{ username }}<span class="lime-dot">.</span></h1>
-        <p class="muted">
-          A little consistency. A stronger you. Here is your training at a
-          glance.
-        </p>
-      </div>
-      <button class="primary" (click)="goToAddTraining()">
-        <span aria-hidden="true">+</span> Log a workout
-      </button>
-    </section>
-    <section class="section-heading">
-      <div>
-        <h2>Your monthly overview</h2>
-        <span class="muted">The work you put in, in numbers.</span>
-      </div>
-      <label class="month-picker"
-        ><span>Month</span
-        ><input
-          type="month"
-          min="0002-01"
-          max="9998-12"
-          [(ngModel)]="period"
-          (change)="loadOverview()"
-          aria-label="Overview month"
-      /></label>
-    </section>
-    <section class="daily-row" aria-label="Personal training plan">
-      <article class="weekly-plan">
-        <div
-          class="mini-ring"
-          [style.background]="
-            'conic-gradient(#cce968 ' + weeklyProgress + '%, #f0f3e8 0)'
-          "
-        >
-          <span>{{ weeklyProgress | number: "1.0-0" }}<small>%</small></span>
-        </div>
-        <div>
-          <h3>This week's plan</h3>
-          @if (profile) {
-            <p>
-              {{ profile.weeklyWorkouts }} of {{ profile.weeklyGoal }} sessions
-              completed
-            </p>
-          } @else {
-            <p>Set your personal training rhythm</p>
-          }
-          <button (click)="goToProfile()">View your goal &#8599;</button>
-        </div>
-      </article>
-      <article class="personal-focus">
-        <span class="focus-icon" aria-hidden="true">&#10035;</span>
-        <div>
-          <p class="eyebrow">YOUR TRAINING FOCUS</p>
-          <h3>{{ profile?.goal || "Make progress personal" }}</h3>
-          <span>{{ profile?.experience || "Your journey, your pace" }}</span>
-        </div>
-        <button (click)="goToProfile()" aria-label="Edit training focus">
-          &#8599;
+    <div class="rail-bottom">
+      <div class="rail-note">
+        <span class="status-dot"></span> Built one rep at a time.
+        <p>Small steps.<br />Stronger every day.</p>
+        <button (click)="goToAddTraining()">
+          Make it count <app-icon name="up" />
         </button>
-      </article>
-    </section>
-    @if (loading) {
-      <p class="state" role="status">Loading your training insights...</p>
-    }
-    @if (errorMessage) {
-      <div class="state error" role="alert">
-        {{ errorMessage }}
-        <button class="secondary" (click)="loadOverview()">Try again</button>
       </div>
-    }
-    @if (overview; as data) {
-      <section class="metrics" aria-label="Monthly training totals">
-        <article class="metric featured">
-          <span class="metric-top"
-            >Workouts <span aria-hidden="true">&#8599;</span></span
-          ><strong>{{ data.workouts | number }}</strong
-          ><span class="metric-bottom">
-            @if (data.workoutChangePercent !== null) {
-              <b
-                >{{ data.workoutChangePercent > 0 ? "+" : ""
-                }}{{ data.workoutChangePercent }}%</b
+      <button class="logout" (click)="logout()">
+        <app-icon name="logout" /><span>Sign out</span></button
+      ><span class="rail-edition">FORM / TRAINING JOURNAL</span>
+    </div>
+  </aside>
+  <main id="overview">
+    <header class="workspace-header">
+      <div class="breadcrumb">
+        Workspace <span>/</span> <strong>Overview</strong>
+      </div>
+      <div class="header-actions">
+        <span class="today"
+          ><app-icon name="calendar" />{{ today | date: 'EEE, d MMM' }}</span
+        ><button
+          class="account"
+          (click)="goToProfile()"
+          aria-label="Open my profile"
+        >
+          <span class="account-avatar">{{
+            username.charAt(0).toUpperCase()
+          }}</span><span>{{ username }}</span
+          ><app-icon name="chevron" />
+        </button>
+      </div>
+    </header>
+    <section class="page-heading athlete-hero">
+      <div class="athlete-hero-content">
+        <p class="kicker"><span class="hero-live-dot"></span> THE WORK IS THE REWARD.</p>
+        <h1>YOUR ONLY<br /><span>COMPETITION.</span></h1>
+        <p>Welcome back, {{ username }}. Make this session count.</p>
+      <button class="button-primary" (click)="goToAddTraining()">
+        <app-icon name="plus" />Log workout <app-icon name="arrow" />
+      </button>
+      </div>
+      <div class="performance-ticket"><span>PERSONAL TRAINING JOURNAL / EST. TODAY</span><strong>NO SHORTCUTS.<br/>JUST YOU.</strong><div><b>{{profile?.totalWorkouts ?? 0}}</b><span>SESSIONS<br/>IN THE BANK</span></div><a routerLink="/journey">VIEW ACHIEVEMENTS &#8599;</a></div>
+      <div class="hero-bottom-line"><span>SHOW UP. STACK REPS. EVOLVE.</span><span>FORM / PERFORMANCE CLUB</span></div>
+    </section>
+    <app-journey-panel />
+    <div class="dashboard-grid">
+      <div class="dashboard-main">
+        <section class="momentum-banner">
+          <div>
+            <span class="banner-tag"
+              ><span class="status-dot"></span> THE ONLY WAY IS FORWARD</span
+            >
+            <h2>Your effort.<br /><em>Your evolution.</em></h2>
+            <p>Show up. Put in the work. See it add up.</p>
+            <button (click)="goToAddTraining()">
+              Start a session <app-icon name="arrow" />
+            </button>
+          </div>
+          <span class="banner-index" aria-hidden="true">01 / KEEP GOING</span>
+        </section>
+        <section class="overview-section" aria-labelledby="overview-heading">
+          <div class="section-head">
+            <h2 id="overview-heading">
+              Your overview
+              <a class="subtle-label" routerLink="/progress"
+                >MONTHLY DETAILS ↗</a
               >
-              vs previous month
-            } @else {
-              No workouts in the previous month
-            }
-          </span>
-        </article>
-        <article class="metric">
-          <span class="metric-top"
-            >Time in motion <span aria-hidden="true">&#9719;</span></span
-          ><strong>{{ data.minutes | number }}<small>min</small></strong
-          ><span class="metric-bottom">Every minute adds up</span>
-        </article>
-        <article class="metric">
-          <span class="metric-top"
-            >Calories logged <span aria-hidden="true">&#9832;</span></span
-          ><strong>{{ data.calories | number }}<small>kcal</small></strong
-          ><span class="metric-bottom">From your workout entries</span>
-        </article>
-        <article class="metric">
-          <span class="metric-top"
-            >Average intensity <span aria-hidden="true">&#9889;</span></span
-          ><strong
-            >{{ data.workouts ? data.averageIntensity : "-"
-            }}<small>/10</small></strong
-          ><span class="metric-bottom">
-            @if (data.workouts) {
-              Average fatigue {{ data.averageFatigue }}/10
-            } @else {
-              Log a session to see your averages
-            }
-          </span>
-        </article>
-      </section>
-      <section class="insights">
-        <article class="panel activity">
-          <div class="panel-heading">
-            <div>
-              <p class="eyebrow">BUILD YOUR MOMENTUM</p>
-              <h2>Training activity</h2>
+            </h2>
+            <label class="period-control"
+              ><span class="sr-only">Overview month</span
+              ><app-icon name="calendar" /><input
+                type="month"
+                min="0002-01"
+                max="9998-12"
+                [(ngModel)]="period"
+                (change)="loadOverview()"
+            /></label>
+          </div>
+          @if (loading) {
+            <div class="loading-cards" role="status">
+              <span></span><span></span><span></span><span></span>
+              <p class="sr-only">Loading training insights...</p>
             </div>
-            <span class="legend"><i></i> Minutes per week</span>
-          </div>
-          <div
-            class="bar-chart"
-            role="group"
-            [attr.aria-label]="
-              'Weekly training minutes. ' +
-              data.minutes +
-              ' total minutes this month.'
-            "
-          >
-            @for (week of weeks; track week.week) {
-              <div class="chart-column">
-                <span class="bar-value">{{ week.minutes }}</span>
-                <div class="bar-track">
-                  <div class="bar" [style.height.%]="week.height"></div>
-                </div>
-                <span class="bar-label">Week {{ week.week }}</span
-                ><span class="bar-count">{{ week.workouts }} sessions</span>
-              </div>
-            }
-          </div>
-          <p class="chart-footnote">Weeks group days 1-7, 8-14 and so on.</p>
-        </article>
-        <article class="panel mix">
-          <div class="panel-heading">
-            <div>
-              <p class="eyebrow">FIND YOUR BALANCE</p>
-              <h2>Your workout mix</h2>
-            </div>
-            <span class="mini-tag">{{ data.workouts }} total</span>
-          </div>
-          @if (data.workouts === 0) {
-            <div class="empty-mix">
-              <span aria-hidden="true">&#9678;</span>
-              <h3>A fresh start.</h3>
-              <p>
-                No workouts this month yet. Log your first session to start
-                building your picture.
-              </p>
-              <button class="secondary" (click)="goToAddTraining()">
-                Add your first workout
+          }
+          @if (errorMessage) {
+            <div class="feedback error" role="alert">
+              {{ errorMessage
+              }}<button class="button-secondary" (click)="loadOverview()">
+                Try again
               </button>
             </div>
           }
-          @for (
-            type of data.exerciseBreakdown;
-            track type.exerciseType;
-            let index = $index
-          ) {
-            <div class="mix-row">
-              <div class="mix-title">
-                <span
-                  ><i [class.dark]="index === 1" [class.gray]="index === 2"></i
-                  >{{ type.exerciseType }}</span
-                ><strong>{{ type.workouts }} <small>sessions</small></strong>
-              </div>
-              <div class="mix-track">
-                <span
-                  [class.dark]="index === 1"
-                  [class.gray]="index === 2"
-                  [style.width.%]="(type.workouts * 100) / data.workouts"
-                ></span>
-              </div>
-              <p>
-                {{ type.minutes }} minutes
-                <span
-                  >{{
-                    (type.workouts * 100) / data.workouts | number: "1.0-0"
-                  }}%</span
-                >
-              </p>
+          @if (overview; as data) {
+            <div class="stat-grid">
+              <article class="stat-card violet">
+                <span class="stat-icon"><app-icon name="dumbbell" /></span
+                ><span class="stat-label">Workouts</span
+                ><strong>{{ data.workouts | number }}</strong
+                ><span class="stat-detail">
+                  @if (data.workoutChangePercent !== null) {
+                    <b
+                      >{{ data.workoutChangePercent > 0 ? '+' : ''
+                      }}{{ data.workoutChangePercent }}%</b
+                    >
+                    vs last month
+                  } @else {
+                    Your monthly sessions
+                  }
+                </span>
+              </article>
+              <article class="stat-card">
+                <span class="stat-icon mint"><app-icon name="clock" /></span
+                ><span class="stat-label">Time invested</span
+                ><strong>{{ data.minutes | number }}<small>min</small></strong
+                ><span class="stat-detail">Every minute counts</span>
+              </article>
+              <article class="stat-card">
+                <span class="stat-icon gold"><app-icon name="flame" /></span
+                ><span class="stat-label">Calories logged</span
+                ><strong>{{ data.calories | number }}<small>kcal</small></strong
+                ><span class="stat-detail">From your workout entries</span>
+              </article>
+              <article class="stat-card">
+                <span class="stat-icon pink"><app-icon name="bolt" /></span
+                ><span class="stat-label">Avg. intensity</span
+                ><strong
+                  >{{ data.workouts ? data.averageIntensity : '—'
+                  }}<small>/10</small></strong
+                ><span class="stat-detail">
+                  @if (data.workouts) {
+                    {{ data.averageFatigue }}/10 average fatigue
+                  } @else {
+                    Your effort, measured
+                  }
+                </span>
+              </article>
             </div>
+            <article class="surface activity-card">
+              <div class="section-head">
+                <div>
+                  <span class="kicker">CONSISTENCY OVER PERFECTION</span>
+                  <h2>Activity insights</h2>
+                </div>
+                <span class="chart-key"><i></i>Minutes per week</span>
+              </div>
+              <div class="chart-area">
+                <div class="chart-grid" aria-hidden="true">
+                  <span></span><span></span><span></span><span></span>
+                </div>
+                <div
+                  class="activity-bars"
+                  role="group"
+                  [attr.aria-label]="
+                    'Weekly activity: ' + data.minutes + ' minutes this month'
+                  "
+                >
+                  @for (week of weeks; track week.week) {
+                    <div class="activity-column">
+                      <span class="column-value"
+                        >{{ week.minutes }}<small> min</small></span
+                      >
+                      <div class="column-track">
+                        <div
+                          class="column-fill"
+                          [style.height.%]="week.height"
+                        ></div>
+                      </div>
+                      <strong>Week {{ week.week }}</strong
+                      ><small>{{ week.workouts }} sessions</small>
+                    </div>
+                  }
+                </div>
+              </div>
+              <div class="chart-summary">
+                <span
+                  ><app-icon name="activity" />{{
+                    data.workouts
+                      ? 'Keep building your momentum.'
+                      : 'Your first session starts your story.'
+                  }}</span
+                ><span>Weeks group days 1–7, 8–14, etc.</span>
+              </div>
+            </article>
           }
+        </section>
+        <section class="workout-collection" aria-labelledby="collection-title">
+          <div class="section-head">
+            <div>
+              <span class="kicker">LESS PLANNING. MORE TRAINING.</span>
+              <h2 id="collection-title">Pick your starting point</h2>
+            </div>
+            <span class="subtle-label">EDITABLE DRAFTS</span>
+          </div>
+          <div class="collection-grid">
+            <button
+              class="collection-card upper"
+              (click)="goToSession('Upper')"
+            >
+              <span class="collection-top">01 <app-icon name="up" /></span
+              ><span class="collection-content"
+                ><small>STRENGTH / UPPER BODY</small
+                ><strong>Push your<br />potential.</strong
+                ><span>Chest · Back · Shoulders · Arms</span
+                ><span class="collection-link"
+                  >Build session <app-icon name="arrow" /></span
+              ></span>
+            </button>
+            <button
+              class="collection-card lower"
+              (click)="goToSession('Lower')"
+            >
+              <span class="collection-top">02 <app-icon name="up" /></span
+              ><span class="collection-content"
+                ><small>STRENGTH / LOWER BODY</small
+                ><strong>Grounded<br />in strength.</strong
+                ><span>Quads · Glutes · Hamstrings</span
+                ><span class="collection-link"
+                  >Build session <app-icon name="arrow" /></span
+              ></span>
+            </button>
+            <button
+              class="collection-card full"
+              (click)="goToSession('Full body')"
+            >
+              <span class="collection-top">03 <app-icon name="up" /></span
+              ><span class="collection-content"
+                ><small>STRENGTH / FULL BODY</small
+                ><strong>All in.<br />All of you.</strong
+                ><span>Compound movements · Core</span
+                ><span class="collection-link"
+                  >Build session <app-icon name="arrow" /></span
+              ></span>
+            </button>
+          </div>
+        </section>
+      </div>
+      <aside class="dashboard-side" aria-label="Your training goals">
+        <article class="surface goal-card">
+          <div class="section-head">
+            <h2>Weekly target</h2>
+            <app-icon name="target" />
+          </div>
+          <p>Your only competition is you.</p>
+          <div
+            class="goal-ring"
+            role="progressbar"
+            aria-label="Weekly workout goal"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            [attr.aria-valuenow]="weeklyProgress"
+            [style.--progress]="weeklyProgress + '%'"
+          >
+            <div>
+              <app-icon name="bolt" /><strong
+                >{{ weeklyProgress | number: '1.0-0' }}<small>%</small></strong
+              ><span>of your weekly goal</span>
+            </div>
+          </div>
+          <div class="goal-numbers">
+            <span
+              ><strong>{{ profile?.weeklyWorkouts ?? 0 }}</strong
+              >completed</span
+            ><i></i
+            ><span
+              ><strong>{{ profile?.weeklyGoal ?? '—' }}</strong
+              >weekly target</span
+            >
+          </div>
+          <button class="button-secondary full-width" (click)="goToProfile()">
+            {{ profile ? 'Manage your goal' : 'Set your weekly goal'
+            }}<app-icon name="arrow" />
+          </button>
         </article>
-      </section>
-    }
-    @if (authService.role === "Admin") {
-      <section class="panel admin-panel">
-        <div>
-          <p class="eyebrow">ADMINISTRATION</p>
-          <h2>Application statistics</h2>
+        <article class="surface focus-card">
+          <span class="focus-badge"><app-icon name="target" /></span
+          ><span class="kicker">YOUR NORTH STAR</span>
+          <h2>{{ profile?.goal || 'Make progress personal.' }}</h2>
+          <p>
+            {{ profile?.experience || 'Build a routine that works for you.' }}
+          </p>
+          <button (click)="goToProfile()">
+            Personalize your focus <app-icon name="up" />
+          </button>
+        </article>
+        @if (overview; as data) {
+          <article class="surface mix-card">
+            <div class="section-head">
+              <h2>Training balance</h2>
+              <span class="subtle-label">{{ data.workouts }} TOTAL</span>
+            </div>
+            @if (!data.workouts) {
+              <div class="mix-empty">
+                <app-icon name="dumbbell" />
+                <h3>A fresh start.</h3>
+                <p>Log a workout to see your training mix here.</p>
+                <button (click)="goToAddTraining()">
+                  Log your first workout <app-icon name="arrow" />
+                </button>
+              </div>
+            }
+            @for (
+              type of data.exerciseBreakdown;
+              track type.exerciseType;
+              let i = $index
+            ) {
+              <div
+                class="balance-item"
+                [class.balance-mint]="i === 1"
+                [class.balance-gold]="i === 2"
+              >
+                <div>
+                  <span>{{ type.exerciseType }}</span><strong
+                    >{{
+                      (type.workouts * 100) / data.workouts | number: '1.0-0'
+                    }}%</strong
+                  >
+                </div>
+                <div class="balance-track">
+                  <span
+                    [style.width.%]="(type.workouts * 100) / data.workouts"
+                  ></span>
+                </div>
+                <small
+                  >{{ type.workouts }} sessions · {{ type.minutes }} min</small
+                >
+              </div>
+            }
+          </article>
+        }
+        <div class="side-signature">
+          <app-icon name="activity" /><span>NOT PERFECT. JUST CONSISTENT.</span>
         </div>
-        <button class="secondary" (click)="loadAdminSummary()">
+      </aside>
+    </div>
+    <section class="surface history-section" id="history">
+      <app-training-calendar (trainingDeleted)="refreshDashboard()" />
+    </section>
+    @if (authService.role === 'Admin') {
+      <section class="surface admin-section">
+        <h2>Application statistics</h2>
+        <button class="button-secondary" (click)="loadAdminSummary()">
           Load statistics
         </button>
         @if (adminSummary) {
           <p>
-            {{ adminSummary.userCount }} users &middot;
+            {{ adminSummary.userCount }} users ·
             {{ adminSummary.trainingCount }} workouts
           </p>
         }
@@ -282,67 +387,10 @@
         }
       </section>
     }
-    <section class="training-focus" aria-labelledby="training-focus-heading">
-      <div class="focus-section-heading">
-        <div>
-          <p class="eyebrow">CHOOSE YOUR NEXT CHAPTER</p>
-          <h2 id="training-focus-heading">What did you train today?</h2>
-          <p>
-            Start with a draft. Adjust every exercise to match your session.
-          </p>
-        </div>
-        <span>YOUR WORKOUT STUDIO</span>
-      </div>
-      <div class="focus-cards">
-        <button
-          type="button"
-          class="focus-choice upper"
-          (click)="goToSession('Upper')"
-        >
-          <span class="focus-card-number">01 / UPPER BODY</span
-          ><strong>Push. Pull.<br />Progress.</strong
-          ><span class="focus-card-muscles"
-            >Chest &middot; Back &middot; Shoulders &middot; Arms</span
-          ><span class="focus-card-cta"
-            >Start an upper-body draft <i aria-hidden="true">&#8599;</i></span
-          >
-        </button>
-        <button
-          type="button"
-          class="focus-choice lower"
-          (click)="goToSession('Lower')"
-        >
-          <span class="focus-card-number">02 / LOWER BODY</span
-          ><strong>Build your<br />foundation.</strong
-          ><span class="focus-card-muscles"
-            >Quads &middot; Hamstrings &middot; Glutes &middot; Calves</span
-          ><span class="focus-card-cta"
-            >Start a lower-body draft <i aria-hidden="true">&#8599;</i></span
-          >
-        </button>
-        <button
-          type="button"
-          class="focus-choice full"
-          (click)="goToSession('Full body')"
-        >
-          <span class="focus-card-number">03 / FULL BODY</span
-          ><strong>One session.<br />All in.</strong
-          ><span class="focus-card-muscles"
-            >Compound movements &middot; Core</span
-          ><span class="focus-card-cta"
-            >Start a full-body draft <i aria-hidden="true">&#8599;</i></span
-          >
-        </button>
-      </div>
-    </section>
-    <section class="panel history" id="history">
-      <app-training-list
-        (trainingDeleted)="refreshDashboard()"
-      ></app-training-list>
-    </section>
-    <footer>
-      <strong>FORM<span class="lime-dot">.</span></strong
-      ><span>Built around your progress. One workout at a time.</span>
+    <footer class="workspace-footer">
+      <span>form<span class="brand-period">.</span></span>
+      <p>A little stronger. Every single session.</p>
+      <span>YOUR PROGRESS, PERSONALLY.</span>
     </footer>
   </main>
 </div>

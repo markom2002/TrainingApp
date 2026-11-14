@@ -7,11 +7,13 @@ using System.Text;
 using System.Text.Json.Serialization;
 using BE.Services.Interfaces;
 using BE.Services.Implementations;
+using Microsoft.AspNetCore.StaticFiles;
 
 
 
 
 var builder = WebApplication.CreateBuilder(args);
+DevelopmentHttps.Configure(builder);
 var jwtKey = builder.Configuration["Jwt:Key"];
 if (string.IsNullOrWhiteSpace(jwtKey) || Encoding.UTF8.GetByteCount(jwtKey) < 32)
     throw new InvalidOperationException("Configure Jwt__Key with a private signing key of at least 32 UTF-8 bytes.");
@@ -31,6 +33,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         connectionString
     ));
 builder.Services.AddScoped<ITrainingService, TrainingService>();
+builder.Services.AddScoped<JourneyService>();
 
 
 
@@ -107,6 +110,15 @@ var app = builder.Build();
 
 app.UseExceptionHandler();
 app.UseStatusCodePages();
+var serveFrontend = Directory.Exists(Path.Combine(app.Environment.ContentRootPath, "wwwroot"));
+if (serveFrontend)
+{
+    app.UseDefaultFiles();
+    var staticTypes = new FileExtensionContentTypeProvider();
+    staticTypes.Mappings[".cer"] = "application/pkix-cert";
+    staticTypes.Mappings[".glb"] = "model/gltf-binary";
+    app.UseStaticFiles(new StaticFileOptions { ContentTypeProvider = staticTypes });
+}
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -116,13 +128,18 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("AllowAngular");
 
-app.UseHttpsRedirection();
+if (!LocalPreview.Enabled(app.Configuration, app.Environment)) app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 app.MapGet("/health/live", () => Results.Ok(new { status = "Healthy" }));
+if (serveFrontend)
+{
+    app.MapFallback("/api/{**path}", () => Results.NotFound());
+    app.MapFallbackToFile("index.html");
+}
 
 
 app.Run();

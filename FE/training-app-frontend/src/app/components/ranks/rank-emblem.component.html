@@ -1,0 +1,65 @@
+<svg viewBox="0 0 220 240" fill="none" aria-hidden="true" [attr.data-tier]="rank.index" [style.--rank-color]="rank.color" [style.--rank-secondary]="rank.secondary">
+  <defs>
+    <linearGradient [id]="'metal-' + uid" x1="38" y1="25" x2="175" y2="209" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fff"/><stop offset=".18" stop-color="var(--rank-color)"/><stop offset=".43" stop-color="var(--rank-secondary)"/>
+      <stop offset=".49" stop-color="#fff"/><stop offset=".54" stop-color="var(--rank-color)"/><stop offset="1" stop-color="var(--rank-secondary)"/>
+    </linearGradient>
+    <linearGradient [id]="'core-' + uid" x1="65" y1="50" x2="159" y2="192" gradientUnits="userSpaceOnUse">
+      <stop stop-color="var(--rank-secondary)"/><stop offset=".35" stop-color="#222333"/><stop offset="1" stop-color="#090b14"/>
+    </linearGradient>
+    <radialGradient [id]="'aura-' + uid"><stop stop-color="var(--rank-color)" stop-opacity=".3"/><stop offset="1" stop-color="var(--rank-color)" stop-opacity="0"/></radialGradient>
+  </defs>
+  <circle class="badge-aura" cx="110" cy="121" r="108" [attr.fill]="'url(#aura-' + uid + ')'"/>
+  @if (rank.index >= 5) {
+    <g class="outer-rays" stroke="var(--rank-color)">
+      <circle cx="110" cy="120" r="94" stroke-opacity=".25" stroke-dasharray="2 8"/>
+      <path d="M110 14v12m0 189v12M6 120h13m182 0h13M36 44l9 9m130 134 9 9M36 196l9-9M175 53l9-9" stroke-width="2"/>
+    </g>
+  }
+  @if (rank.index >= 2) {
+    <g class="wings" [attr.fill]="'url(#metal-' + uid + ')'" stroke="#ffffff35" stroke-width=".7">
+      <path d="M65 88 15 69 25 91 56 110 12 93 27 122 56 135 20 126 40 154 68 171 76 129Z"/>
+      <path d="m155 88 50-19-10 22-31 19 44-17-15 29-29 13 36-9-20 28-28 17-8-42Z"/>
+      @if (rank.index >= 4) { <path d="M62 85 9 40 18 69 58 99 5 69 13 95 51 119Zm96 0 53-45-9 29-40 30 53-30-8 26-38 24Z"/> }
+      @if (rank.index >= 6) { <path d="M55 76 28 16 23 45 45 80 9 19 12 54 50 101Zm110 0 27-60 5 29-22 35 36-61-3 35-38 47Z"/> }
+    </g>
+  }
+  @if (rank.index >= 3) {
+    <g class="laurel" stroke="var(--rank-color)" stroke-width="2">
+      <path d="M72 201C30 181 24 140 35 107m113 94c42-20 48-61 37-94"/>
+      <path d="m49 177-15-1 2-14m13 0-17-7 6-12m5-1-13-12 9-9m132 56 15-1-2-14m-13 0 17-7-6-12m-5-1 13-12-9-9"/>
+    </g>
+  }
+  <path class="shield-shadow" d="m110 28 65 29v85l-23 42-42 31-42-31-23-42V57Z" fill="#080a12" stroke="#000" stroke-width="5"/>
+  <path d="m110 29 65 29v82l-23 42-42 30-42-30-23-42V58Z" [attr.fill]="'url(#metal-' + uid + ')'" stroke="#ffffff85"/>
+  <path d="m110 39 55 25v73l-21 37-34 25-34-25-21-37V64Z" fill="#090c15" stroke="#080a13" stroke-width="3"/>
+  <path d="m110 45 49 23v67l-19 35-30 22-30-22-19-35V68Z" [attr.fill]="'url(#core-' + uid + ')'" stroke="var(--rank-color)" stroke-opacity=".7"/>
+  <path d="m110 45 49 23-49 18-49-18Zm-49 23 49 18v106l-30-22-19-35Z" fill="#ffffff08"/>
+  <path d="m49 65 6 3v65l20 38m96-106-6 3v65l-20 38" stroke="#fff" stroke-opacity=".65"/>
+  <path d="m73 80 37-17 37 17M77 156l8 15 25 18 25-18 8-15" stroke="var(--rank-color)" stroke-opacity=".3"/>
+  <g class="core-chevron" [attr.fill]="'url(#metal-' + uid + ')'" stroke="#ffffff60" stroke-linejoin="round">
+    @switch (rank.index) {
+      @case (0) { <path d="M78 106h8v-9h10v14h28V97h10v9h8v29h-8v9h-10v-14H96v14H86v-9h-8Z"/> }
+      @case (1) { <path d="m78 99 32 17 32-17v17l-32 20-32-20Zm0 26 32 18 32-18v15l-32 20-32-20Z"/> }
+      @case (2) { <path d="m110 83 14 25-14 49-14-49Zm-29 13 13 10 7 43-19-22-9-25Zm58 0-13 10-7 43 19-22 9-25Z"/> }
+      @case (3) { <path d="m118 81-36 46h25l-6 36 38-49h-25Z"/> }
+      @case (4) { <path d="m110 79 10 20-5 40 15-15-3-25 13-12 5 40-30 30-5 12-5-12-30-30 5-40 13 12-3 25 15 15-5-40Z"/> }
+      @case (5) { <path d="m110 79 32 29-32 55-32-55Z"/><path d="m110 79-11 29 11 55 11-55Zm-32 29h64" fill="none" stroke="#101426" stroke-width="2"/> }
+      @case (6) { <path d="m110 89 9 17 30-18-11 30-20 7 13 29-21-13-21 13 13-29-20-7-11-30 30 18Z"/><path d="m110 106 7 11-7 13-7-13Z" fill="#151021"/> }
+      @case (7) { <path d="m77 99 19 12 14-26 14 26 19-12-10 40H87Zm10 48h46v10H87Z"/><path d="m110 111 6 10-6 11-6-11Z" fill="#171020"/> }
+      @case (8) { <path d="m110 76 12 27 29-8-14 26 14 26-29-8-12 27-12-27-29 8 14-26-14-26 29 8Z"/><path d="m110 100 14 21-14 23-14-23Z" fill="#16101f" stroke="var(--rank-color)"/><path d="m110 111 6 10-6 11-6-11Z" fill="#fff3ce"/> }
+    }
+  </g>
+  <g fill="var(--rank-color)">@for (mark of marks; track mark) { <circle [attr.cx]="94 + mark * 8" cy="177" r="1.5"/> }</g>
+  @if (rank.index >= 7) {
+    <path class="crown" d="m76 35-4-23 23 13 15-22 15 22 23-13-4 23-34 13Z" [attr.fill]="'url(#metal-' + uid + ')'" stroke="#ffffff90"/>
+    <path d="m110 17 5 10-5 8-5-8Z" fill="#fff4d9"/>
+  }
+  @if (rank.index === 8) {
+    <g class="legend-stars" fill="var(--rank-color)">
+      <path d="m110 213 3 8 9 1-7 6 2 9-7-5-7 5 2-9-7-6 9-1Z"/>
+      <path d="m26 58 3 6 6 3-6 3-3 6-3-6-6-3 6-3Zm168 0 3 6 6 3-6 3-3 6-3-6-6-3 6-3Z"/>
+    </g>
+  }
+  <path class="badge-glint" d="m69 59 7 3-7 3-3 7-3-7-7-3 7-3 3-7Z" fill="#fff"/>
+</svg>

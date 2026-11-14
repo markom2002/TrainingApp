@@ -1,0 +1,130 @@
+@media (min-width: 1550px) {
+  main {
+    padding: 0 48px;
+  }
+  .dashboard-grid {
+    grid-template-columns: minmax(0, 1fr) 310px;
+  }
+  .momentum-banner {
+    min-height: 286px;
+  }
+  .stat-card {
+    padding: 21px;
+  }
+  .stat-card > strong {
+    font-size: 34px;
+  }
+  .collection-card {
+    min-height: 270px;
+  }
+}
+@media (max-width: 1200px) {
+  .workspace {
+    grid-template-columns: 190px minmax(0, 1fr);
+  }
+  .rail {
+    padding: 28px 14px;
+  }
+  main {
+    padding: 0 24px;
+  }
+  .dashboard-grid {
+    grid-template-columns: minmax(0, 1fr) 245px;
+    gap: 18px;
+  }
+  .stat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .goal-card,
+  .focus-card,
+  .mix-card {
+    padding: 18px;
+  }
+  .collection-content > strong {
+    font-size: 20px;
+  }
+  .collection-content > span {
+    line-height: 1.6;
+  }
+  .chart-summary > span:last-child {
+    display: none;
+  }
+  .today {
+    display: none;
+  }
+}
+@media (max-width: 960px) {
+  .workspace {
+    grid-template-columns: 74px minmax(0, 1fr);
+  }
+  .rail {
+    padding: 25px 11px;
+    align-items: center;
+  }
+  .rail-brand {
+    font-size: 0;
+    gap: 0;
+  }
+  .rail-brand .brand-period,
+  .rail-caption,
+  .rail nav button > span,
+  .rail-note,
+  .logout > span,
+  .rail-edition {
+    display: none;
+  }
+  .rail nav {
+    width: 100%;
+    gap: 12px;
+  }
+  .rail nav button {
+    padding: 14px;
+    justify-content: center;
+  }
+  .rail nav .current::after {
+    display: none;
+  }
+  .rail-bottom {
+    margin-top: auto;
+  }
+  .rail nav app-icon {
+    width: 20px;
+  }
+  .logout {
+    padding: 14px;
+  }
+  .dashboard-grid {
+    grid-template-columns: minmax(0, 1fr) 235px;
+  }
+  .momentum-banner {
+    padding: 25px;
+  }
+  .momentum-banner h2 {
+    font-size: 34px;
+  }
+  .page-heading h1 {
+    font-size: 28px;
+  }
+  .collection-grid {
+    grid-template-columns: 1fr;
+  }
+  .collection-card {
+    min-height: 170px;
+    background-position: center 43%;
+  }
+  .collection-content > strong {
+    font-size: 24px;
+  }
+  .collection-content {
+    gap: 7px;
+  }
+  .collection-content .collection-link {
+    max-width: 180px;
+  }
+  .collection-top {
+    margin-bottom: 15px;
+  }
+  .activity-card {
+    padding: 18px;
+  }
+}

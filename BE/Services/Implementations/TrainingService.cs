@@ -41,7 +41,7 @@ namespace BE.Services.Implementations
                 _ => ascending ? trainings.OrderBy(t => t.TrainingDate) : trainings.OrderByDescending(t => t.TrainingDate)
             };
             // The unique secondary key keeps records with equal sort values in a stable order.
-            var items = await ordered.ThenBy(t => t.Id).Include(t => t.Exercises.OrderBy(e => e.Position))
+            var items = await ordered.ThenBy(t => t.Id).Include(t => t.Exercises.OrderBy(e => e.Position)).ThenInclude(e => e.SetEntries.OrderBy(s => s.Position))
                 .Skip((query.Page - 1) * query.PageSize).Take(query.PageSize).ToListAsync(cancellationToken);
             return new PagedResult<Training>(items, query.Page, query.PageSize, total);
         }
@@ -73,7 +73,7 @@ namespace BE.Services.Implementations
 
         public Training? GetById(int id, int userId)
         {
-            return _context.Trainings.Include(t => t.Exercises.OrderBy(e => e.Position))
+            return _context.Trainings.Include(t => t.Exercises.OrderBy(e => e.Position)).ThenInclude(e => e.SetEntries.OrderBy(s => s.Position))
                 .FirstOrDefault(t => t.Id == id && t.UserId == userId);
         }
 
@@ -122,8 +122,13 @@ namespace BE.Services.Implementations
 
         private static List<TrainingExercise> MapExercises(List<TrainingExerciseDto> exercises) => exercises.Select((e, index) => new TrainingExercise
         {
-            ExerciseId = e.ExerciseId, Position = index, Sets = e.Sets, Reps = e.Reps,
-            DurationSeconds = e.DurationSeconds, WeightKg = e.WeightKg
+            ExerciseId = e.ExerciseId, Position = index, Sets = e.SetEntries.Count > 0 ? e.SetEntries.Count : e.Sets,
+            Reps = e.SetEntries.Count > 0 ? e.SetEntries[0].Reps : e.Reps,
+            DurationSeconds = e.SetEntries.Count > 0 ? e.SetEntries[0].DurationSeconds : e.DurationSeconds,
+            WeightKg = e.SetEntries.Count > 0 ? e.SetEntries.Max(s => s.WeightKg) : e.WeightKg,
+            WeightUnit = e.WeightUnit,
+            WeightValue = e.SetEntries.Count > 0 ? e.SetEntries.OrderByDescending(s => s.WeightKg).First().WeightValue : e.WeightValue,
+            SetEntries = e.SetEntries.Select((s, i) => new TrainingSet { Position = i, Reps = s.Reps, DurationSeconds = s.DurationSeconds, WeightKg = s.WeightKg, WeightValue = s.WeightValue }).ToList()
         }).ToList();
 
         public bool Delete(int id, int userId)

@@ -4,6 +4,7 @@ using System.Net.Http.Json;
 using BE.Data;
 using BE.Models;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -34,6 +35,7 @@ public partial class ApiIntegrationTests : IDisposable
             }));
             builder.ConfigureServices(services =>
             {
+                services.AddDataProtection().UseEphemeralDataProtectionProvider();
                 foreach (var descriptor in services.Where(d => d.ServiceType == typeof(DbContextOptions<AppDbContext>) ||
                     (d.ServiceType.IsGenericType && d.ServiceType.GetGenericTypeDefinition().Name == "IDbContextOptionsConfiguration`1" &&
                      d.ServiceType.GenericTypeArguments[0] == typeof(AppDbContext))).ToList()) services.Remove(descriptor);

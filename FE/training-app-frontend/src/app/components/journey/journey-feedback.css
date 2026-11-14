@@ -1,0 +1,92 @@
+.session-celebration {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: linear-gradient(100deg, #96d7aa15, #a481ef10);
+  border: 1px solid #96d7aa25;
+  padding: 18px 22px;
+  border-radius: 13px;
+  margin-bottom: 22px;
+}
+.celebration-icon {
+  display: grid;
+  place-items: center;
+  width: 35px;
+  height: 35px;
+  background: #9bd8ac20;
+  color: #afe7be;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.session-celebration strong {
+  font-size: 15px;
+  color: #d7f0dd;
+}
+.session-celebration p {
+  font-size: 11px;
+  color: #96b7a6;
+  margin: 5px 0 0;
+}
+.session-celebration > button {
+  margin-left: auto;
+  background: none;
+  border: 0;
+  color: #a3bba9;
+  font-size: 22px;
+}
+.journey-loading,
+.journey-error {
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 22px;
+  background: #a07be70c;
+  font-size: 12px;
+  color: #b5a0cb;
+}
+.journey-error {
+  color: #e2a3b6;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+.journey-error button {
+  color: #cfb1ef;
+  background: #a07be720;
+  border: 0;
+  padding: 9px;
+  border-radius: 7px;
+}
+.journey-fineprint {
+  font-size: 10px;
+  color: #84718e;
+  line-height: 1.8;
+}
+.journey-notice {
+  font-size: 12px;
+  color: #a7d7b6;
+}
+.kicker {
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: #a38bb8;
+  margin: 0 0 9px;
+}
+h2 {
+  font-size: 25px;
+  letter-spacing: -0.8px;
+  margin: 0;
+}
+h2 > span {
+  color: #c09aef;
+}
+.journey-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 22px;
+}
+.journey-section-heading > app-icon {
+  color: #b08bdf;
+}

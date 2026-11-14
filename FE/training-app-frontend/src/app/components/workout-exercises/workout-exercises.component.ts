@@ -3,6 +3,7 @@ import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import {
   WorkoutExercise,
+  WorkoutSet,
   ExerciseDefinition,
 } from '../../models/exercise.model';
 import { ExerciseService } from '../../services/exercise.service';
@@ -27,25 +28,40 @@ import { ExerciseService } from '../../services/exercise.service';
           }}</span>
           @for (e of exercises; track e.exerciseId) {
             <div class="record-row">
-              <strong>{{ name(e.exerciseId) }}</strong
-              ><small>{{ definition(e.exerciseId)?.muscleGroup }}</small>
-              <p>
-                {{ e.sets }} sets &times;
-                {{
-                  e.durationSeconds !== null && e.durationSeconds !== undefined
-                    ? e.durationSeconds
-                    : e.reps
-                }}
-                {{
-                  e.durationSeconds !== null && e.durationSeconds !== undefined
-                    ? 'sec'
-                    : 'reps'
-                }}
-                <span
-                  >&middot;
-                  {{ e.weightKg ? e.weightKg + ' kg' : 'No added load' }}</span
-                >
-              </p>
+              <strong>{{ name(e.exerciseId) }}</strong><small>{{
+                definition(e.exerciseId)?.muscleGroup
+              }}</small>
+              @if (e.setEntries?.length) {
+                @for (set of e.setEntries; track $index) {
+                  <p>
+                    Set {{ $index + 1 }} · {{ set.durationSeconds ?? set.reps }}
+                    {{ set.durationSeconds != null ? 'sec' : 'reps' }} ·
+                    {{ weightText(e, set) }}
+                  </p>
+                }
+              } @else {
+                <p>
+                  {{ e.sets }} sets &times;
+                  {{
+                    e.durationSeconds !== null &&
+                    e.durationSeconds !== undefined
+                      ? e.durationSeconds
+                      : e.reps
+                  }}
+                  {{
+                    e.durationSeconds !== null &&
+                    e.durationSeconds !== undefined
+                      ? 'sec'
+                      : 'reps'
+                  }}
+                  <span
+                    >&middot;
+                    {{
+                      e.weightKg ? weightText(e) : 'No added load'
+                    }}</span
+                  >
+                </p>
+              }
             </div>
           }
         </div>
@@ -135,5 +151,20 @@ export class WorkoutExercisesComponent implements OnInit, OnDestroy {
   }
   name(id: string) {
     return this.definition(id)?.name ?? id.replaceAll('-', ' ');
+  }
+  weightText(exercise: WorkoutExercise, entry: Pick<WorkoutSet, 'weightKg' | 'weightValue'> = exercise): string {
+    let unit = exercise.weightUnit;
+    if (!unit) {
+      // Older records stored only kilograms. Use this device's exercise preference
+      // for their display, without guessing or rewriting historical database rows.
+      try {
+        const saved = JSON.parse(localStorage.getItem('form.exerciseWeightUnits') ?? '{}');
+        unit = saved[exercise.exerciseId] === 'lbs' ? 'lbs' : 'kg';
+      } catch { unit = 'kg'; }
+    }
+    if (exercise.weightUnit && entry.weightValue != null) return `${entry.weightValue} ${unit}`;
+    if (unit === 'kg') return `${entry.weightKg} kg`;
+    const pounds = Math.round(entry.weightKg / 0.45359237 * 10) / 10;
+    return `≈ ${pounds} lbs`;
   }
 }

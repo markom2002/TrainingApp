@@ -15,4 +15,5 @@ dist/
 .env.*
 !.env.example
 artifacts/
+BE/wwwroot/
 TestResults/
