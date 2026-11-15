@@ -13,10 +13,12 @@ opener = urllib.request.build_opener(
 )
 
 
-def request(path, payload=None):
+def request(path, payload=None, token=None):
     data = None if payload is None else json.dumps(payload).encode()
-    req = urllib.request.Request(base + path, data=data,
-                                 headers={"Content-Type": "application/json"})
+    headers = {"Content-Type": "application/json"}
+    if token:
+        headers["Authorization"] = "Bearer " + token
+    req = urllib.request.Request(base + path, data=data, headers=headers)
     with opener.open(req, timeout=20) as response:
         return response.read().decode(), response.headers
 
@@ -32,4 +34,16 @@ assert json.loads(body)["token"]
 assert any(cookie.secure for cookie in cookies), "Refresh cookie must stay Secure"
 refreshed, _ = request("/api/auth/refresh", {})
 assert json.loads(refreshed)["token"], "HTTPS proxy must preserve refresh cookies"
-print("PASS: production shell, mobile manifest, registration, login and Secure refresh cookie")
+ready, _ = request("/health/ready")
+assert json.loads(ready)["status"] == "Healthy"
+availability, _ = request("/api/auth/demo")
+if json.loads(availability)["enabled"]:
+    demo, _ = request("/api/auth/demo", {})
+    token = json.loads(demo)["token"]
+    history, _ = request("/api/trainings", token=token)
+    assert json.loads(history)["totalCount"] == 8
+    another, _ = request("/api/auth/demo", {})
+    other_token = json.loads(another)["token"]
+    other_history, _ = request("/api/trainings", token=other_token)
+    assert json.loads(other_history)["items"][0]["id"] != json.loads(history)["items"][0]["id"]
+print("PASS: production shell, mobile manifest, readiness, authentication and optional isolated demo sessions")

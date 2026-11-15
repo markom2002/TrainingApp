@@ -28,12 +28,27 @@ namespace BE.Controllers
             _environment = environment;
         }
 
+        /// <summary>Report whether isolated portfolio sessions are enabled.</summary>
+        [HttpGet("demo")]
+        public IActionResult DemoAvailability() => Ok(new { enabled = _configuration.GetValue<bool>("Demo:Enabled") });
+
+        /// <summary>Start an isolated portfolio session with synthetic workouts.</summary>
+        [HttpPost("demo")]
+        [Microsoft.AspNetCore.RateLimiting.EnableRateLimiting("auth")]
+        public async Task<IActionResult> StartDemo(CancellationToken cancellationToken)
+        {
+            if (!_configuration.GetValue<bool>("Demo:Enabled")) return NotFound();
+            var user = await DemoSessionService.CreateAsync(_context, cancellationToken);
+            return await IssueTokens(user);
+        }
+
         /// <summary>Create a User account.</summary>
         /// <remarks>Public endpoint. Role is assigned by the server; sample credentials do not exist until registered.</remarks>
         [ProducesResponseType(typeof(MessageResponse), 200)]
         [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
         [ProducesResponseType(typeof(ProblemDetails), 409)]
         [HttpPost("register")]
+        [Microsoft.AspNetCore.RateLimiting.EnableRateLimiting("auth")]
         public IActionResult Register(RegisterDto dto)
         {
             dto.Email = dto.Email.Trim();
@@ -60,6 +75,7 @@ namespace BE.Controllers
         [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
         [ProducesResponseType(typeof(ProblemDetails), 401)]
         [HttpPost("login")]
+        [Microsoft.AspNetCore.RateLimiting.EnableRateLimiting("auth")]
         public async Task<IActionResult> Login(LoginDto dto)
         {
             dto.Email = dto.Email.Trim();

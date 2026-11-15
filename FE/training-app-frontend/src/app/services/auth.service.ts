@@ -43,6 +43,15 @@ export class AuthService {
       .pipe(tap((result) => this.saveToken(result.token)));
   }
 
+  demoAvailability() {
+    return this.http.get<{ enabled: boolean }>(`${this.apiUrl}/demo`);
+  }
+
+  startDemo() {
+    return this.http.post<TokenResponse>(`${this.apiUrl}/demo`, {}, { withCredentials: true })
+      .pipe(tap(result => this.saveToken(result.token)));
+  }
+
   refresh(): Observable<TokenResponse> {
     if (!this.refreshRequest) {
       this.refreshRequest = this.http

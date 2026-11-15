@@ -1,0 +1,11 @@
+# Explicit opt-in, separate Compose project and SQL database. Never use personal data.
+name: training-demo
+
+services:
+  migrate:
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=db;Database=TrainingDemo;User Id=sa;Password=${SQL_PASSWORD:?Set SQL_PASSWORD in .env};Encrypt=True;TrustServerCertificate=True"
+  app:
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=db;Database=TrainingDemo;User Id=sa;Password=${SQL_PASSWORD:?Set SQL_PASSWORD in .env};Encrypt=True;TrustServerCertificate=True"
+      Demo__Enabled: "true"

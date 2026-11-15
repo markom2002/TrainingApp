@@ -14,6 +14,12 @@ jobs:
   compose:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        compose: ["compose.yaml", "compose.yaml:compose.demo.yaml"]
+    env:
+      COMPOSE_FILE: ${{ matrix.compose }}
     steps:
       - uses: actions/checkout@v4
       - name: Create ephemeral configuration

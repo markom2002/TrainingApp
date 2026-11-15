@@ -5,8 +5,8 @@ interface InstallPrompt extends Event {
 }
 @Injectable({ providedIn: 'root' })
 export class PwaService {
-  readonly offlineCapable = !isDevMode() && window.isSecureContext;
   readonly localPreview = window.location.protocol === 'http:' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || /^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[01])\.)/.test(window.location.hostname));
+  readonly offlineCapable = !this.localPreview && !isDevMode() && window.isSecureContext;
   readonly secureContext = window.isSecureContext;
   readonly localAddress = /^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[01])\.)/.test(window.location.hostname);
   promptEvent?: InstallPrompt;

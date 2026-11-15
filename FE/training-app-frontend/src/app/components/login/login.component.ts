@@ -23,6 +23,7 @@ export class LoginComponent {
   errorMessage = '';
   submitting = false;
   registered: boolean;
+  demoEnabled = false;
 
   constructor(
     private authService: AuthService,
@@ -30,6 +31,20 @@ export class LoginComponent {
     route: ActivatedRoute,
   ) {
     this.registered = route.snapshot.queryParamMap.get('registered') === 'true';
+    this.authService.demoAvailability().subscribe({
+      next: result => this.demoEnabled = result.enabled,
+      error: () => { this.demoEnabled = false; },
+    });
+  }
+
+  startDemo() {
+    if (this.submitting) return;
+    this.submitting = true;
+    this.errorMessage = '';
+    this.authService.startDemo().pipe(finalize(() => this.submitting = false)).subscribe({
+      next: () => this.router.navigate(['/dashboard']),
+      error: error => this.errorMessage = apiErrorMessage(error),
+    });
   }
 
   onLogin(form: NgForm) {

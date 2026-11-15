@@ -90,6 +90,13 @@
         >
       </p>
       <div class="form-divider"></div>
+      @if (demoEnabled) {
+        <button class="auth-submit" type="button" [disabled]="submitting" (click)="startDemo()">
+          {{ submitting ? 'Opening your demo...' : 'Explore live demo' }}
+          <span aria-hidden="true">&#8594;</span>
+        </button>
+        <p class="privacy-note">Explore sample workouts in your own demo session. No registration needed.</p>
+      }
       <p class="privacy-note">
         <span aria-hidden="true">&#9671;</span> Your workouts. Your goals. Your
         own pace.

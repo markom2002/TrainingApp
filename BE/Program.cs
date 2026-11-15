@@ -8,6 +8,7 @@ using System.Text.Json.Serialization;
 using BE.Services.Interfaces;
 using BE.Services.Implementations;
 using Microsoft.AspNetCore.StaticFiles;
+using BE.Infrastructure;
 
 
 
@@ -24,6 +25,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 
 builder.Services.AddProblemDetails();
+builder.AddApiOperations();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -108,6 +110,13 @@ builder.Services.AddSwaggerGen(options =>
 
 
 var app = builder.Build();
+if (app.Configuration.GetValue<bool>("Demo:Enabled"))
+{
+    var demoConnection = new Microsoft.Data.SqlClient.SqlConnectionStringBuilder(
+        app.Configuration.GetConnectionString("DefaultConnection"));
+    if (!string.Equals(demoConnection.InitialCatalog, "TrainingDemo", StringComparison.Ordinal))
+        throw new InvalidOperationException("Demo mode requires a separate database named TrainingDemo.");
+}
 // An explicit deployment step; ordinary application starts never change the schema.
 if (migrationRequested)
 {
@@ -140,6 +149,7 @@ if (app.Environment.IsDevelopment() && app.Configuration.GetValue<bool>("PhoneSe
     });
 }
 
+app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseExceptionHandler();
 app.UseStatusCodePages();
 var serveFrontend = Directory.Exists(Path.Combine(app.Environment.ContentRootPath, "wwwroot"));
@@ -172,9 +182,11 @@ if (!LocalPreview.Enabled(app.Configuration, app.Environment)) app.UseHttpsRedir
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRateLimiter();
 
 app.MapControllers();
 app.MapGet("/health/live", () => Results.Ok(new { status = "Healthy" }));
+app.MapReadiness();
 if (serveFrontend)
 {
     app.MapFallback("/api/{**path}", () => Results.NotFound());
