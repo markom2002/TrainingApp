@@ -1,3 +1,4 @@
+import { LiveRefreshService } from '../../services/live-refresh.service';
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
@@ -45,9 +46,11 @@ export class JourneyPanelComponent implements OnInit, OnDestroy {
   bodyGoal = 'Track';
   startWeight: number | null = null;
   targetWeight: number | null = null;
+  private liveRead?: Subscription;
   private read?: Subscription;
   private mutation?: Subscription;
   constructor(
+    private live: LiveRefreshService,
     private service: JourneyService,
     private route: ActivatedRoute,
     public progression: ProgressionService,
@@ -55,8 +58,12 @@ export class JourneyPanelComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.celebration = this.route.snapshot.queryParamMap.get('saved') === '1';
     this.load();
+    this.liveRead = this.live.changes.subscribe(() => {
+      if (!this.loading && !this.saving) this.load(true);
+    });
   }
   ngOnDestroy() {
+    this.liveRead?.unsubscribe();
     this.read?.unsubscribe();
     this.mutation?.unsubscribe();
   }
@@ -104,7 +111,7 @@ export class JourneyPanelComponent implements OnInit, OnDestroy {
       )
       .join(' ');
   }
-  load() {
+  load(background = false) {
     this.read?.unsubscribe();
     this.loading = true;
     this.error = '';
@@ -114,6 +121,7 @@ export class JourneyPanelComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (d) => {
           this.data = d;
+          if (background) return;
           this.bodyGoal = d.bodyGoal;
           this.startWeight = d.startingWeightKg ?? null;
           this.targetWeight = d.targetWeightKg ?? null;

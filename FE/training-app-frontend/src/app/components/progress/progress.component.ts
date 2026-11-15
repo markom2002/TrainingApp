@@ -1,3 +1,4 @@
+import { LiveRefreshService } from '../../services/live-refresh.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -22,20 +23,25 @@ export class ProgressComponent implements OnInit, OnDestroy {
   stats: MonthlyTrainingStats[] = [];
   loading = false;
   errorMessage = '';
+  private liveRead?: Subscription;
   private request?: Subscription;
-  constructor(private trainingService: TrainingService) {}
+  constructor(private trainingService: TrainingService, private live: LiveRefreshService) {}
   ngOnInit() {
     this.loadStats();
+    this.liveRead = this.live.changes.subscribe(() => {
+      if ((!this.request || this.request.closed) && this.year === this.loadedYear && this.month === this.loadedMonth) this.loadStats(undefined, true);
+    });
   }
   ngOnDestroy() {
+    this.liveRead?.unsubscribe();
     this.request?.unsubscribe();
   }
-  loadStats(form?: NgForm) {
+  loadStats(form?: NgForm, background = false) {
     if (form?.invalid) return;
     this.request?.unsubscribe();
-    this.loading = true;
+    this.loading = !background;
     this.errorMessage = '';
-    this.stats = [];
+    if (!background) this.stats = [];
     const year = this.year,
       month = this.month;
     this.request = this.trainingService

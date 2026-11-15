@@ -1,3 +1,4 @@
+import { LiveRefreshService } from '../../services/live-refresh.service';
 import { Profile, ProfileService } from '../../services/profile.service';
 import { API_BASE_URL } from '../../api.config';
 import { HttpClient } from '@angular/common/http';
@@ -49,10 +50,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
   errorMessage = '';
   adminSummary?: { userCount: number; trainingCount: number };
   adminError = '';
+  private liveRead?: Subscription;
   private request?: Subscription;
   private adminRequest?: Subscription;
 
   constructor(
+    private live: LiveRefreshService,
     private router: Router,
     public authService: AuthService,
     private http: HttpClient,
@@ -68,8 +71,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
         email.split('@')[0].slice(1);
     this.loadOverview();
     this.loadProfile();
+    this.liveRead = this.live.changes.subscribe(() => {
+      if (!this.request || this.request.closed) this.loadOverview(true);
+      if (!this.profileRequest || this.profileRequest.closed) this.loadProfile();
+    });
   }
   ngOnDestroy() {
+    this.liveRead?.unsubscribe();
     this.profileRequest?.unsubscribe();
     this.request?.unsubscribe();
     this.adminRequest?.unsubscribe();
@@ -102,9 +110,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.router.navigate(['/profile']);
   }
 
-  loadOverview() {
+  loadOverview(background = false) {
     this.request?.unsubscribe();
-    this.overview = undefined;
+    if (!background) this.overview = undefined;
     this.errorMessage = '';
     const [year, month] = this.period.split('-').map(Number);
     if (
@@ -118,7 +126,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.errorMessage = 'Choose a valid month.';
       return;
     }
-    this.loading = true;
+    this.loading = !background;
     this.request = this.trainingService
       .getOverview(year, month)
       .pipe(finalize(() => (this.loading = false)))

@@ -14,7 +14,7 @@ import { API_BASE_URL } from '../../api.config';
 import { Training } from '../../models/training.model';
 import { TrainingService } from '../../services/training.service';
 import { apiErrorMessage } from '../../services/api-error';
-import { OfflineService } from '../../services/offline.service';
+import { LiveRefreshService } from '../../services/live-refresh.service';
 import { UiIconComponent } from '../ui-icon.component';
 import { WorkoutExercisesComponent } from '../workout-exercises/workout-exercises.component';
 import { MOVEMENT_GUIDES } from '../exercise-picker/movement-guides';
@@ -44,7 +44,7 @@ export class TrainingCalendarComponent implements OnInit, OnDestroy {
   private read?: Subscription;
   private mutation?: Subscription;
   constructor(
-    private offline: OfflineService,
+    private live: LiveRefreshService,
     private route: ActivatedRoute,
     private http: HttpClient,
     private router: Router,
@@ -56,7 +56,7 @@ export class TrainingCalendarComponent implements OnInit, OnDestroy {
       this.savedDate = date;
       this.month = date.slice(0, 7);
     }
-    this.synced = this.offline.workoutsSynced.subscribe(() => this.load());
+    this.synced = this.live.changes.subscribe(() => { if ((!this.read || this.read.closed) && !this.deleting) this.load(true); });
     this.load();
   }
   ngOnDestroy() {
@@ -115,7 +115,7 @@ export class TrainingCalendarComponent implements OnInit, OnDestroy {
       ),
     ].slice(0, 3);
   }
-  load() {
+  load(background = false) {
     const [year, month] = this.month.split('-').map(Number);
     if (
       !Number.isInteger(year) ||
@@ -129,9 +129,9 @@ export class TrainingCalendarComponent implements OnInit, OnDestroy {
       return;
     }
     this.read?.unsubscribe();
-    this.loading = true;
+    this.loading = !background;
     this.error = '';
-    this.items = [];
+    if (!background) this.items = [];
     this.read = this.http
       .get<Training[]>(`${API_BASE_URL}/journey/calendar`, {
         params: { year, month },
@@ -140,6 +140,7 @@ export class TrainingCalendarComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (items) => {
           this.items = items;
+          if (background && this.selected.startsWith(this.month)) return;
           this.selected = this.savedDate.startsWith(this.month) ? this.savedDate : items.length
             ? this.key(items.at(-1)!.trainingDate)
             : `${this.month}-01`;
