@@ -1,0 +1,43 @@
+name: SQL Server integration tests
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sql-server:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      sql:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        env:
+          ACCEPT_EULA: "Y"
+          MSSQL_PID: Developer
+          # Disposable test server only, never a deployment credential.
+          MSSQL_SA_PASSWORD: "CiOnly_DisposableSql123!"
+        ports:
+          - 1433:1433
+        options: >-
+          --health-cmd="/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'CiOnly_DisposableSql123!' -C -b -Q 'SELECT 1'"
+          --health-interval=5s --health-timeout=5s --health-retries=30 --health-start-period=20s
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Run real SQL Server integration tests
+        env:
+          TRAINING_TEST_SQL: "Server=localhost,1433;User Id=sa;Password=CiOnly_DisposableSql123!;Encrypt=True;TrustServerCertificate=True"
+        run: dotnet test BE.Tests/BE.Tests.csproj -c Release --filter FullyQualifiedName~SqlServerTests --logger trx --results-directory TestResults
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sql-server-test-results
+          path: TestResults/*.trx

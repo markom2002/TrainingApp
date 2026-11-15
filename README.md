@@ -23,6 +23,8 @@ For Android and iPhone, see [personal phone installation](LICNA-APLIKACIJA.md).
 
 ## Run locally
 
+For an isolated full-stack container environment, see [Docker Compose with HTTPS](docs/CONTAINERS.md). For real-provider checks beyond the SQLite suite, see [SQL Server integration tests](docs/SQL-TESTS.md).
+
 Requirements: .NET 8 SDK, EF CLI, Node.js 22, npm and a local SQL Server instance.
 
 1. Configure your SQL connection in [BE/appsettings.Development.json](BE/appsettings.Development.json), or override it with `ConnectionStrings__DefaultConnection`. The checked-in signing key is for local development; `Jwt__Key` overrides it.
