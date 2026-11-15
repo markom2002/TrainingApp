@@ -55,10 +55,10 @@ No application hosting account is required. Existing workouts are preserved by t
 ## Tests and builds
 
 ```powershell
-# Repository root: 114 xUnit tests against isolated SQLite databases
+# Repository root: xUnit tests against isolated SQLite databases
 dotnet test BE.Tests/BE.Tests.csproj --configuration Release
 
-# Angular directory: 53 tests in Chrome Headless
+# Angular directory: tests in Chrome Headless
 npm run test:ci
 npm run build
 npm run build -- --configuration development

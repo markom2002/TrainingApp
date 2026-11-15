@@ -1,0 +1,16 @@
+**/node_modules
+**/dist
+**/bin
+**/obj
+**/.angular
+.git
+.vs
+.env
+.env.*
+artifacts
+.local-logs
+TestResults
+BE/wwwroot
+**/*.pfx
+**/*.key
+**/*.cer

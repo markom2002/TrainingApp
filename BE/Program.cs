@@ -12,7 +12,8 @@ using Microsoft.AspNetCore.StaticFiles;
 
 
 
-var builder = WebApplication.CreateBuilder(args);
+var migrationRequested = args.Contains("--migrate", StringComparer.Ordinal);
+var builder = WebApplication.CreateBuilder(args.Where(arg => arg != "--migrate").ToArray());
 DevelopmentHttps.Configure(builder);
 var jwtKey = builder.Configuration["Jwt:Key"];
 if (string.IsNullOrWhiteSpace(jwtKey) || Encoding.UTF8.GetByteCount(jwtKey) < 32)
@@ -107,6 +108,15 @@ builder.Services.AddSwaggerGen(options =>
 
 
 var app = builder.Build();
+// An explicit deployment step; ordinary application starts never change the schema.
+if (migrationRequested)
+{
+    await using var scope = app.Services.CreateAsyncScope();
+    var database = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await database.Database.MigrateAsync();
+    app.Logger.LogInformation("Database migrations completed.");
+    return;
+}
 // A separate, setup-only HTTP origin lets a phone download the public certificate
 // before trusting HTTPS. Never expose login, private data or the app on this port.
 if (app.Environment.IsDevelopment() && app.Configuration.GetValue<bool>("PhoneSetup:Enabled"))
