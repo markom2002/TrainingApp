@@ -8,8 +8,11 @@ export interface ExercisePose {
   feet: [V3, V3];
   elbows: [V3, V3];
   knees: [V3, V3];
+  /** Optional fixed palm contact targets, distinct from wrist targets. */
+  handContacts?: [V3, V3];
   headTilt?: number;
   grip: 'bar' | 'neutral' | 'open' | 'supinated';
+  handGrips?: [ExercisePose['grip'], ExercisePose['grip']];
   footTilt?: number;
   wristFlex?: number;
   spineBend?: number;
@@ -114,19 +117,19 @@ function bench(t: number, incline = false): ExercisePose {
   const shoulder = local(p, [0, 0.471, 0.088]);
   p.hands = [
     [
-      -mix(0.39, 0.32, t),
+      -(incline ? mix(0.39, 0.32, t) : 0.34),
       shoulder[1] + mix(0.14, 0.49, t),
       shoulder[2] + mix(0.12, 0, t),
     ],
     [
-      mix(0.39, 0.32, t),
+      incline ? mix(0.39, 0.32, t) : 0.34,
       shoulder[1] + mix(0.14, 0.49, t),
       shoulder[2] + mix(0.12, 0, t),
     ],
   ];
   p.elbows = [
-    [-0.7, shoulder[1] - 0.1, shoulder[2] + 0.2],
-    [0.7, shoulder[1] - 0.1, shoulder[2] + 0.2],
+    [-0.48, shoulder[1] - 0.1, shoulder[2] + 0.2],
+    [0.48, shoulder[1] - 0.1, shoulder[2] + 0.2],
   ];
   return p;
 }
@@ -155,17 +158,20 @@ function squat(t: number, goblet = false): ExercisePose {
     [-0.25, 0.6, 0.7],
     [0.25, 0.6, 0.7],
   ];
-  return arms(p, goblet ? [-0.09, 0.36, 0.27] : [-0.36, 0.43, -0.045]);
+  if (!goblet) {
+    p.handContacts = [local(p, [-.43, .45, -.14]), local(p, [.43, .45, -.14])];
+    p.elbows = [local(p, [-.42, .22, -.06]), local(p, [.42, .22, -.06])];
+  }
+  return arms(p, goblet ? [-0.09, 0.36, 0.27] : [-0.43, 0.40, -0.14]);
 }
 function hinge(t: number, single = false): ExercisePose {
   const p = base();
   p.hip = [0, mix(0.958, 0.91, t), mix(0, -0.29, t)];
   p.tilt = mix(0, 1.02, t);
   const s = local(p, [0, 0.471, 0.088]);
-  p.hands = [
-    [-0.255, s[1] - 0.535, s[2] + 0.035],
-    [0.255, s[1] - 0.535, s[2] + 0.035],
-  ];
+  const barZ = Math.max(s[2] + .035, p.hip[2] + .23);
+  const drop = Math.sqrt(.538 ** 2 - (barZ - s[2]) ** 2 - .051 ** 2);
+  p.hands = [[-.255, s[1] - drop, barZ], [.255, s[1] - drop, barZ]];
   p.elbows = [
     [-0.35, s[1] - 0.2, s[2] + 0.1],
     [0.35, s[1] - 0.2, s[2] + 0.1],
@@ -194,8 +200,8 @@ function prone(push: number, forearms = false): ExercisePose {
         [0.204, 0.09, 0.316],
       ]
     : [
-        [-0.7, 0.19, 0.25],
-        [0.7, 0.19, 0.25],
+        [-0.43, 0.19, 0.25],
+        [0.43, 0.19, 0.25],
       ];
   p.grip = 'open';
   return p;
@@ -313,7 +319,7 @@ export const EXERCISE_MOTIONS: Record<string, ExerciseMotion> = {
     (t) => latPulldown(t),
     'lat',
     {
-      camera: [2.1, 1.65, 3.9],
+      camera: [4.0, 1.8, 2.0],
       focus: [0, 1.04, 0.12],
       span: 2.4,
       phase: ['Controlled reach', 'Pull to upper chest'],
@@ -323,7 +329,7 @@ export const EXERCISE_MOTIONS: Record<string, ExerciseMotion> = {
     (t) => latPulldown(t, true),
     'lat',
     {
-      camera: [2.1, 1.65, 3.9],
+      camera: [4.0, 1.8, 2.0],
       focus: [0, 1.04, 0.12],
       span: 2.4,
       phase: ['Controlled reach', 'Pull behind head to shoulder height'],
@@ -344,15 +350,16 @@ export const EXERCISE_MOTIONS: Record<string, ExerciseMotion> = {
   'pull-up': motion(
     (t) => {
       const p = base();
-      p.hip[1] = mix(1.15, 1.5, t);
+      p.hip = [0, mix(1.15, 1.54, t), -.26];
       p.feet = [
-        [-0.17, mix(0.25, 0.65, t), 0.08],
-        [0.17, mix(0.25, 0.65, t), 0.08],
+        [-0.17, mix(0.25, 0.65, t), -.18],
+        [0.17, mix(0.25, 0.65, t), -.18],
       ];
       p.hands = [
-        [-0.37, 2.12, 0.05],
-        [0.37, 2.12, 0.05],
+        [-0.37, 2.04, 0.01],
+        [0.37, 2.04, 0.01],
       ];
+      p.handContacts = [[-.37, 2.12, 0], [.37, 2.12, 0]];
       p.elbows = [
         [-0.7, 1.6, 0.15],
         [0.7, 1.6, 0.15],
@@ -375,6 +382,7 @@ export const EXERCISE_MOTIONS: Record<string, ExerciseMotion> = {
         [-0.2, 0.074, 0.3],
         [0.21, 0.074, -0.12],
       ];
+      p.handGrips = ['open', 'neutral'];
       p.hands[0] = [-0.3, 0.58, 0.42];
       const s = local(p, [0.204, 0.471, 0.088]);
       p.hands[1] = [
@@ -455,21 +463,13 @@ export const EXERCISE_MOTIONS: Record<string, ExerciseMotion> = {
   ),
   'triceps-pushdown': motion(
     (t) => {
-      const p = base(),
-        angle = (t * Math.PI) / 2;
-      arms(p, [
-        -0.204,
-        0.21 - 0.282 * Math.sin(angle),
-        0.088 + 0.282 * Math.cos(angle),
-      ]);
-      p.elbows = [
-        local(p, [-0.204, 0.21, 0.088]),
-        local(p, [0.204, 0.21, 0.088]),
-      ];
-      return p;
+      const p = base(), angle = mix(.12, 1.4, t);
+      const elbow: V3 = [-.23, .219, .16];
+      p.elbows = [local(p, elbow), local(p, [.23, .219, .16])];
+      return arms(p, [-.23, elbow[1] - .282 * Math.sin(angle), elbow[2] + .282 * Math.cos(angle)]);
     },
     'pushdown',
-    { phase: ['Bend at the elbows', 'Extend downward'] },
+    { camera: [3.8, 1.8, 2.6], phase: ['Bend at the elbows', 'Extend downward'] },
   ),
   'overhead-extension': motion(
     (t) => {
@@ -486,23 +486,28 @@ export const EXERCISE_MOTIONS: Record<string, ExerciseMotion> = {
   'triceps-dip': motion(
     (t) => {
       const p = base();
-      p.hip = [0, mix(0.92, 1.1, t), 0];
-      p.hands = [
-        [-0.3, 1.05, 0.06],
-        [0.3, 1.05, 0.06],
+      // Parallel-bar dip: the forearms stay close to vertical. The shoulders
+      // travel around the elbows, rather than pulling the elbows behind the hips.
+      const elbowY = 1.405, elbowZ = .12;
+      const rise = mix(.07, .239, t);
+      const shoulderZ = elbowZ + Math.sqrt(.261 ** 2 - .096 ** 2 - rise ** 2);
+      p.tilt = mix(.16, .035, t);
+      p.hip = [0,
+        elbowY + rise - (.471 * Math.cos(p.tilt) - .088 * Math.sin(p.tilt)),
+        shoulderZ - (.471 * Math.sin(p.tilt) + .088 * Math.cos(p.tilt)),
       ];
-      p.feet = [
-        [-0.17, mix(0.21, 0.42, t), -0.15],
-        [0.17, mix(0.21, 0.42, t), -0.15],
-      ];
-      p.elbows = [
-        [-0.4, 1.2, -0.4],
-        [0.4, 1.2, -0.4],
-      ];
+      p.hands = [[-.3, 1.125, .12], [.3, 1.125, .12]];
+      p.handContacts = [[-.3, 1.05, .12], [.3, 1.05, .12]];
+      p.grip = 'neutral';
+      p.elbows = [[-.3, elbowY, elbowZ], [.3, elbowY, elbowZ]];
+      // A relaxed, symmetric knee bend; ankles follow the pelvis rigidly.
+      p.knees = [[-.111, p.hip[1]-.398, p.hip[2]+.242], [.111, p.hip[1]-.398, p.hip[2]+.242]];
+      p.feet = [[-.12, p.hip[1]-.598, p.hip[2]-.158], [.12, p.hip[1]-.598, p.hip[2]-.158]];
+      p.footTilt = 1.05;
       return p;
     },
     'dip',
-    { phase: ['Lower with control', 'Press above the bars'] },
+    { camera: [3.8, 1.8, 2.6], phase: ['Lower with control', 'Press above the bars'] },
   ),
   'wrist-curl': motion(
     (t) => {
@@ -767,6 +772,7 @@ export const EXERCISE_MOTIONS: Record<string, ExerciseMotion> = {
         [-0.3, 2.12, 0.07],
         [0.3, 2.12, 0.07],
       ];
+      p.handContacts = [[-.3, 2.12, 0], [.3, 2.12, 0]];
       p.feet = [
         [
           -0.14,
@@ -807,7 +813,8 @@ export const EXERCISE_MOTIONS: Record<string, ExerciseMotion> = {
         [0.18, 0.06, 0.22],
       ];
       p.elbows = [local(p, [-0.25, 0.38, 0.15]), local(p, [0.25, 0.38, 0.15])];
-      return arms(p, [-0.13, 0.57, 0.18]);
+      p.grip = 'neutral';
+      return arms(p, [-0.18, 0.57, 0.29]);
     },
     'crunch-cable',
     {
@@ -824,8 +831,8 @@ export const EXERCISE_MOTIONS: Record<string, ExerciseMotion> = {
       p.tilt = mix(0.93, 0.02, t);
       const s = local(p, [0, 0.471, 0.088]);
       p.hands = [
-        [-0.27, s[1] - 0.535, s[2] + 0.025],
-        [0.27, s[1] - 0.535, s[2] + 0.025],
+        [-0.27, s[1] - Math.sqrt(.538 ** 2 - (Math.max(s[2] + .025, p.hip[2] + .23) - s[2]) ** 2 - .066 ** 2), Math.max(s[2] + .025, p.hip[2] + .23)],
+        [0.27, s[1] - Math.sqrt(.538 ** 2 - (Math.max(s[2] + .025, p.hip[2] + .23) - s[2]) ** 2 - .066 ** 2), Math.max(s[2] + .025, p.hip[2] + .23)],
       ];
       p.elbows = [
         [-0.35, 0.6, 0.4],
@@ -839,9 +846,12 @@ export const EXERCISE_MOTIONS: Record<string, ExerciseMotion> = {
   'kettlebell-swing': motion(
     (t) => {
       const p = hinge(1 - t);
+      const shoulder = local(p, [0, .471, .088]);
+      const angle = mix(-.5, Math.PI / 2, t);
+      const reach = Math.sqrt(.538 ** 2 - .124 ** 2);
       p.hands = [
-        [-0.08, mix(0.64, 1.35, t), mix(-0.05, 0.59, t)],
-        [0.08, mix(0.64, 1.35, t), mix(-0.05, 0.59, t)],
+        [-.08, shoulder[1] - Math.cos(angle) * reach, shoulder[2] + Math.sin(angle) * reach],
+        [.08, shoulder[1] - Math.cos(angle) * reach, shoulder[2] + Math.sin(angle) * reach],
       ];
       return p;
     },
@@ -895,10 +905,16 @@ export const EXERCISE_MOTIONS: Record<string, ExerciseMotion> = {
         [-0.15, 0.109 + Math.max(0, s) * 0.11, 0.1 + s * 0.24],
         [0.15, 0.109 + Math.max(0, -s) * 0.11, 0.1 - s * 0.24],
       ];
-      p.hands = [
-        [-0.25, 1.2, 0.15 - s * 0.13],
-        [0.25, 1.2, 0.15 + s * 0.13],
-      ];
+      p.grip = 'neutral';
+      for (let i = 0; i < 2; i++) {
+        const sign = i ? 1 : -1, swing = (i ? s : -s) * .1;
+        const length = Math.hypot(.035, .24, swing);
+        const upper: V3 = [sign * .035 / length, -.24 / length, swing / length];
+        const elbow: V3 = [sign * .204 + upper[0] * .261, .471 + upper[1] * .261, .088 + upper[2] * .261];
+        const fLength = Math.hypot(upper[1], upper[2]);
+        p.elbows[i] = local(p, elbow);
+        p.hands[i] = local(p, [elbow[0], elbow[1] + upper[2] / fLength * .282, elbow[2] - upper[1] / fLength * .282]);
+      }
       return p;
     },
     'treadmill',
@@ -953,15 +969,16 @@ export const EXERCISE_MOTIONS: Record<string, ExerciseMotion> = {
       p.hands = [
         [
           -0.16,
-          shoulder[1] - 0.08 - 0.08 * pull,
-          shoulder[2] + 0.5 - 0.28 * pull,
+          shoulder[1] - .22,
+          shoulder[2] + .49 - .29 * pull,
         ],
         [
           0.16,
-          shoulder[1] - 0.08 - 0.08 * pull,
-          shoulder[2] + 0.5 - 0.28 * pull,
+          shoulder[1] - .22,
+          shoulder[2] + .49 - .29 * pull,
         ],
       ];
+      p.elbows = [local(p, [-.31, .20, -.25]), local(p, [.31, .20, -.25])];
       return p;
     },
     'rower',
@@ -976,7 +993,7 @@ export const EXERCISE_MOTIONS: Record<string, ExerciseMotion> = {
   'jump-rope': motion(
     (t) => {
       const p = standHands(base()),
-        rise = Math.sin(t * Math.PI);
+        rise = Math.sin(t * Math.PI) ** 2;
       p.hip[1] += 0.07 * rise;
       p.feet = [
         [-0.14, 0.074 + 0.07 * rise, 0.1],
@@ -1019,6 +1036,7 @@ export const EXERCISE_MOTIONS: Record<string, ExerciseMotion> = {
   'thoracic-rotation': motion(
     (t) => {
       const p = prone(0, true);
+      p.handGrips = ['open', 'neutral'];
       p.hip = [0, 0.51, -0.15];
       p.tilt = 1.5;
       p.twist = mix(0, 0.65, t);

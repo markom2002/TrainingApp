@@ -2,6 +2,7 @@ import * as T from 'three';
 import type { ExercisePose, V3 } from './motion-3d';
 import { palmFrame } from './grip-frame';
 import { solveLimb } from './rig-math';
+import { preserveJointVolume } from './joint-volume';
 const vec = (p: V3) => new T.Vector3(...p),
   arr = (v: T.Vector3) => v.toArray() as V3;
 interface BoneState {
@@ -94,6 +95,9 @@ export class AthleteRig {
           metalness: 0.0,
           roughness: 0.72,
         });
+        preserveJointVolume(mesh.material as T.Material);
+        mesh.customDepthMaterial = new T.MeshDepthMaterial({depthPacking: T.RGBADepthPacking});
+        preserveJointVolume(mesh.customDepthMaterial);
         this.meshes.push(mesh);
         const color = mesh.geometry.getAttribute('color');
         mesh.geometry.userData['restColors'] = color
@@ -107,7 +111,7 @@ export class AthleteRig {
       const wrist=this.position('wrist'+side),middle=this.position('finger3-1'+side);
       this.palmRest.set(side,palmFrame(middle.clone().sub(wrist),this.position('finger2-1'+side).clone().sub(this.position('finger5-1'+side))));
       const normal=new T.Vector3(0,0,1).applyQuaternion(this.palmRest.get(side)!);
-      this.gripCenters.set(side,wrist.clone().lerp(middle,.75).addScaledVector(normal,side==='R'?-.015:.015));
+      this.gripCenters.set(side,wrist.clone().lerp(middle,.75).addScaledVector(normal,side==='R'?.015:-.015));
     }
     // Close the actual finger joints around the grip, retaining open palms for floor support.
     const corrections = new Map<T.Object3D, T.Matrix4>();
@@ -245,36 +249,68 @@ export class AthleteRig {
         elbow = this.position('lowerarm01' + side),
         wrist = this.position('wrist' + side);
       const shoulderAt = arm.clone().applyMatrix4(upperBody);
-      const a = solveLimb(
+      let a = solveLimb(
         arr(shoulderAt),
         p.hands[i],
         p.elbows[i],
         arm.distanceTo(elbow),
         elbow.distanceTo(wrist),
       );
-      transforms['arm' + side] = this.limbSegment(
-        arm,
-        elbow,
-        wrist,
-        shoulderAt,
-        vec(a.joint),
-        vec(a.end),
-      );
+      const grip = p.handGrips?.[i] ?? p.grip;
+      const across = grip === 'neutral'
+        ? new T.Vector3(0, 0, 1).applyQuaternion(bodyQ)
+        : new T.Vector3(i === 0 ? 1 : -1, 0, 0).applyQuaternion(bodyQ);
+      if (grip === 'supinated') across.negate();
+      const orientation = () => {
+        const forearm = vec(a.end).sub(vec(a.joint)).normalize();
+        const along = grip === 'open' ? new T.Vector3(0, 0, 1) : forearm;
+        // Carry a neutral wrist with the forearm through its arc. Projecting a
+        // fixed forward axis flips the hand by 180 degrees at a horizontal curl.
+        const palmAcross = grip === 'neutral'
+          ? new T.Vector3(0, 0, 1).applyQuaternion(bodyQ).applyQuaternion(
+              new T.Quaternion().setFromUnitVectors(new T.Vector3(0, -1, 0).applyQuaternion(bodyQ), forearm),
+            )
+          : across;
+        const worldPalm = palmFrame(along, palmAcross);
+        const delta = worldPalm.multiply(this.palmRest.get(side)!.clone().invert());
+        if (p.wristFlex) delta.premultiply(new T.Quaternion().setFromAxisAngle(new T.Vector3(1,0,0), p.wristFlex));
+        return delta;
+      };
+      // Solve the elbow against the actual palm contact, including the rigid
+      // wrist-to-palm offset. A wrist-only iterative solve has multiple branches
+      // in dips and can jump between them near a horizontal forearm.
+      let fixedHand: T.Quaternion | undefined;
+      if (p.handContacts) {
+        const gripRest = this.gripCenters.get(side)!;
+        const restAxis = gripRest.clone().sub(elbow).normalize();
+        const contact = vec(p.handContacts[i]);
+        const solution = solveLimb(arr(shoulderAt), arr(contact), p.elbows[i], arm.distanceTo(elbow), elbow.distanceTo(gripRest));
+        const elbowAt = vec(solution.joint);
+        const direction = vec(solution.end).sub(elbowAt).normalize();
+        const restAcross = new T.Vector3(1,0,0).applyQuaternion(this.palmRest.get(side)!);
+        const contactAcross = grip === 'neutral'
+          ? new T.Vector3(0,0,1).applyQuaternion(bodyQ).applyQuaternion(new T.Quaternion().setFromUnitVectors(new T.Vector3(0,-1,0).applyQuaternion(bodyQ),direction))
+          : across;
+        fixedHand = palmFrame(direction,contactAcross).multiply(palmFrame(restAxis,restAcross).invert());
+        const wristTarget = wrist.clone().sub(elbow).applyQuaternion(fixedHand).add(elbowAt);
+        a = {joint: solution.joint, end: arr(wristTarget), error: solution.error};
+      }
+      const wristAt = vec(a.end), delta = fixedHand ?? orientation();
+      // Swing the humerus relative to the torso. Using the wrist as its roll
+      // reference can spin the shoulder through 180 degrees as the elbow bends.
+      const upperSwing = new T.Quaternion().setFromUnitVectors(
+        elbow.clone().sub(arm).normalize().applyQuaternion(upperQ),
+        vec(a.joint).sub(shoulderAt).normalize(),
+      ).multiply(upperQ);
+      transforms['arm' + side] = this.rigid(shoulderAt, upperSwing, arm);
+      // Let the forearm follow pronation/supination of the palm instead of
+      // leaving its skin in the elbow plane while rotating the hand separately.
+      const restAcross = new T.Vector3(1, 0, 0).applyQuaternion(this.palmRest.get(side)!);
+      const worldAcross = restAcross.clone().applyQuaternion(delta);
       transforms['forearm' + side] = this.limbSegment(
-        elbow,
-        wrist,
-        arm,
-        vec(a.joint),
-        vec(a.end),
-        shoulderAt,
+        elbow, wrist, wrist.clone().add(restAcross),
+        vec(a.joint), wristAt, wristAt.clone().add(worldAcross),
       );
-      const wristAt=vec(a.end),forearm=vec(a.end).sub(vec(a.joint)).normalize();
-      const along=p.grip==='open'?new T.Vector3(0,0,1):forearm;
-      const across=p.grip==='neutral'?new T.Vector3(0,0,1).applyQuaternion(bodyQ):new T.Vector3(i===0?1:-1,0,0).applyQuaternion(bodyQ);
-      if(p.grip==='supinated')across.negate();
-      const worldPalm=palmFrame(along,across);
-      const delta=worldPalm.clone().multiply(this.palmRest.get(side)!.clone().invert());
-      if(p.wristFlex)delta.premultiply(new T.Quaternion().setFromAxisAngle(new T.Vector3(1,0,0),p.wristFlex));
       const hand=this.rigid(wristAt,delta,wrist);
       transforms['hand'+side]=hand;
       this.hands[i].copy(this.gripCenters.get(side)!).applyMatrix4(hand);
@@ -322,7 +358,8 @@ export class AthleteRig {
         this.position(state.bone.name).y > spinePivot.y
       )
         state.bone.matrixWorld.copy(upperBody);
-      if (state.grip && p.grip !== 'open')
+      const handGrip = p.handGrips?.[state.region.endsWith('R') ? 0 : 1] ?? p.grip;
+      if (state.grip && handGrip !== 'open')
         state.bone.matrixWorld.multiply(state.grip);
       state.bone.matrixWorld.multiply(state.rest);
     }
@@ -332,7 +369,7 @@ export class AthleteRig {
     });
   }
   highlight(group:string,id:string){
-    const active=new T.Color('#bd4e3d'),hot=new T.Color('#df7661');
+    const active=new T.Color('#ff502b'),hot=new T.Color('#ffbd69');
     const g=(n:number,w:number)=>Math.exp(-((n/w)**2));
     const ease=(a:number,b:number,n:number)=>{const t=Math.max(0,Math.min(1,(n-a)/(b-a)));return t*t*(3-2*t);};
     for(const mesh of this.meshes){
@@ -366,10 +403,10 @@ export class AthleteRig {
         const cloth=ease(.745,.785,y)*(1-ease(1.005,1.025,y))*(1-ease(.24,.29,ax));
         if(group!=='Glutes'&&group!=='Full body')mask*=1-cloth;
         activity[i]=Math.max(0,mask);
-        const blend=Math.min(.90,Math.max(0,mask)*1.2),c=active.clone().lerp(hot,Math.max(0,mask-.55)*.65);
+        const blend=Math.min(.96,Math.max(0,mask)*1.65),c=active.clone().lerp(hot,Math.max(0,mask-.55)*.65);
         // Keep the sculpt's anatomical seams and fibres visible under the muscle tint.
         const luminance=.2126*rest[i*3]+.7152*rest[i*3+1]+.0722*rest[i*3+2];
-        c.multiplyScalar(Math.max(.35,Math.min(1.15,luminance/.46)));
+        c.multiplyScalar(Math.max(.65,Math.min(1.25,luminance/.46)));
         colors[i*3]=rest[i*3]*(1-blend)+c.r*blend;colors[i*3+1]=rest[i*3+1]*(1-blend)+c.g*blend;colors[i*3+2]=rest[i*3+2]*(1-blend)+c.b*blend;
       }
       geo.setAttribute('color',new T.BufferAttribute(colors,3));
@@ -378,6 +415,7 @@ export class AthleteRig {
     this.contraction=-1;
   }
   dispose() {
+    for (const mesh of this.meshes) mesh.customDepthMaterial?.dispose();
     new Set(this.meshes.map((mesh) => mesh.skeleton)).forEach((skeleton) =>
       skeleton.dispose(),
     );

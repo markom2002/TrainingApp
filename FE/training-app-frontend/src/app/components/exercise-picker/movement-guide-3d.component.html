@@ -66,13 +66,14 @@
     [disabled]="!ready()"
   />
   <div class="studio-views" role="group" aria-label="Movement camera angle">
+    <button type="button" [class.active]="view === 'front'" [attr.aria-pressed]="view === 'front'" (click)="setView('front')">Front</button>
     <button
       type="button"
       [class.active]="view === 'three-quarter'"
       [attr.aria-pressed]="view === 'three-quarter'"
       (click)="setView('three-quarter')"
     >
-      3/4 view
+      Auto
     </button>
     <button
       type="button"

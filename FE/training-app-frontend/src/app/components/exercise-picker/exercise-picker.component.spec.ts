@@ -53,6 +53,22 @@ describe('Exercise picker', () => {
     if (originalExerciseUnits === null) localStorage.removeItem('form.exerciseWeightUnits');
     else localStorage.setItem('form.exerciseWeightUnits', originalExerciseUnits);
   });
+  it('inspects movements without changing the workout in Movement Lab', async () => {
+    const { fixture, requests } = await setup();
+    const picker = fixture.debugElement.query(By.directive(ExercisePickerComponent)).componentInstance as ExercisePickerComponent;
+    picker.toggle(catalog[0]);
+    picker.entryMode = 'guide';
+    picker.chooseExercise(catalog[0]);
+    expect(picker.selected.length).toBe(1);
+    picker.chooseExercise(catalog[1]);
+    expect(picker.selected.length).toBe(1);
+    expect(picker.preview?.id).toBe('plank');
+    picker.entryMode = 'log';
+    picker.chooseExercise(catalog[1]);
+    expect(picker.selected.length).toBe(2);
+    requests.verify();
+    fixture.destroy();
+  });
   it('preserves distinct set values, copies the last set and validates every set', async () => {
     const { fixture, requests } = await setup();
     fixture.nativeElement.querySelector('.exercise-option').click();

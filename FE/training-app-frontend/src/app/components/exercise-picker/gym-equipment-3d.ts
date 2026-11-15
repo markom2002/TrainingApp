@@ -262,6 +262,7 @@ export class GymEquipment3D {
       );
       this.cable();
       if (k === 'cable-fly' || k === 'face-cable') this.cable();
+      if (k === 'crunch-cable') { this.cable(); this.cable(); }
       if (k === 'lat') {
         // Front-mounted weight stack with an overhead arm reaching above the athlete.
         this.box(0.07, 2.12, 0.075, -0.52, 1.06, 0.85);
@@ -466,7 +467,7 @@ export class GymEquipment3D {
     if (this.dynamicBar) {
       this.dynamicBar.position.copy(mid);
       if (k === 'squat-bar')
-        this.dynamicBar.position.fromArray(local(p, [0, 0.45, -0.045]));
+        this.dynamicBar.position.fromArray(local(p, [0, 0.45, -0.14]));
       if (k === 'hipthrust')
         this.dynamicBar.position.set(0, p.hip[1] + 0.09, p.hip[2] + 0.02);
     }
@@ -483,6 +484,12 @@ export class GymEquipment3D {
             this.v(i === 0 ? -0.9 : 0.9, 1.35, -0.22),
             rig.hands[i],
           );
+      else if (k === 'crunch-cable') {
+        const knot = mid.clone().add(this.v(0, .18, .3));
+        this.link(this.cables[0], this.v(.52, 2, 1.15), knot);
+        this.link(this.cables[1], knot, rig.hands[0]);
+        this.link(this.cables[2], knot, rig.hands[1]);
+      }
       else if (k === 'face-cable')
         for (let i = 0; i < 2; i++)
           this.link(this.cables[i], this.v(0.52, 1.7, 1.15), rig.hands[i]);

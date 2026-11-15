@@ -30,7 +30,8 @@
               "src/styles.css",
               "src/performance-ui.css",
               "src/arena-ui.css",
-              "src/performance-club.css"
+              "src/performance-club.css",
+              "src/focused-ui.css"
             ],
             "scripts": []
           },
@@ -109,7 +110,8 @@
             "styles": [
               "src/styles.css",
               "src/performance-ui.css",
-              "src/arena-ui.css"
+              "src/arena-ui.css",
+              "src/focused-ui.css"
             ],
             "scripts": []
           }

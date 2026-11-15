@@ -9,10 +9,10 @@
     <div>
       <p class="eyebrow">
         {{
-          trainingId ? 'REFINE YOUR TRAINING RECORD' : 'THE SESSION IS YOURS'
+          trainingId ? 'REFINE YOUR TRAINING RECORD' : 'YOUR NEXT STRONGER SESSION'
         }}
       </p>
-      <h1>{{ trainingId ? 'Refine your' : 'Log your' }} <em>session.</em></h1>
+      <h1>{{ trainingId ? 'Edit' : 'Log' }} <em>workout.</em></h1>
       <p>
         {{
           repeatedWorkout
@@ -157,7 +157,7 @@
           [(ngModel)]="formModel.exercises"
           [variant]="formModel.trainingVariant"
         ></app-exercise-picker>
-        <section class="session-notes">
+        <details class="session-notes optional-notes"><summary>Add a session note <small>OPTIONAL</small></summary>
           <label for="session-notes"
             ><span class="eyebrow">03 / THE LITTLE DETAILS</span>Session notes
             <small>OPTIONAL</small></label
@@ -170,13 +170,12 @@
             placeholder="A new personal best? More energy than usual? Leave a note for your future self."
           ></textarea
           ><span>{{ formModel.notes.length }} / 2000</span>
-        </section>
+        </details>
         <div class="studio-save">
           <div>
             <strong
-              >{{ formModel.exercises.length }} exercises. {{ sets }} sets. All
-              yours.</strong
-            ><span>Ready when you are.</span>
+              >{{ formModel.exercises.length }} exercises. {{ sets }} sets. </strong
+            ><span>Every set counts.</span>
           </div>
           <div class="save-buttons">
             <a routerLink="/dashboard">Cancel</a

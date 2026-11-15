@@ -1,16 +1,16 @@
 <section class="exercise-builder" [class.guide-mode]="entryMode === 'guide'">
-<div class="logging-mode" role="group" aria-label="Workout entry mode"><button type="button" [class.active]="entryMode === 'log'" (click)="entryMode = 'log'; guideOpen = false">01 / QUICK LOG</button><button type="button" [class.active]="entryMode === 'guide'" (click)="entryMode = 'guide'; guideOpen = true">02 / MOVEMENT LAB</button></div>
+<div class="logging-mode" role="group" aria-label="Workout entry mode"><button type="button" [class.active]="entryMode === 'log'" (click)="entryMode = 'log'; guideOpen = false">LOG WORKOUT</button><button type="button" [class.active]="entryMode === 'guide'" (click)="entryMode = 'guide'; guideOpen = true">MOVEMENT LAB</button></div>
   <header class="builder-heading">
     <div>
-      <p class="eyebrow">THE MOVEMENTS BEHIND THE WORK</p>
-      <h2>Build your session<span>.</span></h2>
-      <p>Choose the exercises you completed. Make every set count.</p>
+      <p class="eyebrow">CHOOSE / LOG / SAVE</p>
+      <h2>Make it count<span>.</span></h2>
+      <p>Your exercises. Your numbers. One clear session.</p>
     </div>
-    <span class="selection-count">{{ selected.length }} / 40 selected</span>
+    <span class="selection-count">{{ entryMode === 'guide' ? catalog.length + ' movements' : selected.length + ' / 40 selected' }}</span>
   </header>
   <div class="builder-grid">
     <div class="exercise-library">
-      @if (recentExercises.length) {<div class="recent-movements"><span>YOUR RECENT MOVEMENTS</span><div>@for (id of recentExercises; track id) {@if (definition(id); as exercise) {<button type="button" [disabled]="disabled" (click)="toggle(exercise)" [class.chosen]="has(id)">{{exercise.name}} {{has(id) ? '&#10003;' : '+'}}</button>}}</div></div>}
+      @if (recentExercises.length) {<div class="recent-movements"><span>YOUR RECENT MOVEMENTS</span><div>@for (id of recentExercises; track id) {@if (definition(id); as exercise) {<button type="button" [disabled]="disabled" (click)="chooseExercise(exercise)" [class.chosen]="has(id)">{{exercise.name}} {{has(id) ? '&#10003;' : '+'}}</button>}}</div></div>}
       <div class="fast-routines">
         <span>QUICK START</span>
         @for (kind of ['Upper', 'Lower', 'Full body']; track kind) {
@@ -23,68 +23,6 @@
           </button>
         }
       </div>
-      <details class="body-preview">
-        <summary>
-          Explore body & muscle view <span aria-hidden="true">+</span>
-        </summary>
-        <div class="library-intro">
-          <div class="anatomy" [class.female]="variant === 'Women'">
-            <div
-              class="sculpture-view"
-              [class.female-sculpture]="variant === 'Women'"
-              [class.back-view]="bodySide === 'Back'"
-              role="img"
-              [attr.aria-label]="
-                (variant === 'Women' ? 'Female' : 'Male') +
-                ' athletic sculpture, ' +
-                bodySide.toLowerCase() +
-                ' view'
-              "
-            ></div>
-            <div class="body-view">
-              <button
-                type="button"
-                (click)="bodySide = 'Front'"
-                [class.chosen]="bodySide === 'Front'"
-              >
-                Front</button
-              ><button
-                type="button"
-                (click)="bodySide = 'Back'"
-                [class.chosen]="bodySide === 'Back'"
-              >
-                Back
-              </button>
-            </div>
-          </div>
-          <div class="library-copy">
-            <span class="tiny-tag">{{
-              variant === 'Women'
-                ? "WOMEN'S VIEW"
-                : variant === 'Men'
-                  ? "MEN'S VIEW"
-                  : 'ALL ATHLETES'
-            }}</span>
-            <h3>
-              {{
-                group === 'All'
-                  ? 'Every muscle. Every goal.'
-                  : group + ' in focus.'
-              }}
-            </h3>
-            <p>
-              One exercise library for every body. Use the muscle filters to
-              find your movements.
-            </p>
-            <span class="focus-muscle"
-              >FOCUS /
-              {{ group === 'All' ? 'FULL LIBRARY' : group.toUpperCase() }}</span
-            ><span class="library-number"
-              >{{ catalog.length }}<small>exercises to choose from</small></span
-            >
-          </div>
-        </div>
-      </details>
       <label class="search-box"
         ><span aria-hidden="true">&#9906;</span
         ><input
@@ -121,12 +59,12 @@
           <button
             type="button"
             class="exercise-option"
-            [class.added]="has(exercise.id)"
+            [class.added]="entryMode === 'guide' ? preview?.id === exercise.id : has(exercise.id)"
             [disabled]="
-              disabled || (!has(exercise.id) && selected.length >= 40)
+              disabled || (entryMode === 'log' && !has(exercise.id) && selected.length >= 40)
             "
-            (click)="toggle(exercise)"
-            [attr.aria-pressed]="has(exercise.id)"
+            (click)="chooseExercise(exercise)"
+            [attr.aria-pressed]="entryMode === 'guide' ? preview?.id === exercise.id : has(exercise.id)"
           >
             <span class="exercise-symbol" aria-hidden="true">
               @if (exercise.timed) {
@@ -141,7 +79,9 @@
                 {{ exercise.equipment }}</small
               ></span
             ><span class="add-symbol" aria-hidden="true">
-              @if (has(exercise.id)) {
+              @if (entryMode === 'guide') {
+                &#8599;
+              } @else if (has(exercise.id)) {
                 &#10003;
               } @else {
                 +
@@ -156,13 +96,13 @@
         </p>
       }
     </div>
-    @if (selected.length) {
+    @if (selected.length && entryMode === 'log') {
       <button class="edit-selected" type="button" (click)="editSelected()">
         Edit {{ selected.length }} selected exercises ↓
       </button>
     }
     <aside class="session-panel" id="session-lineup">
-      <details class="movement-preview" [open]="guideOpen">
+      <details class="movement-preview" [open]="guideOpen" (toggle)="guideOpen = $any($event.target).open">
         <summary>
           Movement lab ·
           {{
@@ -170,29 +110,16 @@
               (catalog.length ? catalog[0].name : 'Choose an exercise')
           }}
         </summary>
-        <app-movement-guide [exercise]="preview || catalog[0]" />
+        @if (guideOpen) {<app-movement-guide [exercise]="preview || catalog[0]" />}
       </details>
       <div class="session-heading">
         <div>
           <p class="eyebrow">YOUR WORKOUT, YOUR WAY</p>
-          <h3>Session lineup</h3>
+          <h3>Your sets</h3>
         </div>
         <span>{{ selected.length }}</span>
       </div>
-      <p class="quick-label">QUICK ADD</p>
-      <div class="quick-add">
-        @for (preset of ['Upper', 'Lower', 'Full body']; track preset) {
-          <button
-            type="button"
-            (click)="quickAdd(preset)"
-            [disabled]="disabled || loading || !!error"
-          >
-            {{ preset }} +
-          </button>
-        }
-      </div>
-      <p class="preset-note">Add a starting routine, then adjust your sets.</p>
-      <div class="weight-unit-control">
+<div class="weight-unit-control">
         <span>DEFAULT FOR NEW EXERCISES</span>
         <div role="group" aria-label="Default weight unit for new exercises">
           @for (unit of weightUnits; track unit) {
@@ -377,6 +304,7 @@
               </button>
             }
             <div class="entry-footer">
+              <button class="technique-button" type="button" (click)="showTechnique(entry.exerciseId)" [disabled]="disabled">Technique &#8599;</button>
               <div class="inline-weight-unit" role="group" [attr.aria-label]="'Weight unit for ' + entry.exerciseId">
                 @for (unit of weightUnits; track unit) {
                   <button type="button" [class.active]="getWeightUnit(entry) === unit" [attr.aria-pressed]="getWeightUnit(entry) === unit" [disabled]="disabled" (click)="setWeightUnit(unit, entry)">{{ unit }}</button>
@@ -405,7 +333,7 @@
       @if (validate()) {
         <p role="alert" class="exercise-validation">
           Check each exercise: 1-30 sets, 1-200 reps or 1-7200 seconds, and
-          0–1000 kg / 0?2204.62 lbs with up to two decimal places.
+          0–1000 kg / 0–2204.62 lbs with up to two decimal places.
         </p>
       }
     </aside>

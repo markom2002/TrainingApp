@@ -48,22 +48,16 @@ Screenshots use synthetic sample data and mocked API responses; they are UI prev
 
 ## Features
 
-- **Your journey:** recovery-friendly workout-day streaks, XP levels, 10 achievement milestones, added-weight personal records and an opt-in body-weight direction with weigh-in history.
-- **Individual sets:** keep quick sets/reps/load entry or log separate repetitions, seconds and load for each set. Repeat an earlier workout into a new day's draft.
-- **Installable app:** Android/iPhone/desktop PWA manifest, icons, install guidance, shared mobile navigation and offline workout entry, cached screens and retry-safe synchronization. See [mobile app setup](MOBILNA-APLIKACIJA.md) for the single-origin .NET package and HTTPS requirements.
-- **Workout Studio:** 48 exercises across 14 muscle groups, search, body filters, editable Upper/Lower/Full body drafts and front/back male/female sculpture views. Every exercise is available in every presentation.
-- **Exercise records:** sets, repetitions or seconds, added weight and exercise order. Each exercise entry uses one sets/reps-or-time/load combination.
-- **Dashboard:** monthly totals, previous-month comparison, weekly activity, exercise distribution and progress towards a personal weekly goal.
-- **History:** SQL pagination, inclusive date filters, exercise-type filtering, stable sorting and expandable exercise details.
+- **Log Workout:** searchable exercise library, recent movements, Upper/Lower/Full body starting routines and a clear session lineup. Record sets, reps or seconds and load, use individual set entries, reorder exercises and repeat an earlier workout into a new draft. Session details and optional notes are collapsible.
+- **Movement Lab:** local 3D demonstrations for all 48 catalog exercises, highlighted primary muscles, automatic/front/side/back cameras, play/pause, half-speed playback and position scrubbing. Technique previews are separate from workout selection. See [movement implementation and checks](MOVEMENT-GUIDES.md).
+- **Responsive interface:** dark charcoal surfaces, lime accents, readable form controls and consistent card padding on phone, tablet and desktop. Each exercise has its own kg/lbs preference.
+- **Your journey:** recovery-friendly workout-day streaks, 10 achievement milestones, added-weight personal records and optional body-weight goals with weigh-in history.
+- **Installable app:** Android/iPhone/desktop PWA manifest, lightning icon, install guidance, mobile navigation, cached screens and offline entry with retry-safe synchronization. See [personal phone installation](LICNA-APLIKACIJA.md) and [mobile app setup](MOBILNA-APLIKACIJA.md).
+- **Dashboard:** monthly totals, previous-month comparisons, weekly activity, exercise distribution, a training calendar and progress towards a personal weekly goal.
+- **History:** SQL pagination, inclusive date filters, exercise-type filtering, stable sorting and expandable exercise/set details.
 - **Private profiles:** display name, bio, training focus, experience, weekly target and lifetime totals.
-- **Authentication and authorization:** short-lived JWTs, rotating refresh cookies, User/Admin roles and ownership checks on workout operations.
+- **Authentication and authorization:** short-lived JWTs, rotating HttpOnly refresh cookies, automatic session restoration, a fixed 30-day session deadline, User/Admin roles and ownership checks.
 - **API documentation:** Swagger examples, response schemas and ProblemDetails errors.
-
-## Personal performance edition
-
-Rank screens, rank celebrations and XP notices have been removed from the app. Achievements, streaks, records and body goals remain. Quick Log separates entry from Movement Lab; every exercise has its own kg/lbs preference. Login restores a valid HttpOnly session automatically, with a fixed 30-day deadline.
-
-For Android and iPhone, see [personal phone installation](LICNA-APLIKACIJA.md).
 
 ## Run locally
 
@@ -94,7 +88,7 @@ Requirements: .NET 8 SDK, EF CLI, Node.js 22, npm and a local SQL Server instanc
    npm start
    ```
 
-5. Open **https://localhost:4200** and register an account. The API and Swagger are at **https://localhost:7089/swagger**. Both services use HTTPS. Accept the Angular local development certificate in the browser if prompted; opening plain HTTP on port 4200 will not work.
+5. Open **http://localhost:4200** and register an account. The development server proxies API requests to **https://localhost:7089**; Swagger is at **https://localhost:7089/swagger**. For the installable HTTPS phone setup, use the [personal installation guide](LICNA-APLIKACIJA.md).
 
 No application hosting account is required. Existing workouts are preserved by the profile/exercise migrations. Example Swagger credentials are sample inputs, not seeded accounts.
 
@@ -114,7 +108,15 @@ Chrome/Chromium must be installed for the frontend tests (`CHROME_BIN` can point
 
 [GitHub Actions](https://github.com/markom2002/TrainingApp/actions) runs the backend tests, Angular tests and both frontend builds on pushes and pull requests to `master`. Backend TRX reports are retained as workflow artifacts. The workflow can also be started manually.
 
-Browser checks additionally cover login, profile editing, workout creation/history/editing, draft shortcuts and responsive layouts at phone, tablet and desktop widths. SQLite tests complement local SQL Server migration and persistence checks.
+The 3D rig check runs from the repository root after installing frontend dependencies:
+
+```powershell
+node scripts/Verify-MovementRig.mjs
+```
+
+It loads the actual athlete asset and checks 1,968 poses across 48 exercises for valid bone transforms, palm rotation continuity and fixed equipment contact. Dip-specific checks cover elbow angles, vertical forearms, elbow clearance and knee alignment.
+
+Browser checks additionally cover login, profile editing, workout creation/history/editing, draft shortcuts, movement previews and responsive layouts at phone, tablet and desktop widths. SQLite tests complement local SQL Server migration and persistence checks.
 
 ## API
 

@@ -1,6 +1,38 @@
 import { EXERCISE_MOTIONS, local } from './motion-3d';
 import { distance, solveLimb } from './rig-math';
 describe('3D exercise choreography', () => {
+  it('keeps the pull-up bar clear of the head throughout the repetition', () => {
+    for (let n=0;n<=40;n++) {
+      const p=EXERCISE_MOTIONS['pull-up'].sample(n/40);
+      const head=local(p,[0,.69,.05]);
+      expect(Math.hypot(head[1]-2.12,head[2])).withContext('head/bar clearance '+n).toBeGreaterThan(.15);
+      expect(p.handContacts).toEqual([[-.37,2.12,0],[.37,2.12,0]]);
+    }
+  });
+  it('keeps loaded bars in front of the thighs at deadlift lockout', () => {
+    for (const id of ['deadlift','romanian-deadlift']) {
+      const p=EXERCISE_MOTIONS[id].sample(1);
+      for(const hand of p.hands) expect(hand[2]-p.hip[2]).withContext(id).toBeGreaterThan(.2);
+    }
+  });
+  it('keeps dip palms fixed on parallel handles and squat palms on the rear bar', () => {
+    for(let n=0;n<=40;n++) {
+      expect(EXERCISE_MOTIONS['triceps-dip'].sample(n/40).handContacts).toEqual([[-.3,1.05,.12],[.3,1.05,.12]]);
+      const p=EXERCISE_MOTIONS['back-squat'].sample(n/40);
+      expect(p.handContacts).toEqual([local(p,[-.43,.45,-.14]),local(p,[.43,.45,-.14])]);
+    }
+  });
+  it('swings running arms with a stable elbow bend rather than folding them through the shoulders', () => {
+    for(let n=0;n<=40;n++) {
+      const p=EXERCISE_MOTIONS['treadmill'].sample(n/40);
+      for(let i=0;i<2;i++) {
+        const shoulder=local(p,[(i?1:-1)*.204,.471,.088]);
+        const upper=p.elbows[i].map((v,k)=>v-shoulder[k]);
+        const lower=p.hands[i].map((v,k)=>v-p.elbows[i][k]);
+        expect(Math.abs(upper.reduce((sum,v,k)=>sum+v*lower[k],0))).toBeLessThan(.001);
+      }
+    }
+  });
   it('defines an explicit choreography for all 48 catalog exercises', () => {
     expect(Object.keys(EXERCISE_MOTIONS).length).toBe(48);
   });
@@ -41,6 +73,14 @@ describe('3D exercise choreography', () => {
           ).toBeTrue();
         }
       }
+  });
+  it('keeps the barbell grip fixed across the whole bench press', () => {
+    const motion = EXERCISE_MOTIONS['bench-press'];
+    for (let n = 0; n <= 40; n++) {
+      const p = motion.sample(n / 40);
+      expect(p.hands[0][0]).toBe(-.34);
+      expect(p.hands[1][0]).toBe(.34);
+    }
   });
   it('keeps bench press supine, feet planted, and the load above the chest', () => {
     const motion = EXERCISE_MOTIONS['bench-press'],

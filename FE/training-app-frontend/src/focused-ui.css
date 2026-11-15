@@ -1,0 +1,103 @@
+/* Focused gym-floor layout. Keep this after the shared club theme. */
+html[lang][data-theme] body .workout-studio{max-width:1380px}
+html[lang][data-theme] body .studio-hero{padding:32px clamp(24px,3vw,40px);align-items:center;min-height:0}
+html[lang][data-theme] body .studio-hero h1{font-size:clamp(40px,5vw,68px);margin:8px 0 12px;letter-spacing:-3px}
+html[lang][data-theme] body .studio-hero p{max-width:540px;color:#aeb7a9}
+html[lang][data-theme] body .hero-summary{background:#121711;border:1px solid #d4ff5625;border-radius:12px;padding:22px 22px 40px;flex-shrink:0}
+html[lang][data-theme] body .hero-summary strong{color:var(--club);font-variant-numeric:tabular-nums}
+html[lang][data-theme] body .builder-heading{padding:20px 0 16px;margin:0}
+html[lang][data-theme] body .builder-heading h2{font-size:28px;letter-spacing:-1px;margin:6px 0}
+html[lang][data-theme] body .builder-heading p:not(.eyebrow){display:none}
+html[lang][data-theme] body .logging-mode{display:flex;gap:6px;padding:5px;background:#141a12;border:1px solid #ffffff12;border-radius:12px}
+html[lang][data-theme] body .logging-mode button{border:0;border-radius:8px;min-height:48px;flex:1;color:#aab6a1;background:transparent;font-weight:800;letter-spacing:1px}
+html[lang][data-theme] body .logging-mode button.active{background:var(--club);color:#17200a}
+html[lang][data-theme] body .builder-grid{grid-template-columns:minmax(280px,.82fr) minmax(0,1.18fr);gap:18px;align-items:start}
+html[lang][data-theme] body .exercise-library{padding:18px;background:#0e120e}
+html[lang][data-theme] body .session-panel{padding:22px;border-top:2px solid var(--club);background:#141a12;position:sticky;top:18px}
+html[lang][data-theme] body .exercise-cards{display:grid;grid-template-columns:1fr;max-height:560px;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#435632 transparent;gap:7px;padding:3px}
+html[lang][data-theme] body .exercise-option{min-height:68px;padding:12px 14px;background:#171d15;border:1px solid #ffffff0e;border-radius:9px;text-align:left;transition:background .16s,border-color .16s}
+html[lang][data-theme] body .exercise-option:hover{background:#202b19;border-color:#d4ff5660;transform:none}
+html[lang][data-theme] body .exercise-option.added{background:#d4ff5612;border-color:#d4ff5660}
+html[lang][data-theme] body .exercise-option strong{font-size:14px;color:#f1f3e9}
+html[lang][data-theme] body .exercise-option small{font-size:11px;color:#a4b09a}
+html[lang][data-theme] body .exercise-symbol{display:none}
+html[lang][data-theme] body .add-symbol{color:var(--club);font-size:24px}
+html[lang][data-theme] body .muscle-filters{display:flex;flex-wrap:nowrap;overflow:auto;padding:4px 0 12px;gap:6px;scrollbar-width:thin}
+html[lang][data-theme] body .muscle-filters button{flex-shrink:0;min-height:36px;border-radius:6px;padding:8px 12px}
+html[lang][data-theme] body .search-box{background:#080b08;border:1px solid #ffffff24;border-radius:8px;margin:16px 0 10px}
+html[lang][data-theme] body .search-box input{font-size:16px;min-height:48px;color:#f1f3e9}
+html[lang][data-theme] body .fast-routines{display:flex;flex-wrap:wrap;gap:6px}
+html[lang][data-theme] body .fast-routines>span{width:100%;font:10px monospace;color:#9eac94;margin-bottom:4px}
+html[lang][data-theme] body .fast-routines button{min-height:38px;padding:8px 12px;border-radius:7px}
+html[lang][data-theme] body .recent-movements{margin-bottom:18px}
+html[lang][data-theme] body .session-exercise{background:#0c100b;border:1px solid #ffffff18;border-radius:12px;padding:18px;margin-bottom:12px}
+html[lang][data-theme] body .entry-number{background:#d4ff5614;color:var(--club);border-radius:8px}
+html[lang][data-theme] body .entry-title h4{font-size:18px;letter-spacing:-.4px;color:#f1f3e9}
+html[lang][data-theme] body .entry-fields input,html[lang][data-theme] body .individual-set input{background:#1a2216;border:1px solid #ffffff24;border-radius:8px;min-height:52px;font-size:22px;font-weight:700;color:#f1f3e9;font-variant-numeric:tabular-nums;text-align:center}
+html[lang][data-theme] body .entry-fields label{color:#abb99f;font-size:10px;letter-spacing:1px}
+html[lang][data-theme] body .entry-footer{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+html[lang][data-theme] body .entry-footer>span{display:none}
+html[lang][data-theme] body .entry-footer .technique-button{color:var(--club);border:1px solid #d4ff5633;border-radius:6px;min-height:36px;padding:8px 10px;margin-right:auto}
+html[lang][data-theme] body .session-basics{background:#10150e;border:1px solid #ffffff18;border-radius:10px;margin-bottom:18px}
+html[lang][data-theme] body .quick-details-summary{min-height:48px;align-items:center;gap:12px;flex-wrap:wrap;cursor:pointer}
+html[lang][data-theme] body .optional-notes{padding:18px;border:1px solid #ffffff18;border-radius:10px;margin:20px 0}
+html[lang][data-theme] body .optional-notes summary{cursor:pointer;color:#c9d3c1;font-size:14px}
+html[lang][data-theme] body .optional-notes summary small{margin-left:12px;color:#84957a;font:9px monospace}
+html[lang][data-theme] body .optional-notes label{margin-top:20px}
+html[lang][data-theme] body .studio-save{backdrop-filter:blur(18px);background:#10150eef;border:1px solid #d4ff5628;border-radius:12px;box-shadow:0 -12px 40px #0005;padding:16px 22px}
+html[lang][data-theme] body .studio-save button{min-height:52px;padding:14px 28px}
+html[lang][data-theme] body .movement-preview{scroll-margin-top:20px}
+html[lang][data-theme] body .movement-studio{background:#0b1013;border:1px solid #ffffff20;border-radius:12px}
+html[lang][data-theme] body .studio-viewport{height:440px;background:radial-gradient(ellipse at 50% 40%,#35445165,transparent 70%)}
+html[lang][data-theme] body .studio-target{background:#351b10;color:#ffae81;border:1px solid #ff693d70;padding:10px 14px;border-radius:8px;font-size:14px;font-weight:700}
+html[lang][data-theme] body .studio-target i{background:#ff633d;box-shadow:0 0 12px #ff633d}
+html[lang][data-theme] body .studio-views button{min-height:42px;border-radius:6px}
+html[lang][data-theme] body .studio-views button.active{background:var(--club);color:#17200a;border-color:var(--club)}
+html[lang][data-theme] body .studio-watermark{display:none}
+html[lang][data-theme] body .studio-copy h3{font-size:24px;letter-spacing:-.7px}
+html[lang][data-theme] body .surface,html[lang][data-theme] body .stat-card,html[lang][data-theme] body .achievement-card{border-color:#ffffff1c;box-shadow:0 8px 30px #0002}
+html[lang][data-theme] body .workspace-header{border-color:#ffffff20}
+html[lang][data-theme] body .rail-note{display:none}
+html[lang][data-theme] body button:disabled{opacity:.45;cursor:not-allowed}
+@media(max-width:750px){
+html[lang][data-theme] body .builder-grid,html[lang][data-theme] body .exercise-builder.guide-mode .builder-grid{display:flex;flex-direction:column;gap:14px}
+html[lang][data-theme] body .session-panel{position:static;width:100%;padding:16px 12px}
+html[lang][data-theme] body .exercise-library{width:100%;padding:14px 10px}
+html[lang][data-theme] body .exercise-cards{max-height:300px;grid-template-columns:1fr}
+html[lang][data-theme] body .studio-hero{padding:26px 20px;gap:20px}
+html[lang][data-theme] body .logging-mode{top:0;z-index:15}
+html[lang][data-theme] body .studio-viewport{height:380px}
+html[lang][data-theme] body .studio-save{padding:10px 14px;border-radius:10px}
+html[lang][data-theme] body .studio-save button{min-width:0;min-height:48px;padding:12px 22px}
+html[lang][data-theme] body .entry-fields input{font-size:20px}
+html[lang][data-theme] body .builder-heading h2{font-size:24px}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+html[lang][data-theme] body .exercise-builder.guide-mode :is(.fast-routines,.session-heading,.weight-unit-control,.empty-session,.session-exercises,.exercise-validation){display:none}
+html[lang][data-theme] body .exercise-builder.guide-mode .session-panel{padding:0;border-top:0;background:transparent}
+html[lang][data-theme] body .exercise-builder.guide-mode .movement-preview{margin:0;border:0}
+html[lang][data-theme] body .exercise-builder.guide-mode .recent-movements{display:none}
+
+/* Consistent breathing room inside cards and form controls. */
+html[lang][data-theme] body .studio-hero>div:first-child{min-width:0}
+html[lang][data-theme] body .studio-hero h1{line-height:1.05;text-wrap:balance}
+html[lang][data-theme] body .session-basics{padding:20px 24px}
+html[lang][data-theme] body .quick-details-summary{line-height:1.6}
+html[lang][data-theme] body .workout-studio :is(input[type="number"],input[type="datetime-local"],select,textarea){padding:12px 14px}
+html[lang][data-theme] body .workout-studio textarea{line-height:1.6}
+html[lang][data-theme] body .exercise-option>span:not(.exercise-symbol):not(.add-symbol){min-width:0}
+html[lang][data-theme] body .exercise-option strong{line-height:1.4;overflow-wrap:anywhere}
+html[lang][data-theme] body .exercise-option small{line-height:1.5;margin-top:4px}
+html[lang][data-theme] body .entry-title{gap:12px}
+html[lang][data-theme] body .entry-title>div{min-width:0}
+html[lang][data-theme] body .entry-title h4{line-height:1.35;overflow-wrap:anywhere}
+@media(max-width:1000px){html[lang][data-theme] body .studio-hero{flex-wrap:wrap}}
+@media(max-width:750px){
+html[lang][data-theme] body .studio-hero h1{font-size:clamp(32px,8.8vw,44px);letter-spacing:-1.8px}
+html[lang][data-theme] body .studio-hero .eyebrow{font-size:10px;line-height:1.7}
+html[lang][data-theme] body .session-basics{padding:18px 20px}
+html[lang][data-theme] body .exercise-library,html[lang][data-theme] body .session-panel{padding:18px 16px}
+html[lang][data-theme] body .session-exercise{padding:18px 16px}
+html[lang][data-theme] body .quick-details-summary strong{font-size:12px}
+}

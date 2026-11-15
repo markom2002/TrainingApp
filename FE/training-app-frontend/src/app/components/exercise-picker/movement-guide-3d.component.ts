@@ -67,10 +67,13 @@ export class MovementGuideComponent
     );
   }
   ngOnChanges() {
-    this.clock = 0;
+    this.clock = Math.acos(1 - 2 * 0.12) / (Math.PI * 2);
     this.progress.set(0.12);
+    this.view = 'three-quarter';
+    this.phaseLabel.set('Start position');
     if (this.exercise && this.engine) {
       this.engine.setExercise(this.exercise.id, this.exercise.muscleGroup);
+      this.engine.setView(this.view);
       this.engine.render(this.progress());
     }
   }

@@ -265,6 +265,21 @@ export class ExercisePickerComponent
   has(id: string) {
     return this.selected.some((e) => e.exerciseId === id);
   }
+  chooseExercise(exercise: ExerciseDefinition) {
+    if (this.disabled) return;
+    if (this.entryMode === 'guide') {
+      this.preview = exercise;
+      this.guideOpen = true;
+      return;
+    }
+    this.toggle(exercise);
+  }
+  showTechnique(id: string) {
+    this.preview = this.definition(id);
+    this.entryMode = 'guide';
+    this.guideOpen = true;
+    requestAnimationFrame(() => document.querySelector('.movement-preview')?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'start' }));
+  }
   toggle(exercise: ExerciseDefinition) {
     this.preview=exercise;
     if (this.disabled) return;
