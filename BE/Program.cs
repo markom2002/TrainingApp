@@ -139,7 +139,15 @@ if (serveFrontend)
     var staticTypes = new FileExtensionContentTypeProvider();
     staticTypes.Mappings[".cer"] = "application/pkix-cert";
     staticTypes.Mappings[".glb"] = "model/gltf-binary";
-    app.UseStaticFiles(new StaticFileOptions { ContentTypeProvider = staticTypes });
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        ContentTypeProvider = staticTypes,
+        OnPrepareResponse = context =>
+        {
+            if (context.File.Name is "manifest.webmanifest" or "sw.js" or "index.html")
+                context.Context.Response.Headers.CacheControl = "no-cache";
+        }
+    });
 }
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

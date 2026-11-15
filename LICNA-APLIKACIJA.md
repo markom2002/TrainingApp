@@ -26,7 +26,7 @@ Na stranici `phone-setup.html` preuzmi javni FORM certifikat. Privatni ključevi
 
 ## Svakodnevno korištenje
 
-Pokreni aplikaciju na laptopu, a na telefonu dodirni FORM ikonu. Prijava se obnavlja automatski do isteka 30-dnevne sesije, odjave ili brisanja kolačića. Safari/Chrome i instalirana aplikacija mogu imati odvojene spremnike prijave; prvi put se prijavi u instaliranoj aplikaciji.
+Pokreni aplikaciju na laptopu, a na telefonu dodirni ikonu munje s nazivom ???. Prijava se obnavlja automatski do isteka 30-dnevne sesije, odjave ili brisanja kolačića. Safari/Chrome i instalirana aplikacija mogu imati odvojene spremnike prijave; prvi put se prijavi u instaliranoj aplikaciji.
 
 Quick Log služi za brz unos, Movement Lab za pregled pokreta. Jedinice kg/lbs biraš zasebno na svakoj vježbi. Nedavne vježbe ostaju pri vrhu izbora na istom uređaju.
 
@@ -43,3 +43,10 @@ Ako promijeniš mrežu ili laptop dobije novu IP adresu, ponovo pokreni pokreta�
 Ure?ivanje i brisanje ve? sinhronizovanih treninga, izmjene profila i prva prijava zahtijevaju server. Offline spremljeni treninzi ne dodjeljuju achievements dok ne budu sinhronizovani. Ne bri?i podatke preglednika i ne deinstaliraj aplikaciju dok treninzi ?ekaju slanje. Lokalni podaci su odvojeni po ra?unima i po ure?ajima; ne prenose se izme?u Androida i iPhonea prije sinhronizacije.
 
 Prvo pode?avanje koristi odvojeni HTTP port 7088, dostupan samo za upute i preuzimanje javnog certifikata. Prijava, podaci i aplikacija ostaju na HTTPS portu 7089. Ova odvojena adresa zaobilazi stari offline ekran i ne zahtijeva prethodno povjerenje u HTTPS certifikat.
+
+
+## Naziv i ikonica na telefonu
+
+Naziv aplikacije je **🏋️**, a ikonica je zelena munja na tamnoj podlozi. Otvori aplikaciju dok je laptop dostupan i ponovo je otvori nakon azuriranja. Android moze azurirati naziv i ikonicu s odgodom.
+
+Ako ostane stari naziv ili ikonica, prvo sinhronizuj sve lokalno spremljene treninge. Na Androidu ukloni staru instalaciju/precicu pa ponovo instaliraj iz Chromea; na iPhoneu ukloni staru ikonu i ponovo dodaj aplikaciju iz Safarija preko Share > Add to Home Screen. Pri dodavanju provjeri naziv **🏋️**. Nemoj brisati podatke aplikacije dok postoje treninzi koji cekaju sinhronizaciju.

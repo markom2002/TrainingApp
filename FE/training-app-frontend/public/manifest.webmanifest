@@ -16,19 +16,19 @@
   ],
   "icons": [
     {
-      "src": "/icons/lightning-192-v1.png",
+      "src": "/icons/lightning-192-v1.png?v=20261115",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icons/lightning-512-v1.png",
+      "src": "/icons/lightning-512-v1.png?v=20261115",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icons/lightning-maskable-512-v1.png",
+      "src": "/icons/lightning-maskable-512-v1.png?v=20261115",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
