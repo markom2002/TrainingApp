@@ -153,18 +153,24 @@ export class WorkoutExercisesComponent implements OnInit, OnDestroy {
     return this.definition(id)?.name ?? id.replaceAll('-', ' ');
   }
   weightText(exercise: WorkoutExercise, entry: Pick<WorkoutSet, 'weightKg' | 'weightValue'> = exercise): string {
-    let unit = exercise.weightUnit;
-    if (!unit) {
-      // Older records stored only kilograms. Use this device's exercise preference
-      // for their display, without guessing or rewriting historical database rows.
-      try {
-        const saved = JSON.parse(localStorage.getItem('form.exerciseWeightUnits') ?? '{}');
-        unit = saved[exercise.exerciseId] === 'lbs' ? 'lbs' : 'kg';
-      } catch { unit = 'kg'; }
+    const format = (value: number) => String(Math.round(value * 100) / 100);
+    // An explicit unit belongs to this workout, never to this device's preference.
+    if (exercise.weightUnit) {
+      const value = entry.weightValue ?? (exercise.weightUnit === 'lbs'
+        ? entry.weightKg / 0.45359237 : entry.weightKg);
+      return `${format(value)} ${exercise.weightUnit}`;
     }
-    if (exercise.weightUnit && entry.weightValue != null) return `${entry.weightValue} ${unit}`;
-    if (unit === 'kg') return `${entry.weightKg} kg`;
-    const pounds = Math.round(entry.weightKg / 0.45359237 * 10) / 10;
-    return `≈ ${pounds} lbs`;
+    // Old clients kept only rounded kg. Recognize a complete series of distinct
+    // whole-pound conversions, but keep the approximation visible and never
+    // change the historical data. Natural kg increments stay in kg.
+    const weights = (exercise.setEntries?.length ? exercise.setEntries : [exercise])
+      .map(set => set.weightKg).filter(weight => weight > 0);
+    const legacyPounds = new Set(weights).size >= 2 && weights.every(weight => {
+      const pounds = Math.round(weight / 0.45359237);
+      return Math.abs(weight * 4 - Math.round(weight * 4)) > 0.000001 &&
+        Math.round(pounds * 0.45359237 * 100) === Math.round(weight * 100);
+    });
+    if (legacyPounds) return `\u2248 ${Math.round(entry.weightKg / 0.45359237)} lbs`;
+    return `${format(entry.weightKg)} kg`;
   }
 }

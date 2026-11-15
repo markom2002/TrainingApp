@@ -18,10 +18,27 @@ describe('Recorded workout weight units', () => {
     expect(component().weightText(exercise('lbs'))).toBe('30 lbs');
     expect(component().weightText(exercise('kg'))).toBe('13.61 kg');
   });
-  it('shows legacy pounds approximately without rewriting the saved kilogram weight',()=>{
-    localStorage.setItem('form.exerciseWeightUnits',JSON.stringify({'lat-pulldown':'lbs'}));
+  it('recovers the screenshot series as approximate whole pounds on every device',()=>{
     const e=exercise('lbs');delete e.weightUnit;delete e.weightValue;
-    expect(component().weightText(e)).toBe('≈ 30 lbs');expect(e.weightKg).toBe(13.61);
-    localStorage.removeItem('form.exerciseWeightUnits');expect(component().weightText(e)).toBe('13.61 kg');
+    e.setEntries=[13.61,18.14,22.68,29.48,27.22].map(weightKg=>({weightKg,reps:8,durationSeconds:null}));
+    for(const preference of ['kg','lbs']) {
+      localStorage.setItem('form.exerciseWeightUnits',JSON.stringify({'lat-pulldown':preference}));
+      expect(e.setEntries.map(set=>component().weightText(e,set))).toEqual(['\u2248 30 lbs','\u2248 40 lbs','\u2248 50 lbs','\u2248 65 lbs','\u2248 60 lbs']);
+    }
+    expect(e.setEntries[0].weightKg).toBe(13.61);
+  });
+  it('keeps explicit kilograms and fractional entered pounds exactly as recorded',()=>{
+    const e=exercise('kg');
+    e.setEntries=[13.61,18.14].map(weightKg=>({weightKg,weightValue:weightKg,reps:8,durationSeconds:null}));
+    expect(component().weightText(e,e.setEntries[0])).toBe('13.61 kg');
+    expect(component().weightText(exercise('lbs'),{weightKg:13.72,weightValue:30.25})).toBe('30.25 lbs');
+    expect(component().weightText(exercise('kg'),{weightKg:40,weightValue:40})).toBe('40 kg');
+  });
+  it('does not use device preferences to convert unmarked kilograms',()=>{
+    localStorage.setItem('form.exerciseWeightUnits',JSON.stringify({'lat-pulldown':'lbs'}));
+    const e=exercise('kg');delete e.weightUnit;delete e.weightValue;
+    expect(component().weightText(e)).toBe('13.61 kg');
+    e.setEntries=[20,22.5,25].map(weightKg=>({weightKg,reps:8,durationSeconds:null}));
+    expect(component().weightText(e,e.setEntries[1])).toBe('22.5 kg');
   });
 });
