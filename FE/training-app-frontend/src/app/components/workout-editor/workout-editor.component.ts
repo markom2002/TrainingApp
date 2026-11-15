@@ -34,7 +34,7 @@ export class WorkoutEditorComponent implements OnInit, OnDestroy {
   private save?: Subscription;
   formModel = {
     exerciseType: ExerciseType.Strength,
-    durationMinutes: 45,
+    durationMinutes: 60,
     calories: 0,
     intensity: 5,
     fatigue: 5,
