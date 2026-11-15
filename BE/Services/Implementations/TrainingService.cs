@@ -71,15 +71,19 @@ namespace BE.Services.Implementations
                 weekly.OrderBy(w => w.Week).ToList(), breakdown.OrderBy(e => e.ExerciseType).ToList());
         }
 
-        public Training? GetById(int id, int userId)
+        public async Task<Training?> GetById(int id, int userId, CancellationToken cancellationToken = default)
         {
-            return _context.Trainings.Include(t => t.Exercises.OrderBy(e => e.Position)).ThenInclude(e => e.SetEntries.OrderBy(s => s.Position))
-                .FirstOrDefault(t => t.Id == id && t.UserId == userId);
+            return await _context.Trainings.Include(t => t.Exercises.OrderBy(e => e.Position)).ThenInclude(e => e.SetEntries.OrderBy(s => s.Position))
+                .FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId, cancellationToken);
         }
 
-        public Training Add(int userId, TrainingDto dto)
+        public async Task<Training> Add(int userId, TrainingDto dto, CancellationToken cancellationToken = default)
         {
-            if(dto.ClientId.HasValue){var existing=_context.Trainings.AsNoTracking().FirstOrDefault(t=>t.UserId==userId && t.ClientId==dto.ClientId);if(existing!=null)return GetById(existing.Id,userId)!;}
+            if (dto.ClientId.HasValue)
+            {
+                var existing = await FindRetry(userId, dto.ClientId.Value, cancellationToken);
+                if (existing != null) return existing;
+            }
             var training = new Training
             {
                 UserId = userId,
@@ -96,19 +100,26 @@ namespace BE.Services.Implementations
             };
 
             _context.Trainings.Add(training);
-            try { _context.SaveChanges(); }
-            catch(DbUpdateException) when(dto.ClientId.HasValue){
-                var existing=_context.Trainings.AsNoTracking().FirstOrDefault(t=>t.UserId==userId && t.ClientId==dto.ClientId);
-                if(existing==null)throw;
-                return GetById(existing.Id,userId)!;
+            try
+            {
+                await _context.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateException) when (dto.ClientId.HasValue)
+            {
+                // The unique index arbitrates requests that passed the first lookup together.
+                // Discard the failed insert before reading the winner with its exercise graph.
+                _context.ChangeTracker.Clear();
+                var existing = await FindRetry(userId, dto.ClientId.Value, cancellationToken);
+                if (existing == null) throw;
+                return existing;
             }
 
             return training;
         }
 
-        public Training? Update(int id, int userId, TrainingDto dto)
+        public async Task<Training?> Update(int id, int userId, TrainingDto dto, CancellationToken cancellationToken = default)
         {
-            var training = GetById(id, userId);
+            var training = await GetById(id, userId, cancellationToken);
             if (training == null) return null;
 
             _context.RemoveRange(training.Exercises);
@@ -122,10 +133,16 @@ namespace BE.Services.Implementations
             training.Notes = dto.Notes ?? "";
             training.TrainingDate = dto.TrainingDate!.Value;
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync(cancellationToken);
 
             return training;
         }
+
+        private Task<Training?> FindRetry(int userId, Guid clientId, CancellationToken cancellationToken) =>
+            _context.Trainings.AsNoTracking()
+                .Include(t => t.Exercises.OrderBy(e => e.Position))
+                .ThenInclude(e => e.SetEntries.OrderBy(s => s.Position))
+                .SingleOrDefaultAsync(t => t.UserId == userId && t.ClientId == clientId, cancellationToken);
 
         private static List<TrainingExercise> MapExercises(List<TrainingExerciseDto> exercises) => exercises.Select((e, index) => new TrainingExercise
         {
@@ -138,26 +155,26 @@ namespace BE.Services.Implementations
             SetEntries = e.SetEntries.Select((s, i) => new TrainingSet { Position = i, Reps = s.Reps, DurationSeconds = s.DurationSeconds, WeightKg = s.WeightKg, WeightValue = s.WeightValue }).ToList()
         }).ToList();
 
-        public bool Delete(int id, int userId)
+        public async Task<bool> Delete(int id, int userId, CancellationToken cancellationToken = default)
         {
-            var training = GetById(id, userId);
+            var training = await GetById(id, userId, cancellationToken);
             if (training == null) return false;
 
             _context.Trainings.Remove(training);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync(cancellationToken);
 
             return true;
         }
 
-        public object GetMonthlyStats(int userId, int year, int month)
+        public async Task<List<MonthlyTrainingStats>> GetMonthlyStats(int userId, int year, int month, CancellationToken cancellationToken = default)
         {
-            return _context.Trainings.AsNoTracking()
+            return await _context.Trainings.AsNoTracking()
                 .Where(t => t.UserId == userId && t.TrainingDate.Year == year && t.TrainingDate.Month == month)
                 .GroupBy(t => (t.TrainingDate.Day - 1) / 7 + 1)
                 .OrderBy(g => g.Key)
                 .Select(g => new MonthlyTrainingStats(g.Key, g.Sum(t => t.DurationMinutes), g.Count(),
                     Math.Round(g.Average(t => t.Intensity), 2), Math.Round(g.Average(t => t.Fatigue), 2)))
-                .ToList();
+                .ToListAsync(cancellationToken);
         }
     }
 

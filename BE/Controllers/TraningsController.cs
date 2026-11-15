@@ -31,14 +31,14 @@ namespace BE.Controllers
         [ProducesResponseType(typeof(BE.Models.Training), 200)]
         [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
         [HttpPost]
-        public IActionResult AddTraining(TrainingDto dto)
+        public async Task<IActionResult> AddTraining(TrainingDto dto, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             var userId = GetUserId();
 
-            var result = _trainingService.Add(userId, dto);
+            var result = await _trainingService.Add(userId, dto, cancellationToken);
 
             return Ok(result);
         }
@@ -63,11 +63,11 @@ namespace BE.Controllers
         [ProducesResponseType(typeof(ProblemDetails), 404)]
         [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
         [HttpGet("{id}")]
-        public IActionResult GetById(int id)
+        public async Task<IActionResult> GetById(int id, CancellationToken cancellationToken)
         {
             var userId = GetUserId();
 
-            var training = _trainingService.GetById(id, userId);
+            var training = await _trainingService.GetById(id, userId, cancellationToken);
 
             if (training == null)
                 return Problem(statusCode: 404, title: "Training not found");
@@ -81,14 +81,14 @@ namespace BE.Controllers
         [ProducesResponseType(typeof(ProblemDetails), 404)]
         [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
         [HttpPut("{id}")]
-        public IActionResult UpdateTraining(int id, TrainingDto dto)
+        public async Task<IActionResult> UpdateTraining(int id, TrainingDto dto, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             var userId = GetUserId();
 
-            var updated = _trainingService.Update(id, userId, dto);
+            var updated = await _trainingService.Update(id, userId, dto, cancellationToken);
 
             if (updated == null)
                 return Problem(statusCode: 404, title: "Training not found");
@@ -101,11 +101,11 @@ namespace BE.Controllers
         [ProducesResponseType(204)]
         [ProducesResponseType(typeof(ProblemDetails), 404)]
         [HttpDelete("{id}")]
-        public IActionResult DeleteTraining(int id)
+        public async Task<IActionResult> DeleteTraining(int id, CancellationToken cancellationToken)
         {
             var userId = GetUserId();
 
-            var deleted = _trainingService.Delete(id, userId);
+            var deleted = await _trainingService.Delete(id, userId, cancellationToken);
 
             if (!deleted)
                 return Problem(statusCode: 404, title: "Training not found");
@@ -118,11 +118,11 @@ namespace BE.Controllers
         [ProducesResponseType(typeof(IEnumerable<MonthlyTrainingStats>), 200)]
         [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
         [HttpGet("month")]
-        public IActionResult GetMonthlyStats([System.ComponentModel.DataAnnotations.Range(1, 9999)] int year, [System.ComponentModel.DataAnnotations.Range(1, 12)] int month)
+        public async Task<IActionResult> GetMonthlyStats([System.ComponentModel.DataAnnotations.Range(1, 9999)] int year, [System.ComponentModel.DataAnnotations.Range(1, 12)] int month, CancellationToken cancellationToken)
         {
             var userId = GetUserId();
 
-            var stats = _trainingService.GetMonthlyStats(userId, year, month);
+            var stats = await _trainingService.GetMonthlyStats(userId, year, month, cancellationToken);
 
             return Ok(stats);
         }
