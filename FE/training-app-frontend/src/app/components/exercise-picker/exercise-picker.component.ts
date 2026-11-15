@@ -64,8 +64,10 @@ export class ExercisePickerComponent
   private weightInputs = new WeakMap<WeightEntry, { unit: WeightUnit; value: number | null; kg: number }>();
   bodySide = 'Front';
   preview?:ExerciseDefinition;
-  guideOpen=false;
-  entryMode: 'log' | 'guide' = 'log';
+  guideOpen = true;
+  get previewExercise(): ExerciseDefinition | undefined {
+    return this.preview ?? this.catalog[0];
+  }
   showAllExercises = false;
   get recentExercises() {
     try { return JSON.parse(localStorage.getItem('form.recentExercises') ?? '[]') as string[]; } catch { return []; }
@@ -267,16 +269,13 @@ export class ExercisePickerComponent
   }
   chooseExercise(exercise: ExerciseDefinition) {
     if (this.disabled) return;
-    if (this.entryMode === 'guide') {
-      this.preview = exercise;
-      this.guideOpen = true;
-      return;
-    }
+    this.guideOpen = true;
     this.toggle(exercise);
   }
   showTechnique(id: string) {
-    this.preview = this.definition(id);
-    this.entryMode = 'guide';
+    const exercise = this.definition(id);
+    if (this.disabled || !exercise) return;
+    this.preview = exercise;
     this.guideOpen = true;
     requestAnimationFrame(() => document.querySelector('.movement-preview')?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'start' }));
   }

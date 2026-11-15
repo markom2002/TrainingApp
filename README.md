@@ -4,7 +4,7 @@
 [![SQL Server tests](https://github.com/markom2002/TrainingApp/actions/workflows/sql-server.yml/badge.svg)](https://github.com/markom2002/TrainingApp/actions/workflows/sql-server.yml)
 [![Container smoke test](https://github.com/markom2002/TrainingApp/actions/workflows/containers.yml/badge.svg)](https://github.com/markom2002/TrainingApp/actions/workflows/containers.yml)
 
-A personal training journal built with **Angular 19, ASP.NET Core 8, EF Core and SQL Server**. Log workouts and individual exercises, track progress, and manage a private athlete profile. Designed for local use and portfolio demonstrations.
+A complete personal gym journal built with **Angular 19, ASP.NET Core 8, EF Core and SQL Server**. Preview exercises in 3D while logging your sets, follow your progress and manage your private training history. Available as a local full-stack application, an installable phone app and an isolated interactive portfolio demo.
 
 **Start here:** [Docker + HTTPS](docs/CONTAINERS.md) · [Isolated demo setup](docs/DEMO.md) · [SQL Server tests](docs/SQL-TESTS.md) · [API operations](docs/OPERATIONS.md)
 
@@ -30,11 +30,11 @@ The application is a modular monolith. The server enforces ownership; offline re
 ## Portfolio walkthrough
 
 1. Open the [public browser demo](https://markom2002.github.io/TrainingApp/) and select **Explore browser demo**, or run the [server-backed demo](docs/DEMO.md) locally.
-2. Inspect mixed kg/lbs history and record individual sets.
-3. Prepare offline access, save a workout without connectivity and reconnect to synchronize it.
+2. Open **Log Workout**, use **Preview** to inspect an exercise in the embedded Movement Lab, then add it and enter your sets on the same screen.
+3. Explore your history, records and goals. In the full-stack installation, prepare offline access, save a workout without connectivity and reconnect to synchronize it.
 4. Inspect the SQL Server concurrency tests and GitHub Actions reports.
 
-The demo is intentionally separate from personal training data. Hosting and retention configuration remain deployment tasks, documented in the demo guide.
+The public demo uses isolated sample data. Personal workouts and account data belong to your own full-stack installation; see the [demo guide](docs/DEMO.md) for deployment configuration.
 
 ## Screenshots
 
@@ -42,14 +42,14 @@ Screenshots use synthetic sample data and mocked API responses; they are UI prev
 
 ![Desktop dashboard](docs/screenshots/dashboard-1440.jpg)
 
-| Phone dashboard | Workout logger |
+| Phone dashboard | Log Workout with Movement Lab |
 | --- | --- |
 | ![Phone dashboard](docs/screenshots/dashboard-390.jpg) | ![Workout logger](docs/screenshots/workout-logger.jpg) |
 
 ## Features
 
 - **Log Workout:** searchable exercise library, recent movements, Upper/Lower/Full body starting routines and a clear session lineup. Record sets, reps or seconds and load, use individual set entries, reorder exercises and repeat an earlier workout into a new draft. Session details and optional notes are collapsible.
-- **Movement Lab:** local 3D demonstrations for all 48 catalog exercises, highlighted primary muscles, automatic/front/side/back cameras, play/pause, half-speed playback and position scrubbing. Technique previews are separate from workout selection. See [movement implementation and checks](MOVEMENT-GUIDES.md).
+- **Movement Lab:** local 3D demonstrations for all 48 catalog exercises, highlighted primary muscles, automatic/front/side/back cameras, play/pause, half-speed playback and position scrubbing. The preview sits inside Log Workout alongside set entry. Preview any exercise without changing your sets, then add it directly from the animation. See [movement implementation and checks](MOVEMENT-GUIDES.md).
 - **Responsive interface:** dark charcoal surfaces, lime accents, readable form controls and consistent card padding on phone, tablet and desktop. Each exercise has its own kg/lbs preference.
 - **Your journey:** recovery-friendly workout-day streaks, 10 achievement milestones, added-weight personal records and optional body-weight goals with weigh-in history.
 - **Installable app:** Android/iPhone/desktop PWA manifest, lightning icon, install guidance, mobile navigation, cached screens and offline entry with retry-safe synchronization. See [personal phone installation](LICNA-APLIKACIJA.md) and [mobile app setup](MOBILNA-APLIKACIJA.md).

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { FormsModule, NgForm } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -8,7 +8,8 @@ import {
   HttpTestingController,
 } from '@angular/common/http/testing';
 import { ExercisePickerComponent } from './exercise-picker.component';
-import { WorkoutExercise } from '../../models/exercise.model';
+import { ExerciseDefinition, WorkoutExercise } from '../../models/exercise.model';
+import { MovementGuideComponent } from './movement-guide.component';
 import { API_BASE_URL } from '../../api.config';
 
 const catalog = [
@@ -27,6 +28,10 @@ const catalog = [
     timed: true,
   },
 ];
+@Component({selector: 'app-movement-guide', standalone: true, template: '<p>Movement preview: {{ exercise?.name }}</p>'})
+class MovementPreviewStub {
+  @Input() exercise?: ExerciseDefinition;
+}
 @Component({
   standalone: true,
   imports: [FormsModule, ExercisePickerComponent],
@@ -53,19 +58,46 @@ describe('Exercise picker', () => {
     if (originalExerciseUnits === null) localStorage.removeItem('form.exerciseWeightUnits');
     else localStorage.setItem('form.exerciseWeightUnits', originalExerciseUnits);
   });
-  it('inspects movements without changing the workout in Movement Lab', async () => {
+  it('previews and adds exercises in the logger without changing existing set values', async () => {
     const { fixture, requests } = await setup();
     const picker = fixture.debugElement.query(By.directive(ExercisePickerComponent)).componentInstance as ExercisePickerComponent;
-    picker.toggle(catalog[0]);
-    picker.entryMode = 'guide';
-    picker.chooseExercise(catalog[0]);
-    expect(picker.selected.length).toBe(1);
-    picker.chooseExercise(catalog[1]);
-    expect(picker.selected.length).toBe(1);
+    expect(fixture.nativeElement.querySelector('.logging-mode')).toBeNull();
+    fixture.nativeElement.querySelector('[aria-label="Preview Bench press"]').click();
+    fixture.detectChanges();
+    expect(picker.selected.length).toBe(0);
+    expect(fixture.nativeElement.querySelector('app-movement-guide').textContent).toContain('Bench press');
+    fixture.nativeElement.querySelector('.preview-add').click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    picker.selected[0].reps = 8;
+    picker.selected[0].weightKg = 42.5;
+    picker.update();
+    fixture.detectChanges();
+    fixture.nativeElement.querySelector('[aria-label="Preview Plank"]').click();
+    fixture.detectChanges();
+    await fixture.whenStable();
     expect(picker.preview?.id).toBe('plank');
-    picker.entryMode = 'log';
-    picker.chooseExercise(catalog[1]);
-    expect(picker.selected.length).toBe(2);
+    expect(picker.selected.length).toBe(1);
+    expect(picker.selected[0].reps).toBe(8);
+    expect(picker.selected[0].weightKg).toBe(42.5);
+    expect(fixture.nativeElement.querySelector('input[aria-label="Reps for bench-press"]').value).toBe('8');
+    expect(fixture.nativeElement.querySelector('app-movement-guide').textContent).toContain('Plank');
+    requests.verify();
+    fixture.destroy();
+  });
+  it('keeps set entry available when the integrated preview is closed or reopened', async () => {
+    const { fixture, requests } = await setup();
+    const picker = fixture.debugElement.query(By.directive(ExercisePickerComponent)).componentInstance as ExercisePickerComponent;
+    picker.chooseExercise(catalog[0]);
+    picker.guideOpen = false;
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('app-movement-guide')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.session-exercise')).not.toBeNull();
+    picker.showTechnique('bench-press');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('app-movement-guide')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('.session-exercise')).not.toBeNull();
+    expect(picker.selected.length).toBe(1);
     requests.verify();
     fixture.destroy();
   });
@@ -114,6 +146,10 @@ describe('Exercise picker', () => {
     TestBed.configureTestingModule({
       imports: [Host],
       providers: [provideHttpClient(), provideHttpClientTesting()],
+    });
+    TestBed.overrideComponent(ExercisePickerComponent, {
+      remove: {imports: [MovementGuideComponent]},
+      add: {imports: [MovementPreviewStub]},
     });
     const fixture = TestBed.createComponent(Host);
     const requests = TestBed.inject(HttpTestingController);

@@ -4,7 +4,7 @@
 
 Movement Lab prikazuje svih 48 vježbi iz kataloga koristeći lokalni skinned model `athlete-v3.glb`. Porijeklo modela i CC0 licenca opisani su u [dokumentaciji modela](FE/training-app-frontend/public/models/README.md). Model, sprave, šipke, bučice i sajle učitavaju se iz aplikacije.
 
-Log Workout služi za izbor vježbi i unos serija. Movement Lab služi za pregled tehnike; izbor vježbe u njemu ne mijenja spremljeni nacrt treninga. Dugme Technique uz odabranu vježbu otvara njen prikaz.
+Movement Lab je ugrađen u Log Workout, uz biblioteku vježbi i unos serija. Dugme Preview uz vježbu mijenja animaciju bez promjene unesenih serija. Iz pregleda se vježba može dodati direktno u trening, a Technique uz već odabranu vježbu otvara isti prikaz. Pregled se može sklopiti dok unos serija ostaje dostupan.
 
 Kontrole uključuju Auto, Front, Side i Back kameru, Play/Pause, 0.5×/1× i klizač položaja. Kadar obuhvata uzorke cijelog pokreta i ostaje stabilan tokom ponavljanja. Bočni pogled na paralelne šipke ima blagi otklon da stub ne zaklanja figuru. Ciljna mišićna grupa označena je koralno-narandžastom bojom; reverse fly i face pull izdvajaju zadnje rame.
 

@@ -1,15 +1,29 @@
-<section class="exercise-builder" [class.guide-mode]="entryMode === 'guide'">
-<div class="logging-mode" role="group" aria-label="Workout entry mode"><button type="button" [class.active]="entryMode === 'log'" (click)="entryMode = 'log'; guideOpen = false">LOG WORKOUT</button><button type="button" [class.active]="entryMode === 'guide'" (click)="entryMode = 'guide'; guideOpen = true">MOVEMENT LAB</button></div>
+<section class="exercise-builder">
   <header class="builder-heading">
     <div>
       <p class="eyebrow">CHOOSE / LOG / SAVE</p>
       <h2>Make it count<span>.</span></h2>
       <p>Your exercises. Your numbers. One clear session.</p>
     </div>
-    <span class="selection-count">{{ entryMode === 'guide' ? catalog.length + ' movements' : selected.length + ' / 40 selected' }}</span>
+    <span class="selection-count">{{ selected.length }} / 40 selected</span>
   </header>
   <div class="builder-grid">
     <div class="exercise-library">
+      <details class="movement-preview integrated-preview" id="movement-preview" [open]="guideOpen" (toggle)="guideOpen = $any($event.target).open">
+        <summary>Movement Lab <span>{{ previewExercise?.name || 'Preview an exercise' }}</span></summary>
+        @if (guideOpen) {
+          @if (previewExercise; as movement) {
+            <app-movement-guide [exercise]="movement" />
+            <div class="preview-action">
+              <button type="button" class="preview-add" (click)="chooseExercise(movement)" [disabled]="disabled || has(movement.id) || selected.length >= 40">
+                {{ has(movement.id) ? 'Added to your workout' : '+ Add to workout' }}
+              </button>
+              @if (selected.length) {<button type="button" class="preview-sets" (click)="editSelected()">Go to sets &#8595;</button>}
+              <span>Preview the movement, then log your sets.</span>
+            </div>
+          }
+        }
+      </details>
       @if (recentExercises.length) {<div class="recent-movements"><span>YOUR RECENT MOVEMENTS</span><div>@for (id of recentExercises; track id) {@if (definition(id); as exercise) {<button type="button" [disabled]="disabled" (click)="chooseExercise(exercise)" [class.chosen]="has(id)">{{exercise.name}} {{has(id) ? '&#10003;' : '+'}}</button>}}</div></div>}
       <div class="fast-routines">
         <span>QUICK START</span>
@@ -56,15 +70,16 @@
       }
       <div class="exercise-cards">
         @for (exercise of visible; track exercise.id) {
+          <div class="exercise-choice" [class.previewing]="previewExercise?.id === exercise.id && guideOpen">
           <button
             type="button"
             class="exercise-option"
-            [class.added]="entryMode === 'guide' ? preview?.id === exercise.id : has(exercise.id)"
+            [class.added]="has(exercise.id)"
             [disabled]="
-              disabled || (entryMode === 'log' && !has(exercise.id) && selected.length >= 40)
+              disabled || (!has(exercise.id) && selected.length >= 40)
             "
             (click)="chooseExercise(exercise)"
-            [attr.aria-pressed]="entryMode === 'guide' ? preview?.id === exercise.id : has(exercise.id)"
+            [attr.aria-pressed]="has(exercise.id)"
           >
             <span class="exercise-symbol" aria-hidden="true">
               @if (exercise.timed) {
@@ -79,15 +94,15 @@
                 {{ exercise.equipment }}</small
               ></span
             ><span class="add-symbol" aria-hidden="true">
-              @if (entryMode === 'guide') {
-                &#8599;
-              } @else if (has(exercise.id)) {
+              @if (has(exercise.id)) {
                 &#10003;
               } @else {
                 +
               }
             </span>
           </button>
+          <button type="button" class="preview-exercise" [disabled]="disabled" (click)="showTechnique(exercise.id)" [attr.aria-label]="'Preview ' + exercise.name" aria-controls="movement-preview" [attr.aria-expanded]="previewExercise?.id === exercise.id && guideOpen">Preview &#8599;</button>
+          </div>
         }
       </div>
       @if (!loading && !error && visible.length === 0) {
@@ -96,22 +111,12 @@
         </p>
       }
     </div>
-    @if (selected.length && entryMode === 'log') {
+    @if (selected.length) {
       <button class="edit-selected" type="button" (click)="editSelected()">
         Edit {{ selected.length }} selected exercises ↓
       </button>
     }
     <aside class="session-panel" id="session-lineup">
-      <details class="movement-preview" [open]="guideOpen" (toggle)="guideOpen = $any($event.target).open">
-        <summary>
-          Movement lab ·
-          {{
-            preview?.name ||
-              (catalog.length ? catalog[0].name : 'Choose an exercise')
-          }}
-        </summary>
-        @if (guideOpen) {<app-movement-guide [exercise]="preview || catalog[0]" />}
-      </details>
       <div class="session-heading">
         <div>
           <p class="eyebrow">YOUR WORKOUT, YOUR WAY</p>
@@ -132,7 +137,7 @@
           <span aria-hidden="true">+</span>
           <h4>Start with one movement.</h4>
           <p>
-            Select exercises on the left to log sets, reps or time, and weight.
+            Preview a movement, then add it to log sets, reps or time, and weight.
           </p>
           <small>You can also save a session summary without exercises.</small>
         </div>

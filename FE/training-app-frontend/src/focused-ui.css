@@ -8,9 +8,6 @@ html[lang][data-theme] body .hero-summary strong{color:var(--club);font-variant-
 html[lang][data-theme] body .builder-heading{padding:20px 0 16px;margin:0}
 html[lang][data-theme] body .builder-heading h2{font-size:28px;letter-spacing:-1px;margin:6px 0}
 html[lang][data-theme] body .builder-heading p:not(.eyebrow){display:none}
-html[lang][data-theme] body .logging-mode{display:flex;gap:6px;padding:5px;background:#141a12;border:1px solid #ffffff12;border-radius:12px}
-html[lang][data-theme] body .logging-mode button{border:0;border-radius:8px;min-height:48px;flex:1;color:#aab6a1;background:transparent;font-weight:800;letter-spacing:1px}
-html[lang][data-theme] body .logging-mode button.active{background:var(--club);color:#17200a}
 html[lang][data-theme] body .builder-grid{grid-template-columns:minmax(280px,.82fr) minmax(0,1.18fr);gap:18px;align-items:start}
 html[lang][data-theme] body .exercise-library{padding:18px;background:#0e120e}
 html[lang][data-theme] body .session-panel{padding:22px;border-top:2px solid var(--club);background:#141a12;position:sticky;top:18px}
@@ -60,12 +57,11 @@ html[lang][data-theme] body .workspace-header{border-color:#ffffff20}
 html[lang][data-theme] body .rail-note{display:none}
 html[lang][data-theme] body button:disabled{opacity:.45;cursor:not-allowed}
 @media(max-width:750px){
-html[lang][data-theme] body .builder-grid,html[lang][data-theme] body .exercise-builder.guide-mode .builder-grid{display:flex;flex-direction:column;gap:14px}
+html[lang][data-theme] body .builder-grid{display:flex;flex-direction:column;gap:14px}
 html[lang][data-theme] body .session-panel{position:static;width:100%;padding:16px 12px}
 html[lang][data-theme] body .exercise-library{width:100%;padding:14px 10px}
 html[lang][data-theme] body .exercise-cards{max-height:300px;grid-template-columns:1fr}
 html[lang][data-theme] body .studio-hero{padding:26px 20px;gap:20px}
-html[lang][data-theme] body .logging-mode{top:0;z-index:15}
 html[lang][data-theme] body .studio-viewport{height:380px}
 html[lang][data-theme] body .studio-save{padding:10px 14px;border-radius:10px}
 html[lang][data-theme] body .studio-save button{min-width:0;min-height:48px;padding:12px 22px}
@@ -74,10 +70,6 @@ html[lang][data-theme] body .builder-heading h2{font-size:24px}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 
-html[lang][data-theme] body .exercise-builder.guide-mode :is(.fast-routines,.session-heading,.weight-unit-control,.empty-session,.session-exercises,.exercise-validation){display:none}
-html[lang][data-theme] body .exercise-builder.guide-mode .session-panel{padding:0;border-top:0;background:transparent}
-html[lang][data-theme] body .exercise-builder.guide-mode .movement-preview{margin:0;border:0}
-html[lang][data-theme] body .exercise-builder.guide-mode .recent-movements{display:none}
 
 /* Consistent breathing room inside cards and form controls. */
 html[lang][data-theme] body .studio-hero>div:first-child{min-width:0}
@@ -101,3 +93,22 @@ html[lang][data-theme] body .exercise-library,html[lang][data-theme] body .sessi
 html[lang][data-theme] body .session-exercise{padding:18px 16px}
 html[lang][data-theme] body .quick-details-summary strong{font-size:12px}
 }
+
+/* One workflow: preview in the library, enter sets alongside it. */
+html[lang][data-theme] body .exercise-builder .movement-preview{display:block;margin:0 0 22px;border:1px solid #ffffff20;border-radius:10px;overflow:hidden;background:#0b1013}
+html[lang][data-theme] body .integrated-preview>summary{padding:14px 16px;color:var(--club);font-size:12px;cursor:pointer;line-height:1.6}
+html[lang][data-theme] body .integrated-preview>summary>span{color:#d9e3d2;margin-left:8px}
+html[lang][data-theme] body .integrated-preview .movement-studio{border:0;border-radius:0;margin:0}
+html[lang][data-theme] body .integrated-preview .studio-viewport{height:280px}
+html[lang][data-theme] body .integrated-preview .studio-copy{padding:16px}
+html[lang][data-theme] body .preview-action{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:14px 16px;border-top:1px solid #ffffff18}
+html[lang][data-theme] body .preview-add{background:var(--club);color:#17200a;border:0;border-radius:7px;min-height:44px;padding:12px 18px;font-weight:800}
+html[lang][data-theme] body .preview-action>span{font-size:11px;line-height:1.5;color:#a4b09a}
+html[lang][data-theme] body .exercise-choice{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;align-items:stretch;border-radius:9px}
+html[lang][data-theme] body .exercise-choice.previewing{outline:1px solid #d4ff5660;outline-offset:2px}
+html[lang][data-theme] body .exercise-choice .exercise-option{width:100%;min-width:0}
+html[lang][data-theme] body .preview-exercise{padding:10px;min-width:70px;border:1px solid #d4ff5630;border-radius:8px;background:#1b2415;color:var(--club);font-size:11px;font-weight:700}
+html[lang][data-theme] body .preview-exercise:hover{background:#2a371e}
+@media(max-width:750px){html[lang][data-theme] body .integrated-preview .studio-viewport{height:260px}}
+
+html[lang][data-theme] body .preview-sets{min-height:44px;padding:10px 12px;border:1px solid #ffffff20;border-radius:7px;background:transparent;color:#d9e3d2;font-size:12px}
