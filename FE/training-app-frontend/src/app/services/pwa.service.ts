@@ -1,10 +1,12 @@
 import { Injectable, isDevMode } from '@angular/core';
+import { environment } from '../../environments/environment';
 interface InstallPrompt extends Event {
   prompt(): Promise<void>;
   userChoice: Promise<{ outcome: string }>;
 }
 @Injectable({ providedIn: 'root' })
 export class PwaService {
+  readonly browserDemo = environment.pagesDemo;
   readonly localPreview = window.location.protocol === 'http:' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || /^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[01])\.)/.test(window.location.hostname));
   readonly offlineCapable = !this.localPreview && !isDevMode() && window.isSecureContext;
   readonly secureContext = window.isSecureContext;
@@ -31,7 +33,7 @@ export class PwaService {
       window.isSecureContext
     ) {
       const register = () =>
-        navigator.serviceWorker.register('/sw.js').catch(() => {
+        navigator.serviceWorker.register(new URL('sw.js', document.baseURI).href).catch(() => {
           /* App stays usable when installation is unavailable. */
         });
       if (document.readyState === 'complete') register();

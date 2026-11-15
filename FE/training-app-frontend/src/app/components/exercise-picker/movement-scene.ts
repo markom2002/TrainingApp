@@ -65,7 +65,7 @@ export class MovementScene {
   static async create(canvas: HTMLCanvasElement, signal: AbortSignal) {
     const stage = new MovementScene(canvas);
     try {
-      const response = await fetch('/models/athlete-v3.glb', { signal });
+      const response = await fetch(new URL('models/athlete-v3.glb', document.baseURI), { signal });
       if (!response.ok) throw new Error('Athlete asset unavailable');
       const gltf = await new GLTFLoader().parseAsync(
         await response.arrayBuffer(),

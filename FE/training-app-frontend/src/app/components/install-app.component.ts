@@ -5,7 +5,7 @@ import { UiIconComponent } from './ui-icon.component';
   selector: 'app-install-app',
   standalone: true,
   imports: [UiIconComponent],
-  template: `@if (!pwa.installed && !pwa.localPreview) {
+  template: `@if (!pwa.browserDemo && !pwa.installed && !pwa.localPreview) {
     <section class="install-card">
       <span class="install-icon"><app-icon name="phone" /></span>
       <div>

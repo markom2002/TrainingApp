@@ -1,15 +1,17 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
-import { provideRouter, withInMemoryScrolling } from '@angular/router';
+import { ApplicationConfig, inject, provideZoneChangeDetection } from '@angular/core';
+import { Router, provideRouter, withInMemoryScrolling, withHashLocation } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './auth.interceptor';
 import { AuthGuard } from './auth.guard';
 import { guestGuard } from './guest.guard';
 import { offlineInterceptor } from './services/offline.service';
+import { pagesDemoInterceptor } from './pages-demo/demo.interceptor';
+import { environment } from '../environments/environment';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideHttpClient(withInterceptors([offlineInterceptor, authInterceptor])),
+    provideHttpClient(withInterceptors([pagesDemoInterceptor, offlineInterceptor, authInterceptor])),
     provideRouter(
       [
         { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -23,7 +25,9 @@ export const appConfig: ApplicationConfig = {
         },
         {
           path: 'register',
-          canActivate: [guestGuard],
+          canActivate: environment.pagesDemo
+            ? [() => inject(Router).createUrlTree(['/login'])]
+            : [guestGuard],
           loadComponent: () =>
             import('./components/register/register.component').then(
               (m) => m.RegisterComponent,
@@ -90,6 +94,7 @@ export const appConfig: ApplicationConfig = {
         anchorScrolling: 'enabled',
         scrollPositionRestoration: 'enabled',
       }),
+      ...(environment.pagesDemo ? [withHashLocation()] : []),
     ),
   ],
 };

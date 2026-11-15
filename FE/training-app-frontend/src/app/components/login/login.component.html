@@ -33,13 +33,14 @@
     <span class="top-note">YOUR SPACE TO GET STRONGER</span>
     <div class="auth-form-content">
       <span class="form-kicker">WELCOME TO YOUR TRAINING JOURNAL</span>
-      <h2>CLOCK IN<span>.</span></h2>
+      <h2>{{ pagesDemo ? 'STEP INSIDE' : 'CLOCK IN' }}<span>.</span></h2>
       <p class="form-intro">Your sessions. Your numbers. Your next personal best.</p>
       @if (registered) {
         <p class="success-message" role="status">
           Your account is ready. Sign in to start your journey.
         </p>
       }
+      @if (!pagesDemo) {
       <form (ngSubmit)="onLogin(loginForm)" #loginForm="ngForm">
         <label for="login-email">Email address</label
         ><input
@@ -90,9 +91,11 @@
         >
       </p>
       <div class="form-divider"></div>
+      }
+      @if (pagesDemo && errorMessage) { <p class="error-message" role="alert">{{ errorMessage }}</p> }
       @if (demoEnabled) {
         <button class="auth-submit" type="button" [disabled]="submitting" (click)="startDemo()">
-          {{ submitting ? 'Opening your demo...' : 'Explore live demo' }}
+          {{ submitting ? 'Opening your demo...' : pagesDemo ? 'Explore browser demo' : 'Explore live demo' }}
           <span aria-hidden="true">&#8594;</span>
         </button>
         <p class="privacy-note">Explore sample workouts in your own demo session. No registration needed.</p>

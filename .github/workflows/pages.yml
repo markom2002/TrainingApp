@@ -1,0 +1,62 @@
+name: Publish interactive demo
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'FE/training-app-frontend/**'
+      - 'BE/Exercises/ExerciseCatalog.cs'
+      - 'scripts/Generate-DemoCatalog.mjs'
+      - 'scripts/Prepare-PagesDemo.mjs'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      pages: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: FE/training-app-frontend/package-lock.json
+      - uses: actions/configure-pages@v5
+      - run: npm ci
+        working-directory: FE/training-app-frontend
+      - name: Test browser demo behavior
+        run: |
+          export CHROME_BIN="$(command -v google-chrome)"
+          npm run test:ci
+        working-directory: FE/training-app-frontend
+      - name: Build isolated static demo
+        run: npm run build:pages
+        working-directory: FE/training-app-frontend
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: FE/training-app-frontend/dist/pages-demo/browser
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/deploy-pages@v4
+        id: deployment

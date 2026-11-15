@@ -8,7 +8,9 @@ A personal training journal built with **Angular 19, ASP.NET Core 8, EF Core and
 
 **Start here:** [Docker + HTTPS](docs/CONTAINERS.md) · [Isolated demo setup](docs/DEMO.md) · [SQL Server tests](docs/SQL-TESTS.md) · [API operations](docs/OPERATIONS.md)
 
-There is no public demo URL yet. The optional demo mode creates a separate visitor account with synthetic workouts; the personal installation keeps demo access disabled. The installed phone app uses the name 🏋️ and a lightning icon.
+**[Open the free interactive demo](https://markom2002.github.io/TrainingApp/)** — no registration needed. The GitHub Pages demo uses synthetic data and browser storage; it does not run the .NET API or SQL Server. See [how the static demo works](docs/PAGES-DEMO.md).
+
+The separate server-backed demo mode creates a private visitor account with synthetic workouts when hosted; it is not publicly deployed. The personal installation keeps demo access disabled. The installed phone app uses the name 🏋️ and a lightning icon.
 
 ## Architecture
 
@@ -27,7 +29,7 @@ The application is a modular monolith. The server enforces ownership; offline re
 
 ## Portfolio walkthrough
 
-1. Open a [local demo](docs/DEMO.md) and select **Explore live demo**; no registration is required in that environment.
+1. Open the [public browser demo](https://markom2002.github.io/TrainingApp/) and select **Explore browser demo**, or run the [server-backed demo](docs/DEMO.md) locally.
 2. Inspect mixed kg/lbs history and record individual sets.
 3. Prepare offline access, save a workout without connectivity and reconnect to synchronize it.
 4. Inspect the SQL Server concurrency tests and GitHub Actions reports.

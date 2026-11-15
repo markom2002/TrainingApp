@@ -4,6 +4,7 @@ import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { apiErrorMessage } from '../../services/api-error';
 import { finalize } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -17,6 +18,7 @@ import { finalize } from 'rxjs';
   ],
 })
 export class LoginComponent {
+  readonly pagesDemo = environment.pagesDemo;
   username = '';
   password = '';
   showPassword = false;

@@ -1,4 +1,6 @@
-@if (offline.pending.length) {
+@if (pagesDemo) {
+  <app-pages-demo-banner />
+} @else if (offline.pending.length) {
   <aside class="sync-status pending" aria-label="Offline workout sync">
     <div class="sync-summary" role="status">
       <span class="status-dot"></span>
