@@ -112,3 +112,16 @@ html[lang][data-theme] body .preview-exercise:hover{background:#2a371e}
 @media(max-width:750px){html[lang][data-theme] body .integrated-preview .studio-viewport{height:260px}}
 
 html[lang][data-theme] body .preview-sets{min-height:44px;padding:10px 12px;border:1px solid #ffffff20;border-radius:7px;background:transparent;color:#d9e3d2;font-size:12px}
+
+/* Keep the integrated workout usable in the installed phone app. */
+@media(max-width:750px){
+html[lang][data-theme] body .builder-grid>*{min-width:0;max-width:100%}
+html[lang][data-theme] body .integrated-preview>summary>span{display:block;margin-left:0;overflow-wrap:anywhere}
+html[lang][data-theme] body .preview-action{padding:12px;gap:8px}
+html[lang][data-theme] body .preview-action>button{flex:1 1 120px}
+html[lang][data-theme] body .preview-action>span{flex-basis:100%}
+html[lang][data-theme] body .session-panel,html[lang][data-theme] body .movement-preview{scroll-margin-top:16px}
+html[lang][data-theme] body .integrated-preview .studio-viewport{height:clamp(200px,65vw,260px)}
+html[lang][data-theme] body .exercise-choice{grid-template-columns:minmax(0,1fr) 70px}
+html[lang][data-theme] body .preview-exercise{min-height:44px}
+}
