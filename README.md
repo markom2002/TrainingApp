@@ -1,6 +1,48 @@
-# FORM — Gym Training Tracker
+# Gym Training Tracker
+
+[![Build and test](https://github.com/markom2002/TrainingApp/actions/workflows/ci.yml/badge.svg)](https://github.com/markom2002/TrainingApp/actions/workflows/ci.yml)
+[![SQL Server tests](https://github.com/markom2002/TrainingApp/actions/workflows/sql-server.yml/badge.svg)](https://github.com/markom2002/TrainingApp/actions/workflows/sql-server.yml)
+[![Container smoke test](https://github.com/markom2002/TrainingApp/actions/workflows/containers.yml/badge.svg)](https://github.com/markom2002/TrainingApp/actions/workflows/containers.yml)
 
 A personal training journal built with **Angular 19, ASP.NET Core 8, EF Core and SQL Server**. Log workouts and individual exercises, track progress, and manage a private athlete profile. Designed for local use and portfolio demonstrations.
+
+**Start here:** [Docker + HTTPS](docs/CONTAINERS.md) · [Isolated demo setup](docs/DEMO.md) · [SQL Server tests](docs/SQL-TESTS.md) · [API operations](docs/OPERATIONS.md)
+
+There is no public demo URL yet. The optional demo mode creates a separate visitor account with synthetic workouts; the personal installation keeps demo access disabled. The installed phone app uses the name 🏋️ and a lightning icon.
+
+## Architecture
+
+```mermaid
+flowchart LR
+    UI[Angular PWA] -->|HTTPS / JSON| Proxy[TLS reverse proxy]
+    Proxy --> API[ASP.NET Core controllers]
+    API --> Services[Scoped services and validation]
+    Services --> EF[EF Core]
+    EF --> SQL[(SQL Server)]
+    UI --> Local[Account-scoped offline storage]
+    Local -->|Retry with stable client ID| API
+```
+
+The application is a modular monolith. The server enforces ownership; offline records are scoped to the account on the device. A filtered unique SQL index prevents duplicate inserts when retries race. The backend has fast SQLite integration tests and additional real SQL Server migration/concurrency tests. CI also builds and starts both ordinary and demo Compose stacks through HTTPS.
+
+## Portfolio walkthrough
+
+1. Open a [local demo](docs/DEMO.md) and select **Explore live demo**; no registration is required in that environment.
+2. Inspect mixed kg/lbs history and record individual sets.
+3. Prepare offline access, save a workout without connectivity and reconnect to synchronize it.
+4. Inspect the SQL Server concurrency tests and GitHub Actions reports.
+
+The demo is intentionally separate from personal training data. Hosting and retention configuration remain deployment tasks, documented in the demo guide.
+
+## Screenshots
+
+Screenshots use synthetic sample data and mocked API responses; they are UI previews, not a publicly hosted deployment.
+
+![Desktop dashboard](docs/screenshots/dashboard-1440.jpg)
+
+| Phone dashboard | Workout logger |
+| --- | --- |
+| ![Phone dashboard](docs/screenshots/dashboard-390.jpg) | ![Workout logger](docs/screenshots/workout-logger.jpg) |
 
 ## Features
 
@@ -80,6 +122,8 @@ Browser checks additionally cover login, profile editing, workout creation/histo
 | `POST /api/auth/login` | Issue access JWT and refresh cookie | Public |
 | `POST /api/auth/refresh` | Rotate the refresh session | Refresh cookie |
 | `POST /api/auth/logout` | Revoke the refresh session | Refresh cookie |
+| `GET /api/auth/demo` | Report optional demo availability | Public |
+| `POST /api/auth/demo` | Start an isolated sample-data session | Public, demo mode only |
 | `GET /api/exercises` | Shared exercise catalog | Signed in |
 | `GET, POST /api/trainings` | Paginated history / create workout | Owner |
 | `GET, PUT, DELETE /api/trainings/{id}` | Read, update or delete workout | Owner |
@@ -88,6 +132,7 @@ Browser checks additionally cover login, profile editing, workout creation/histo
 | `GET, PUT /api/profile` | Read or update personal profile | Owner |
 | `GET /api/admin/summary` | Application counts | Admin |
 | `GET /health/live` | API process liveness | Public |
+| `GET /health/ready` | Database connectivity readiness | Public |
 
 History example:
 
