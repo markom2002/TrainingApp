@@ -24,6 +24,29 @@ describe('Offline workouts',()=>{
     expect(store.pending.length).toBe(1);
     const success=store.sync();const retry=requests.expectOne(`${API_BASE_URL}/trainings`);expect(retry.request.body.clientId).toBe(id);retry.flush({id:1});await success;expect(store.pending.length).toBe(0);
   });
+  it('shows pending workouts even when the calendar server responds successfully',()=>{
+    const saved=store.save({trainingDate:'2026-11-16T12:00:00Z',exercises:[]});
+    store.save({trainingDate:'2026-10-16T12:00:00Z',exercises:[]});
+    let result:any;
+    http.get(`${API_BASE_URL}/journey/calendar`,{params:{year:2026,month:11}}).subscribe(v=>result=v);
+    requests.expectOne(r=>r.url.endsWith('/journey/calendar')).flush([]);
+    expect(result.map((item:any)=>item.id)).toEqual([saved.id]);
+    expect(store.pending.length).toBe(2);
+  });
+  it('does not duplicate a queued workout already committed by the server',()=>{
+    const saved=store.save({trainingDate:'2026-11-16T12:00:00Z'});
+    const result=store.calendar([{...saved,id:42}],`${API_BASE_URL}/journey/calendar?year=2026&month=11`);
+    expect(result.length).toBe(1);
+    expect(result[0].id).toBe(42);
+  });
+  it('notifies the calendar only after a queued workout is confirmed',async()=>{
+    store.save({trainingDate:'2026-11-16T12:00:00Z'});
+    const refresh=jasmine.createSpy('refresh');store.workoutsSynced.subscribe(refresh);
+    online.and.returnValue(true);
+    const syncing=store.sync();expect(refresh).not.toHaveBeenCalled();
+    requests.expectOne(`${API_BASE_URL}/trainings`).flush({id:42});await syncing;
+    expect(refresh).toHaveBeenCalledTimes(1);expect(store.pending.length).toBe(0);
+  });
   it('serves cached exercises on transport failure and isolates other accounts',()=>{
     http.get(`${API_BASE_URL}/exercises`).subscribe();requests.expectOne(`${API_BASE_URL}/exercises`).flush([{id:'lat-pulldown'}]);
     let result:any;http.get(`${API_BASE_URL}/exercises`).subscribe(v=>result=v);requests.expectOne(`${API_BASE_URL}/exercises`).error(new ProgressEvent('error'));expect(result[0].id).toBe('lat-pulldown');

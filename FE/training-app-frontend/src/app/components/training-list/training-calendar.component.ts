@@ -8,12 +8,13 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, finalize } from 'rxjs';
 import { API_BASE_URL } from '../../api.config';
 import { Training } from '../../models/training.model';
 import { TrainingService } from '../../services/training.service';
 import { apiErrorMessage } from '../../services/api-error';
+import { OfflineService } from '../../services/offline.service';
 import { UiIconComponent } from '../ui-icon.component';
 import { WorkoutExercisesComponent } from '../workout-exercises/workout-exercises.component';
 import { MOVEMENT_GUIDES } from '../exercise-picker/movement-guides';
@@ -38,17 +39,28 @@ export class TrainingCalendarComponent implements OnInit, OnDestroy {
   loading = false;
   error = '';
   deleting = false;
+  private synced?: Subscription;
+  private savedDate = '';
   private read?: Subscription;
   private mutation?: Subscription;
   constructor(
+    private offline: OfflineService,
+    private route: ActivatedRoute,
     private http: HttpClient,
     private router: Router,
     private trainings: TrainingService,
   ) {}
   ngOnInit() {
+    const date = this.route.snapshot.queryParamMap.get('date');
+    if (date && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      this.savedDate = date;
+      this.month = date.slice(0, 7);
+    }
+    this.synced = this.offline.workoutsSynced.subscribe(() => this.load());
     this.load();
   }
   ngOnDestroy() {
+    this.synced?.unsubscribe();
     this.read?.unsubscribe();
     this.mutation?.unsubscribe();
   }
@@ -128,7 +140,7 @@ export class TrainingCalendarComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (items) => {
           this.items = items;
-          this.selected = items.length
+          this.selected = this.savedDate.startsWith(this.month) ? this.savedDate : items.length
             ? this.key(items.at(-1)!.trainingDate)
             : `${this.month}-01`;
         },

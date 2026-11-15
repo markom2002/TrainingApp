@@ -4,7 +4,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { Subscription, finalize, catchError, of, switchMap } from 'rxjs';
+import { Subscription, finalize } from 'rxjs';
 import { JourneyService } from '../../services/journey.service';
 import { TrainingService } from '../../services/training.service';
 import { ExerciseType, Training } from '../../models/training.model';
@@ -149,16 +149,11 @@ export class WorkoutEditorComponent implements OnInit, OnDestroy {
     const request = this.trainingId
       ? this.service.update(this.trainingId, workout)
       : this.service.add(workout);
-    this.save = this.journey
-      .get()
-      .pipe(
-        catchError(() => of(undefined)),
-        switchMap(() => request),
-      )
+    this.save = request
       .pipe(finalize(() => (this.submitting = false)))
       .subscribe({
         next: () =>
-          this.router.navigate(['/dashboard'], { queryParams: { saved: '1' } }),
+          this.router.navigate(['/dashboard'], { queryParams: { saved: '1', date: new Date(workout.trainingDate).toISOString().slice(0, 10) }, fragment: 'history' }),
         error: (error) => (this.errorMessage = apiErrorMessage(error)),
       });
   }

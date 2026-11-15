@@ -1,12 +1,13 @@
 import { Injectable, Injector, signal, OnDestroy } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpInterceptorFn, HttpResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { catchError, firstValueFrom, of, tap, throwError, timeout, TimeoutError } from 'rxjs';
+import { catchError, firstValueFrom, of, tap, map, Subject, throwError, timeout, TimeoutError } from 'rxjs';
 import { API_BASE_URL } from '../api.config';
 interface PendingWorkout { id:number; clientId:string; body:any; attempted?:boolean; }
 @Injectable({providedIn:'root'})
 export class OfflineService implements OnDestroy {
   readonly ready=signal(false);
+  readonly workoutsSynced = new Subject<void>();
   private online=()=>void this.sync();
   private prepared=()=>{
     const expected=document.querySelector<HTMLMetaElement>('meta[name="form-offline-build"]')?.content;
@@ -50,6 +51,7 @@ export class OfflineService implements OnDestroy {
   calendar(body:any[],url:string){
     const params=new URL(url,location.origin).searchParams;
     return [...body,...this.pending.filter(p=>{
+      if(body.some(item=>item.clientId===p.clientId))return false;
       const d=new Date(p.body.trainingDate);
       return d.getUTCFullYear()===Number(params.get('year'))&&d.getUTCMonth()+1===Number(params.get('month'));
     }).map(p=>({...p.body,id:p.id}))];
@@ -66,8 +68,9 @@ export class OfflineService implements OnDestroy {
           {headers:new HttpHeaders({'X-Offline-Sync':'1','X-Offline-Account':account})}));
         if(this.account!==account)break;
         this.write('pending',this.pending.filter(p=>p.clientId!==item.clientId));
+        this.workoutsSynced.next();
       }
-      this.status.set(this.pending.length?'Some workouts still need syncing.':'All workouts synced. Refresh the calendar to see updated totals.');
+      this.status.set(this.pending.length?'Some workouts still need syncing.':'All workouts synced.');
     }catch{this.status.set('Workouts remain saved on this device. Reconnect or sign in to sync.');}
     finally{this.syncing.set(false);}
   }
@@ -93,7 +96,8 @@ export const offlineInterceptor:HttpInterceptorFn=(request,next)=>{
     if(event instanceof HttpResponse&&request.method==='GET'&&account===store.account&&account){
       try{store.write(key,event.body);}catch{store.status.set('Offline storage is full. Free device storage before going offline.');}
     }
-  }),catchError(error=>{
+  }),map(event=>event instanceof HttpResponse&&calendar&&account===store.account
+    ?event.clone({body:store.calendar(event.body as any[],request.urlWithParams)}):event),catchError(error=>{
     if(!((error instanceof HttpErrorResponse&&error.status===0)||error instanceof TimeoutError)||!account||account!==store.account)return throwError(()=>error);
     if(create)return queue(true);
     const cached=store.read(key);

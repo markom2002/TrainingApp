@@ -114,7 +114,7 @@ describe('Workout editor', () => {
     fixture.nativeElement
       .querySelector('form')
       .dispatchEvent(new Event('submit', { cancelable: true }));
-    requests.expectOne(`${API_BASE_URL}/journey`).flush({});
+    requests.expectNone(`${API_BASE_URL}/journey`);
     const save = requests.expectOne(`${API_BASE_URL}/trainings`);
     expect(save.request.method).toBe('POST');
     expect(save.request.body.trainingVariant).toBe('Women');
@@ -122,7 +122,7 @@ describe('Workout editor', () => {
     expect(save.request.body.exercises[0].sets).toBe(3);
     save.flush({ id: 99 });
     expect(navigate).toHaveBeenCalledWith(['/dashboard'], {
-      queryParams: { saved: '1' },
+      queryParams: { saved: '1', date: save.request.body.trainingDate.toISOString().slice(0, 10) }, fragment: 'history',
     });
     requests.verify();
     fixture.destroy();
