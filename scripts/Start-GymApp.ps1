@@ -63,7 +63,7 @@ if ($Monitor) {
     }
 } else {
     $address = Start-GymServer
-    Start-Process powershell.exe -WindowStyle Hidden -ArgumentList @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', "`"$PSCommandPath`"", '-Monitor') -WorkingDirectory $projectRoot
+    & (Join-Path $PSScriptRoot 'Start-GymMonitor.ps1')
     $url = "https://${address}:7089/dashboard"
     Write-Host "Gym App (laptop and phone): $url"
     if ($OpenBrowser) { Start-Process $url }

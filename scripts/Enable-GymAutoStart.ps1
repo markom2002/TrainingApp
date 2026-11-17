@@ -13,6 +13,7 @@ try {
     Register-ScheduledTask -TaskName 'Gym App Auto Start' -Action $action -Trigger $trigger -Principal $principal -Settings $settings -Description 'Keep the local gym app available to the laptop and phone after sign-in.' -Force | Out-Null
     if (-not (Get-ScheduledTask -TaskName 'Gym App Auto Start' -ErrorAction SilentlyContinue)) { throw 'Windows did not save the automatic startup task.' }
     if ((Get-NetFirewallRule -Name 'FORM-Phone-Local-WiFi-7089').Enabled -ne 'True') { throw 'Phone access rule is not enabled.' }
+    & (Join-Path $PSScriptRoot 'Start-GymMonitor.ps1')
     'Firewall and automatic startup configured successfully.' | Set-Content -LiteralPath $logPath
     'Ready' | Set-Content -LiteralPath (Join-Path $projectRoot 'artifacts/gym-windows-ready')
 } catch {
