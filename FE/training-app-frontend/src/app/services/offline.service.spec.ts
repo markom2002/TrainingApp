@@ -25,6 +25,7 @@ describe('Offline workouts',()=>{
     const success=store.sync();const retry=requests.expectOne(`${API_BASE_URL}/trainings`);expect(retry.request.body.clientId).toBe(id);retry.flush({id:1});await success;expect(store.pending.length).toBe(0);
   });
   it('shows pending workouts even when the calendar server responds successfully',()=>{
+    online.and.returnValue(true);
     const saved=store.save({trainingDate:'2026-11-16T12:00:00Z',exercises:[]});
     store.save({trainingDate:'2026-10-16T12:00:00Z',exercises:[]});
     let result:any;
@@ -48,8 +49,18 @@ describe('Offline workouts',()=>{
     expect(refresh).toHaveBeenCalledTimes(1);expect(store.pending.length).toBe(0);
   });
   it('serves cached exercises on transport failure and isolates other accounts',()=>{
+    online.and.returnValue(true);
     http.get(`${API_BASE_URL}/exercises`).subscribe();requests.expectOne(`${API_BASE_URL}/exercises`).flush([{id:'lat-pulldown'}]);
     let result:any;http.get(`${API_BASE_URL}/exercises`).subscribe(v=>result=v);requests.expectOne(`${API_BASE_URL}/exercises`).error(new ProgressEvent('error'));expect(result[0].id).toBe('lat-pulldown');
     localStorage.setItem('form.offlineAccount','other-account');expect(store.pending).toEqual([]);expect(store.read(`get:${API_BASE_URL}/exercises`)).toBeNull();
+  });
+  it('opens cached exercises and pending calendar immediately while offline',()=>{
+    store.write(`get:${API_BASE_URL}/exercises`,[{id:'lat-pulldown'}]);
+    store.save({trainingDate:'2026-11-17T12:00:00Z'});
+    let exercises:any,calendar:any;
+    http.get(`${API_BASE_URL}/exercises`).subscribe(v=>exercises=v);
+    http.get(`${API_BASE_URL}/journey/calendar`,{params:{year:2026,month:11}}).subscribe(v=>calendar=v);
+    requests.expectNone(()=>true);
+    expect(exercises[0].id).toBe('lat-pulldown');expect(calendar.length).toBe(1);
   });
 });

@@ -3,7 +3,7 @@ import { jwtDecode } from 'jwt-decode';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, finalize, shareReplay, tap } from 'rxjs';
+import { Observable, finalize, shareReplay, tap, timeout } from 'rxjs';
 import { ProgressionService } from './progression.service';
 
 interface TokenResponse {
@@ -61,6 +61,7 @@ export class AuthService {
           { withCredentials: true },
         )
         .pipe(
+          timeout({ first: 6000 }),
           tap((result) => this.saveToken(result.token)),
           finalize(() => (this.refreshRequest = undefined)),
           shareReplay({ bufferSize: 1, refCount: false }),

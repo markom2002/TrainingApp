@@ -19,8 +19,11 @@ self.addEventListener('fetch',event=>{
    event.respondWith(fetch(event.request,{cache:'no-cache'}).catch(()=>caches.match('/manifest.webmanifest')));return;
  }
  if(event.request.mode==='navigate')event.respondWith((async()=>{
+   // Launch the installed app immediately, including when the laptop is off.
+   const shell=await caches.match('/index.html');
+   if(shell)return shell;
    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),3000);
-   try{return await fetch(event.request,{signal:controller.signal});}
+   try{const response=await fetch(event.request,{signal:controller.signal});if(!response.ok)throw new Error('App server unavailable');return response;}
    catch{return await caches.match('/index.html')||await caches.match('/offline.html');}
    finally{clearTimeout(timer);}
  })());

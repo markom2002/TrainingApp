@@ -1,7 +1,7 @@
 import { API_BASE_URL } from './api.config';
 import { inject } from '@angular/core';
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
-import { catchError, switchMap, throwError } from 'rxjs';
+import { catchError, switchMap, throwError, TimeoutError } from 'rxjs';
 import { AuthService } from './services/auth.service';
 
 export const authInterceptor: HttpInterceptorFn = (request, next) => {
@@ -22,7 +22,7 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
         return throwError(() => error);
       return auth.refresh().pipe(
         catchError((refreshError) => {
-          if (refreshError.status !== 0) auth.clearSession();
+          if (refreshError.status !== 0 && !(refreshError instanceof TimeoutError)) auth.clearSession();
           return throwError(() => refreshError);
         }),
         switchMap((result) => {

@@ -67,4 +67,11 @@ if ($Monitor) {
     $url = "https://${address}:7089/dashboard"
     Write-Host "Gym App (laptop and phone): $url"
     if ($OpenBrowser) { Start-Process $url }
+    if ($OpenBrowser -and -not (Test-Path (Join-Path $projectRoot 'artifacts/gym-windows-ready'))) {
+        try {
+            $setupScript = Join-Path $PSScriptRoot 'Enable-GymAutoStart.ps1'
+            $setup = Start-Process powershell.exe -Verb RunAs -WindowStyle Hidden -ArgumentList @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', "`"$setupScript`"") -Wait -PassThru
+            if ($setup.ExitCode -ne 0) { Write-Warning 'Windows setup was not completed. Gym App is running; accept Windows setup next time to enable automatic startup and phone access.' }
+        } catch { Write-Warning 'Windows setup was not accepted. Open Gym App again to retry.' }
+    }
 }

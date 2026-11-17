@@ -92,6 +92,10 @@ export const offlineInterceptor:HttpInterceptorFn=(request,next)=>{
   if(create)request=request.clone({body:{...(request.body as object),clientId:crypto.randomUUID()}});
   const queue=(attempted=false)=>of(new HttpResponse({status:200,body:store.save(request.body,attempted)}));
   if(create&&!navigator.onLine)return queue();
+  if(request.method==='GET'&&!navigator.onLine){
+    const cached=store.read(key);
+    if(cached!==null||calendar)return of(new HttpResponse({status:200,body:calendar?store.calendar(cached??[],request.urlWithParams):cached}));
+  }
   return next(request).pipe(timeout({first:6000}),tap(event=>{
     if(event instanceof HttpResponse&&request.method==='GET'&&account===store.account&&account){
       try{store.write(key,event.body);}catch{store.status.set('Offline storage is full. Free device storage before going offline.');}

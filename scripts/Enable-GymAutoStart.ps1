@@ -14,6 +14,7 @@ try {
     if (-not (Get-ScheduledTask -TaskName 'Gym App Auto Start' -ErrorAction SilentlyContinue)) { throw 'Windows did not save the automatic startup task.' }
     if ((Get-NetFirewallRule -Name 'FORM-Phone-Local-WiFi-7089').Enabled -ne 'True') { throw 'Phone access rule is not enabled.' }
     'Firewall and automatic startup configured successfully.' | Set-Content -LiteralPath $logPath
+    'Ready' | Set-Content -LiteralPath (Join-Path $projectRoot 'artifacts/gym-windows-ready')
 } catch {
     $_.Exception.Message | Set-Content -LiteralPath $logPath
     exit 1
